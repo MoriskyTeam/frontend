@@ -2,6 +2,7 @@ import 'package:dynamic_rcb_alerts/core/theme/rcb_colors.dart';
 import 'package:dynamic_rcb_alerts/core/theme/rcb_radii.dart';
 import 'package:dynamic_rcb_alerts/core/theme/rcb_typography.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Builds the Odblask light + dark ThemeData.
 ///
@@ -186,6 +187,9 @@ abstract final class RcbTheme {
         ),
       ),
       appBarTheme: AppBarTheme(
+        systemOverlayStyle: scheme.brightness == Brightness.dark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
         backgroundColor: scheme.surface,
         foregroundColor: scheme.onSurface,
         surfaceTintColor: Colors.transparent,

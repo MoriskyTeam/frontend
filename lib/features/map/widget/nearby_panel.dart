@@ -109,6 +109,7 @@ class NearbyPanel extends StatelessWidget {
                 active: arrivedIds.contains(warning.id),
                 child: _WarningStrip(
                   incident: warning,
+                  now: now,
                   onTap: () => onSelect(warning),
                 ),
               ),
@@ -208,9 +209,14 @@ class NearbyPanel extends StatelessWidget {
 }
 
 class _WarningStrip extends StatelessWidget {
-  const _WarningStrip({required this.incident, required this.onTap});
+  const _WarningStrip({
+    required this.incident,
+    required this.now,
+    required this.onTap,
+  });
 
   final Incident incident;
+  final DateTime now;
   final VoidCallback onTap;
 
   @override
@@ -248,12 +254,6 @@ class _WarningStrip extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10n.weatherWarning.toUpperCase(),
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: RcbColors.signalRed,
-                          ),
-                        ),
-                        Text(
                           l10n.titleOf(incident),
                           style: theme.textTheme.titleMedium,
                         ),
@@ -263,6 +263,8 @@ class _WarningStrip extends StatelessWidget {
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
                         ),
+                        const SizedBox(height: RcbSpacing.xxs),
+                        ProofLine(incident: incident, now: now),
                       ],
                     ),
                   ),
@@ -395,23 +397,14 @@ class _LeadCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            SeverityChevrons(
-                              level: incident.severity.index + 1,
-                              color: theme.colorScheme.onSurface,
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              l10n.severity(incident.severity).toUpperCase(),
-                              style: theme.textTheme.labelSmall,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: RcbSpacing.xs),
                         Text(
                           l10n.titleOf(incident),
                           style: theme.textTheme.titleLarge,
+                        ),
+                        const SizedBox(height: RcbSpacing.xxs),
+                        SeverityBadge(
+                          level: incident.severity.index + 1,
+                          label: l10n.severity(incident.severity),
                         ),
                         const SizedBox(height: RcbSpacing.xxs),
                         Text(

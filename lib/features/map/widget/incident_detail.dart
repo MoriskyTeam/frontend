@@ -67,19 +67,8 @@ class IncidentDetail extends StatelessWidget {
             RcbSpacing.sm,
           ),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text(
-                (reading != null
-                        ? l10n.airStation
-                        : incident.areaRadiusMeters != null
-                        ? l10n.weatherWarning
-                        : l10n.layer(incident.layer))
-                    .toUpperCase(),
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: scheme.onSurfaceVariant,
-                ),
-              ),
-              const Spacer(),
               IconButton(
                 tooltip: l10n.close,
                 onPressed: onClose,
@@ -110,32 +99,23 @@ class IncidentDetail extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (reading == null)
-                          Row(
-                            children: [
-                              SeverityChevrons(
-                                level: incident.severity.index + 1,
-                                color: scheme.onSurface,
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                l10n.severity(incident.severity).toUpperCase(),
-                                style: theme.textTheme.labelSmall,
-                              ),
-                            ],
-                          )
-                        else
-                          Text(
-                            l10n.airLevel(reading.level).toUpperCase(),
-                            style: theme.textTheme.labelSmall,
-                          ),
-                        const SizedBox(height: RcbSpacing.xs),
                         Text(
                           l10n.titleOf(incident),
                           style: theme.textTheme.displaySmall?.copyWith(
                             fontSize: 28,
                           ),
                         ),
+                        const SizedBox(height: RcbSpacing.xs),
+                        if (reading == null)
+                          SeverityBadge(
+                            level: incident.severity.index + 1,
+                            label: l10n.severity(incident.severity),
+                          )
+                        else
+                          Text(
+                            '${l10n.airNow}: ${l10n.airLevel(reading.level)}',
+                            style: theme.textTheme.titleMedium,
+                          ),
                       ],
                     ),
                   ),

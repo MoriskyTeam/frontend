@@ -27,7 +27,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get layerAirQuality => 'Air';
 
   @override
-  String get layerWeather => 'Warnings';
+  String get layerWeather => 'Weather';
 
   @override
   String get layerNeighbours => 'Neighbours';
@@ -301,5 +301,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String layerCount(String layer, int count) {
     return '$layer, $count items';
+  }
+
+  @override
+  String activeNearbyLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'active within 2 km',
+      one: 'active within 2 km',
+      zero: 'Calm within 2 km',
+    );
+    return '$_temp0';
   }
 }

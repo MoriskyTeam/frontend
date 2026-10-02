@@ -137,7 +137,7 @@ abstract class AppLocalizations {
   /// No description provided for @layerWeather.
   ///
   /// In en, this message translates to:
-  /// **'Warnings'**
+  /// **'Weather'**
   String get layerWeather;
 
   /// No description provided for @layerNeighbours.
@@ -625,6 +625,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{layer}, {count} items'**
   String layerCount(String layer, int count);
+
+  /// No description provided for @activeNearbyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Calm within 2 km} =1{active within 2 km} other{active within 2 km}}'**
+  String activeNearbyLabel(int count);
 }
 
 class _AppLocalizationsDelegate

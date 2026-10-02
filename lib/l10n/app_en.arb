@@ -6,7 +6,7 @@
   "demoDataNote": "Demo data — incidents are synthetic",
   "layerInfrastructure": "Outages",
   "layerAirQuality": "Air",
-  "layerWeather": "Warnings",
+  "layerWeather": "Weather",
   "layerNeighbours": "Neighbours",
   "nearbyTitle": "Closest to you",
   "locationDemo": "Rynek Główny · demo location",
@@ -138,6 +138,14 @@
       "layer": {
         "type": "String"
       },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "activeNearbyLabel": "{count, plural, =0{Calm within 2 km} =1{active within 2 km} other{active within 2 km}}",
+  "@activeNearbyLabel": {
+    "placeholders": {
       "count": {
         "type": "int"
       }

@@ -56,11 +56,22 @@ class _MapPageCoreState extends State<_MapPageCore> {
   final _mapController = MapController();
   final _sheetController = DraggableScrollableController();
   final _sheetExtent = ValueNotifier<double>(_sheetPeek);
+  final _reveal = ValueNotifier<Incident?>(null);
+  final GlobalKey _topChromeKey = GlobalKey();
+
+  /// Height of the status card + chips overlay, so the camera keeps targets
+  /// out from under it.
+  double _topChromeHeight() {
+    final box = _topChromeKey.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null || !box.hasSize) return 0;
+    return box.localToGlobal(Offset.zero).dy + box.size.height;
+  }
 
   @override
   void dispose() {
     _sheetController.dispose();
     _sheetExtent.dispose();
+    _reveal.dispose();
     super.dispose();
   }
 
@@ -97,6 +108,7 @@ class _MapPageCoreState extends State<_MapPageCore> {
     switch (event) {
       case IncidentArrived(:final incident):
         unawaited(HapticFeedback.lightImpact());
+        _reveal.value = incident;
         final state = context.read<MapCubit>().state;
         final origin = MapViewData.from(state).origin;
         final distance = formatDistance(
@@ -135,7 +147,6 @@ class _MapPageCoreState extends State<_MapPageCore> {
       // Live arrivals must not pile up over the sheet: dismiss on their own
       // even when they carry an action.
       persist: false,
-      duration: const Duration(seconds: 4),
     );
   }
 
@@ -239,6 +250,8 @@ class _MapPageCoreState extends State<_MapPageCore> {
                   (state.selectedIncidentId != null
                       ? _sheetDetail
                       : _sheetExtent.value),
+              topInset: _topChromeHeight,
+              reveal: _reveal,
               onIncidentTap: _select,
               onMapTap: () => _select(null),
             ),
@@ -246,6 +259,8 @@ class _MapPageCoreState extends State<_MapPageCore> {
           SafeArea(
             bottom: false,
             child: Column(
+              key: _topChromeKey,
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Padding(
@@ -285,7 +300,7 @@ class _MapPageCoreState extends State<_MapPageCore> {
               snapSizes: const [_sheetPeek, _sheetDetail],
               builder: (context, scrollController) => DecoratedBox(
                 decoration: BoxDecoration(
-                  color: scheme.surfaceContainerLowest,
+                  color: scheme.surface,
                   borderRadius: RcbRadii.sheetBorder,
                   border: Border(
                     top: BorderSide(color: scheme.outlineVariant),
@@ -345,7 +360,7 @@ class _MapPageCoreState extends State<_MapPageCore> {
             width: panelWidth,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: scheme.surfaceContainerLowest,
+                color: scheme.surface,
                 border: Border(
                   right: BorderSide(color: scheme.outlineVariant),
                 ),
@@ -366,7 +381,6 @@ class _MapPageCoreState extends State<_MapPageCore> {
                       enabled: state.enabledLayers,
                       counts: data.counts,
                       onToggle: cubit.toggleLayer,
-                      wrap: true,
                       padding: const EdgeInsets.symmetric(
                         horizontal: RcbSpacing.md,
                       ),
@@ -398,6 +412,8 @@ class _MapPageCoreState extends State<_MapPageCore> {
                     arrivedIds: state.arrivedIds,
                     userLocation: state.userLocation,
                     focusInset: () => 0,
+                    topInset: () => 0,
+                    reveal: _reveal,
                     onIncidentTap: _select,
                     onMapTap: () => _select(null),
                   ),

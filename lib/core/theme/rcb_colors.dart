@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 abstract final class RcbColors {
   // Neutral base — light
   static const bone = Color(0xFFF4F5F0);
-  static const boneRaised = Color(0xFFFCFCFA);
+  static const boneRaised = Color(0xFFFAFBF6);
   static const boneSunken = Color(0xFFE8EAE2);
   static const hairline = Color(0xFFD2D5CB);
   static const asphalt = Color(0xFF16181B);

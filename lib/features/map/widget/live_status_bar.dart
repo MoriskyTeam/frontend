@@ -1,5 +1,6 @@
 import 'package:dynamic_rcb_alerts/core/theme/rcb_colors.dart';
 import 'package:dynamic_rcb_alerts/core/theme/rcb_radii.dart';
+import 'package:dynamic_rcb_alerts/core/theme/rcb_typography.dart';
 import 'package:dynamic_rcb_alerts/l10n/gen/app_localizations.dart';
 import 'package:dynamic_rcb_alerts/shared/widgets/brand_mark.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class LiveStatusBar extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: scheme.surfaceContainerLowest,
+        color: scheme.surface,
         borderRadius: RcbRadii.cardBorder,
         border: Border.all(color: scheme.outlineVariant),
         boxShadow: [
@@ -77,9 +78,30 @@ class LiveStatusBar extends StatelessWidget {
             const SizedBox(height: RcbSpacing.xs),
             Semantics(
               liveRegion: true,
-              child: Text(
-                l10n.activeNearby(activeNearby),
-                style: theme.textTheme.titleMedium,
+              label: l10n.activeNearby(activeNearby),
+              excludeSemantics: true,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  if (activeNearby > 0) ...[
+                    Text(
+                      '$activeNearby',
+                      style: theme.textTheme.displaySmall?.copyWith(
+                        height: 1,
+                        fontWeight: FontWeight.w800,
+                        fontFeatures: RcbTypography.tabular,
+                      ),
+                    ),
+                    const SizedBox(width: RcbSpacing.sm),
+                  ],
+                  Flexible(
+                    child: Text(
+                      l10n.activeNearbyLabel(activeNearby),
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
+                ],
               ),
             ),
             Text(

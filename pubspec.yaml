@@ -88,3 +88,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+
+  assets:
+    # Barlow / Barlow Condensed (OFL), resolved by google_fonts offline.
+    - assets/google_fonts/

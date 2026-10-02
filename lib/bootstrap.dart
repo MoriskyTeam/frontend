@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// Top-level FCM background handler. Runs in a separate isolate, so it
 /// can't touch `getIt` or any other process-local state.
@@ -24,6 +25,9 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 Future<void> bootstrap(Flavor flavor) async {
   WidgetsFlutterBinding.ensureInitialized();
   FlavorConfig.init(flavor);
+  // Barlow ships in assets/google_fonts — never fall back to the platform
+  // sans on a first launch without network.
+  GoogleFonts.config.allowRuntimeFetching = false;
 
   await bootstrapFirebase(flavor);
   // Web delivers background messages through the service worker instead.

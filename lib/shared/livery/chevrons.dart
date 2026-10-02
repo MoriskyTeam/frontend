@@ -120,3 +120,30 @@ class _SingleChevronPainter extends CustomPainter {
   @override
   bool shouldRepaint(_SingleChevronPainter old) => old.color != color;
 }
+
+/// Severity as chevrons plus the word, set on the line under a title so it
+/// never reads as an eyebrow above it.
+class SeverityBadge extends StatelessWidget {
+  const SeverityBadge({
+    required this.level,
+    required this.label,
+    super.key,
+  });
+
+  /// 1 = low, 2 = medium, 3 = high.
+  final int level;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SeverityChevrons(level: level, color: theme.colorScheme.onSurface),
+        const SizedBox(width: 6),
+        Text(label, style: theme.textTheme.labelMedium),
+      ],
+    );
+  }
+}

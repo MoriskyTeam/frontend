@@ -31,7 +31,9 @@ extension IncidentDTOMapper on IncidentDTO {
 
 extension AirReadingDTOMapper on AirReadingDTO {
   AirReading toDomain() => AirReading(
-    level: indexLevel.toAirQualityLevel(),
+    level:
+        AirQualityLevel.fromReadings(pm25: pm25, pm10: pm10) ??
+        indexLevel.toAirQualityLevel(),
     pm25: pm25,
     pm10: pm10,
   );

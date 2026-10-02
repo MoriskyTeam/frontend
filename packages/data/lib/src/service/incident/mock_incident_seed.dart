@@ -146,7 +146,7 @@ const mockIncidentSeed = <Map<String, dynamic>>[
     'lng': 19.9265,
     'minutes_ago': 14,
     'confirmations': 0,
-    'air_reading': {'index_level': 3, 'pm25': 48, 'pm10': 71},
+    'air_reading': {'pm25': 62, 'pm10': 88},
   },
   {
     'id': 'air-bulwarowa',
@@ -163,7 +163,7 @@ const mockIncidentSeed = <Map<String, dynamic>>[
     'lng': 20.0534,
     'minutes_ago': 14,
     'confirmations': 0,
-    'air_reading': {'index_level': 4, 'pm25': 78, 'pm10': 112},
+    'air_reading': {'pm25': 82, 'pm10': 118},
   },
   {
     'id': 'air-dietla',
@@ -179,7 +179,7 @@ const mockIncidentSeed = <Map<String, dynamic>>[
     'lng': 19.9459,
     'minutes_ago': 14,
     'confirmations': 0,
-    'air_reading': {'index_level': 2, 'pm25': 31, 'pm10': 44},
+    'air_reading': {'pm25': 38, 'pm10': 46},
   },
   {
     'id': 'air-zloty-rog',
@@ -195,7 +195,7 @@ const mockIncidentSeed = <Map<String, dynamic>>[
     'lng': 19.8956,
     'minutes_ago': 14,
     'confirmations': 0,
-    'air_reading': {'index_level': 1, 'pm25': 16, 'pm10': 25},
+    'air_reading': {'pm25': 16, 'pm10': 25},
   },
   {
     'id': 'air-piastow',
@@ -211,7 +211,7 @@ const mockIncidentSeed = <Map<String, dynamic>>[
     'lng': 20.0183,
     'minutes_ago': 14,
     'confirmations': 0,
-    'air_reading': {'index_level': 2, 'pm25': 29, 'pm10': 40},
+    'air_reading': {'pm25': 37, 'pm10': 52},
   },
   {
     'id': 'air-bujaka',
@@ -227,7 +227,7 @@ const mockIncidentSeed = <Map<String, dynamic>>[
     'lng': 19.9498,
     'minutes_ago': 14,
     'confirmations': 0,
-    'air_reading': {'index_level': 1, 'pm25': 19, 'pm10': 27},
+    'air_reading': {'pm25': 19, 'pm10': 27},
   },
   // --- Ostrzeżenia / IMGW ---------------------------------------------------
   {

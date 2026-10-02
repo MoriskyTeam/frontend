@@ -7,6 +7,7 @@ import 'package:dynamic_rcb_alerts/features/map/widget/user_location_marker.dart
 import 'package:dynamic_rcb_alerts/l10n/gen/app_localizations.dart';
 import 'package:dynamic_rcb_alerts/shared/livery/incident_labels.dart';
 import 'package:dynamic_rcb_alerts/shared/widgets/neutral_tile_layer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -25,6 +26,8 @@ class CityMap extends StatefulWidget {
     required this.arrivedIds,
     required this.userLocation,
     required this.focusInset,
+    required this.topInset,
+    required this.reveal,
     required this.onIncidentTap,
     required this.onMapTap,
     required this.controller,
@@ -39,6 +42,12 @@ class CityMap extends StatefulWidget {
   /// Screen space at the bottom covered by the sheet (or zero on wide
   /// layouts), read when the camera moves.
   final double Function() focusInset;
+
+  /// Screen space at the top covered by the status card and chips.
+  final double Function() topInset;
+
+  /// Live arrivals to bring into view without selecting them.
+  final ValueListenable<Incident?> reveal;
   final ValueChanged<Incident> onIncidentTap;
   final VoidCallback onMapTap;
   final MapController controller;
@@ -53,6 +62,31 @@ class _CityMapState extends State<CityMap> with TickerProviderStateMixin {
 
   AnimationController? _camera;
   bool _mapReady = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.reveal.addListener(_onReveal);
+  }
+
+  /// Pans (without zooming) so a live arrival lands in the clear band
+  /// between the top chrome and the sheet — the odblask sweep must play
+  /// where the resident can see it.
+  void _onReveal() {
+    final incident = widget.reveal.value;
+    if (incident == null || !_mapReady || widget.selected != null) return;
+    final camera = widget.controller.camera;
+    final point = camera.latLngToScreenOffset(incident.location.latLng);
+    final top = widget.topInset();
+    final bottom = camera.size.height - widget.focusInset();
+    const margin = incidentMarkerExtent;
+    final visible =
+        point.dx >= margin &&
+        point.dx <= camera.size.width - margin &&
+        point.dy >= top + margin &&
+        point.dy <= bottom - margin;
+    if (!visible) _flyTo(incident.location.latLng, camera.zoom);
+  }
 
   @override
   void didUpdateWidget(CityMap oldWidget) {
@@ -82,7 +116,8 @@ class _CityMapState extends State<CityMap> with TickerProviderStateMixin {
     if (!_mapReady) return;
     _camera?.dispose();
     final camera = widget.controller.camera;
-    final offset = Offset(0, -widget.focusInset() / 2);
+    // Centre the target in the band between the top chrome and the sheet.
+    final offset = Offset(0, (widget.topInset() - widget.focusInset()) / 2);
     if (MediaQuery.disableAnimationsOf(context)) {
       widget.controller.move(target, zoom, offset: offset);
       return;
@@ -117,6 +152,7 @@ class _CityMapState extends State<CityMap> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    widget.reveal.removeListener(_onReveal);
     _camera?.dispose();
     super.dispose();
   }
@@ -165,9 +201,11 @@ class _CityMapState extends State<CityMap> with TickerProviderStateMixin {
                 point: warning.location.latLng,
                 radius: warning.areaRadiusMeters!.toDouble(),
                 useRadiusInMeter: true,
-                color: RcbColors.signalRed.withValues(
-                  alpha: warning.id == selectedId ? 0.12 : 0.05,
-                ),
+                // A city-wide area must not tint the whole basemap; it is
+                // filled only while the resident is reading it.
+                color: warning.id == selectedId
+                    ? RcbColors.signalRed.withValues(alpha: 0.1)
+                    : Colors.transparent,
                 borderColor: RcbColors.signalRed.withValues(alpha: 0.55),
                 borderStrokeWidth: 1.5,
               ),
@@ -176,8 +214,7 @@ class _CityMapState extends State<CityMap> with TickerProviderStateMixin {
                 point: location.point.latLng,
                 radius: nearbyRadiusMeters.toDouble(),
                 useRadiusInMeter: true,
-                color: (dark ? RcbColors.nightInk : RcbColors.asphalt)
-                    .withValues(alpha: 0.035),
+                color: Colors.transparent,
                 borderColor: (dark ? RcbColors.nightInk : RcbColors.asphalt)
                     .withValues(alpha: 0.35),
                 borderStrokeWidth: 1,
