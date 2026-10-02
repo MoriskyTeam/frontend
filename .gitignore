@@ -1,0 +1,67 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VS Code
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+/coverage/
+**/build/
+
+# Symbolication / obfuscation
+app.*.symbols
+app.*.map.json
+
+# Android Studio artifacts
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# FVM Version Cache
+.fvm/
+
+# Firebase
+**/firebase_options.dart.local
+.firebase/
+.firebaserc.local
+firebase-debug.log
+# Active iOS plist gets swapped per flavor by ios/scripts/swap_google_service_info.sh
+ios/Runner/GoogleService-Info.plist
+
+# Secrets / env
+.env
+.env.*
+!.env.example
+**/google-services.json.local
+**/GoogleService-Info.plist.local
+
+# Conductor / workspace scratch (kept gitignored locally)
+.context/
+
+# Impeccable engine binary (re-downloaded by the launcher on first run)
+.claude/skills/impeccable/scripts/bin/

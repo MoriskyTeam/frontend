@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1000183825884",
+    "project_id": "dynamic-rcb-alerts",
+    "storage_bucket": "dynamic-rcb-alerts.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1000183825884:android:cb5be27e75fb0cb6447b19",
+        "android_client_info": {
+          "package_name": "dev.slavis.dynamicrcbalerts"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBr5pz8o_CgHcHkvTgfGyYVwYqaD8Lm87Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1000183825884:android:3edef29b40f41384447b19",
+        "android_client_info": {
+          "package_name": "dev.slavis.dynamicrcbalerts.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBr5pz8o_CgHcHkvTgfGyYVwYqaD8Lm87Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

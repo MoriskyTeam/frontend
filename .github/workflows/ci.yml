@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Cancel in-progress runs when a new push lands on the same ref. Stops
+# stale jobs from blocking the queue when the user force-pushes a fix.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze-and-test:
+    name: analyze + test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.5'
+          channel: 'stable'
+          cache: true
+
+      - name: Print toolchain
+        run: |
+          flutter --version
+          dart --version
+
+      # Three-layer pub get in dependency order: domain has no internal
+      # deps, data depends on domain, the app on both.
+      - name: pub get (domain)
+        working-directory: packages/domain
+        run: flutter pub get
+
+      - name: pub get (data)
+        working-directory: packages/data
+        run: flutter pub get
+
+      - name: pub get (app)
+        run: flutter pub get
+
+      # Codegen runs in the same order so each layer's generated files are
+      # ready before the next layer sees them.
+      - name: build_runner (domain)
+        working-directory: packages/domain
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: build_runner (data)
+        working-directory: packages/data
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: build_runner (app)
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Analyze
+        run: flutter analyze --no-pub --suppress-analytics
+
+      - name: Test (data layer)
+        working-directory: packages/data
+        run: flutter test
+
+      - name: Test (app)
+        run: flutter test test
