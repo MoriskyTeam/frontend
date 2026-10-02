@@ -132,6 +132,10 @@ class _MapPageCoreState extends State<_MapPageCore> {
       content: content,
       action: action,
       width: wide ? 388 : null,
+      // Live arrivals must not pile up over the sheet: dismiss on their own
+      // even when they carry an action.
+      persist: false,
+      duration: const Duration(seconds: 4),
     );
   }
 
