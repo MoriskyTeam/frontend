@@ -68,10 +68,18 @@ extension IncidentLabels on AppLocalizations {
       : '${incident.location.latitude.toStringAsFixed(4)}, '
             '${incident.location.longitude.toStringAsFixed(4)}';
 
+  /// Age as one unbreakable unit: a proof line may wrap, but never inside
+  /// "34 min temu".
   String ago(DateTime moment, {required DateTime now}) {
     final elapsed = now.difference(moment);
-    if (elapsed.inMinutes < 1) return timeNow;
-    if (elapsed.inHours < 1) return minutesAgo(elapsed.inMinutes);
-    return hoursAgo(elapsed.inHours);
+    final String label;
+    if (elapsed.inMinutes < 1) {
+      label = timeNow;
+    } else if (elapsed.inHours < 1) {
+      label = minutesAgo(elapsed.inMinutes);
+    } else {
+      label = hoursAgo(elapsed.inHours);
+    }
+    return label.replaceAll(' ', '\u00A0');
   }
 }
