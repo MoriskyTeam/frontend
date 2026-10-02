@@ -1,5 +1,146 @@
 {
   "@@locale": "en",
-  "appTitle": "Dynamic RCB Alerts",
-  "homeTagline": "Coming soon."
+  "appTitle": "CityShield",
+  "liveBadge": "LIVE",
+  "demoBadge": "DEMO",
+  "demoDataNote": "Demo data — incidents are synthetic",
+  "layerInfrastructure": "Outages",
+  "layerAirQuality": "Air",
+  "layerWeather": "Warnings",
+  "layerNeighbours": "Neighbours",
+  "nearbyTitle": "Closest to you",
+  "locationDemo": "Rynek Główny · demo location",
+  "locationDevice": "Your location",
+  "myLocation": "My location",
+  "airNow": "Air now",
+  "airVeryGood": "Very good",
+  "airGood": "Good",
+  "airModerate": "Moderate",
+  "airSufficient": "Sufficient",
+  "airBad": "Bad",
+  "airVeryBad": "Very bad",
+  "severityLow": "Low risk",
+  "severityMedium": "Medium risk",
+  "severityHigh": "High risk",
+  "statusReported": "New",
+  "statusConfirmed": "Confirmed",
+  "statusResolved": "Resolved",
+  "sourceCity19115": "19115 Kraków",
+  "sourceUtility": "Network operator",
+  "sourceImgw": "IMGW-PIB",
+  "sourceGios": "GIOŚ",
+  "sourceResident": "Resident",
+  "categoryPowerOutage": "Power outage",
+  "categoryWaterOutage": "No water",
+  "categoryHeating": "Heating",
+  "categoryFlooding": "Flooding",
+  "categoryFallenTree": "Fallen tree",
+  "categoryRoad": "Road damage",
+  "categoryTrafficLights": "Traffic lights",
+  "categoryStreetLights": "Street lights",
+  "categoryAirQuality": "Air quality",
+  "categoryStorm": "Storm",
+  "categoryWind": "Strong wind",
+  "categoryHeat": "Heat",
+  "categorySmoke": "Smoke",
+  "categoryOther": "Other",
+  "timeNow": "just now",
+  "weatherWarning": "IMGW warning",
+  "confirmAction": "I see it too",
+  "reportAction": "Report",
+  "close": "Close",
+  "show": "Show",
+  "retry": "Try again",
+  "loadFailed": "Couldn't load the city feed.",
+  "allLayersOff": "All layers are off",
+  "allLayersOffHint": "Turn a layer on to see what's happening around you.",
+  "enableAllLayers": "Show all layers",
+  "quietNearby": "Calm within 2 km. Nothing needs your attention.",
+  "resolvedSection": "Resolved",
+  "mapAttribution": "Map © OpenStreetMap contributors",
+  "reportTitle": "New report",
+  "reportWhat": "What's happening?",
+  "reportPhoto": "Photo",
+  "reportPhotoAdd": "Add a photo",
+  "reportPhotoHint": "A photo helps neighbours and services trust the report.",
+  "reportPhotoCamera": "Take a photo",
+  "reportPhotoGallery": "Choose from gallery",
+  "reportPhotoRemove": "Remove photo",
+  "reportWhere": "Where?",
+  "reportWhereHint": "Drag the map to place the pin",
+  "reportNote": "Note (optional)",
+  "reportNoteHint": "E.g. water up to the ankles, underpass closed",
+  "reportSubmit": "Send report",
+  "reportSending": "Sending…",
+  "reportSent": "Report added. Neighbours can see it on the map.",
+  "reportFailed": "Couldn't send. Check your connection and try again.",
+  "reportPickCategoryFirst": "Pick what's happening to send",
+  "unitMicrograms": "µg/m³",
+  "pm25": "PM2.5",
+  "pm10": "PM10",
+  "airStation": "GIOŚ station",
+  "warningArea": "Warning area",
+  "updatedJustNow": "updated just now",
+  "activeNearby": "{count, plural, =0{Calm within 2 km} =1{1 active within 2 km} other{{count} active within 2 km}}",
+  "@activeNearby": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "minutesAgo": "{minutes} min ago",
+  "@minutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgo": "{hours} h ago",
+  "@hoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "confirmations": "{count, plural, =0{No confirmations yet} =1{Confirmed by 1 person} other{Confirmed by {count} people}}",
+  "@confirmations": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "newNearby": "New: {title} · {distance}",
+  "@newNearby": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "updatedAgo": "updated {ago}",
+  "@updatedAgo": {
+    "placeholders": {
+      "ago": {
+        "type": "String"
+      }
+    }
+  },
+  "layerCount": "{layer}, {count} items",
+  "@layerCount": {
+    "placeholders": {
+      "layer": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

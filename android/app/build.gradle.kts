@@ -39,11 +39,11 @@ android {
             dimension = "env"
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
-            resValue("string", "app_name", "RCB Alerts Dev")
+            resValue("string", "app_name", "CityShield Dev")
         }
         create("production") {
             dimension = "env"
-            resValue("string", "app_name", "RCB Alerts")
+            resValue("string", "app_name", "CityShield")
         }
     }
 
