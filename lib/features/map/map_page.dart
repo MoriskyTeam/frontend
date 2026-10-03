@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc_presentation/bloc_presentation.dart';
 import 'package:domain/domain.dart';
 import 'package:dynamic_rcb_alerts/core/di/injection.dart';
+import 'package:dynamic_rcb_alerts/core/supabase/supabase_bootstrap.dart';
 import 'package:dynamic_rcb_alerts/core/theme/rcb_radii.dart';
 import 'package:dynamic_rcb_alerts/features/map/bloc/map_cubit.dart';
 import 'package:dynamic_rcb_alerts/features/map/model/incident_geo.dart';
@@ -216,6 +217,9 @@ class _MapPageCore extends HookWidget {
               now: now,
               arrivedIds: state.arrivedIds,
               allLayersOff: state.enabledLayers.isEmpty,
+              loadFailed: state.loadingStatus.isError,
+              showDemoNote: !SupabaseConfig.isConfigured,
+              onRetry: cubit.retry,
               onSelect: (incident) => _select(context, incident),
               onEnableAllLayers: cubit.enableAllLayers,
               scrollController: scrollController,
@@ -283,6 +287,8 @@ class _MapPageCore extends HookWidget {
                   child: LiveStatusBar(
                     activeNearby: data.activeNearby,
                     locationLabel: _locationLabel(context, state),
+                    showDemoBadge: !SupabaseConfig.isConfigured,
+                    offline: state.loadingStatus.isError,
                   ),
                 ),
                 LayerFilterBar(
@@ -386,6 +392,8 @@ class _MapPageCore extends HookWidget {
                       child: LiveStatusBar(
                         activeNearby: data.activeNearby,
                         locationLabel: _locationLabel(context, state),
+                        showDemoBadge: !SupabaseConfig.isConfigured,
+                        offline: state.loadingStatus.isError,
                       ),
                     ),
                     LayerFilterBar(

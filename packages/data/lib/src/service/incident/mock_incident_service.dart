@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:data/src/di/data_environment.dart';
 import 'package:data/src/model/incident/incident_dto.dart';
 import 'package:data/src/model/incident/submit_report_dto.dart';
 import 'package:data/src/service/incident/incident_service.dart';
@@ -12,6 +13,7 @@ import 'package:uuid/uuid.dart';
 /// Seeds the Kraków demo data, then pushes one event from [mockLiveQueue]
 /// every [_liveInterval] to simulate real-time arrivals. Kept a singleton so
 /// every subscriber sees the same city.
+@mockEnv
 @LazySingleton(as: IncidentService)
 class MockIncidentService implements IncidentService {
   MockIncidentService() {

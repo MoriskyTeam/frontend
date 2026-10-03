@@ -19,7 +19,7 @@ class NetworkError extends ErrorResult {
   const NetworkError({super.message, super.cause});
 }
 
-/// HTTP / Firebase 4xx response that wasn't auth-related.
+/// HTTP / Supabase 4xx response that wasn't auth-related.
 class ClientError extends ErrorResult {
   const ClientError({this.statusCode, super.message, super.cause});
 
@@ -29,7 +29,7 @@ class ClientError extends ErrorResult {
   List<Object?> get props => [...super.props, statusCode];
 }
 
-/// HTTP / Firebase 5xx response.
+/// HTTP / Supabase 5xx response.
 class ServerError extends ErrorResult {
   const ServerError({this.statusCode, super.message, super.cause});
 

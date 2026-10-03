@@ -88,5 +88,6 @@
   "newNearby": "Nowe: {title} · {distance}",
   "updatedAgo": "aktualizacja {ago}",
   "layerCount": "{layer}, {count} pozycji",
-  "activeNearbyLabel": "{count, plural, =0{Spokojnie w promieniu 2 km} =1{aktywne w promieniu 2 km} few{aktywne w promieniu 2 km} other{aktywnych w promieniu 2 km}}"
+  "activeNearbyLabel": "{count, plural, =0{Spokojnie w promieniu 2 km} =1{aktywne w promieniu 2 km} few{aktywne w promieniu 2 km} other{aktywnych w promieniu 2 km}}",
+  "offlineStatus": "Brak połączenia z danymi miasta"
 }

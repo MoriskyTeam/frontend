@@ -23,6 +23,9 @@ class NearbyPanel extends StatelessWidget {
     required this.now,
     required this.arrivedIds,
     required this.allLayersOff,
+    required this.loadFailed,
+    required this.showDemoNote,
+    required this.onRetry,
     required this.onSelect,
     required this.onEnableAllLayers,
     required this.scrollController,
@@ -34,6 +37,11 @@ class NearbyPanel extends StatelessWidget {
   final DateTime now;
   final Set<String> arrivedIds;
   final bool allLayersOff;
+
+  /// The feed failed; shown instead of the (empty) list.
+  final bool loadFailed;
+  final bool showDemoNote;
+  final VoidCallback onRetry;
   final ValueChanged<Incident> onSelect;
   final VoidCallback onEnableAllLayers;
   final ScrollController? scrollController;
@@ -78,7 +86,19 @@ class NearbyPanel extends StatelessWidget {
             ),
           ),
         ),
-        if (allLayersOff)
+        if (loadFailed)
+          SliverToBoxAdapter(
+            child: _EmptyState(
+              icon: Icons.cloud_off_rounded,
+              title: l10n.offlineStatus,
+              body: l10n.loadFailed,
+              action: OutlinedButton(
+                onPressed: onRetry,
+                child: Text(l10n.retry),
+              ),
+            ),
+          )
+        else if (allLayersOff)
           SliverToBoxAdapter(
             child: _EmptyState(
               icon: Icons.layers_clear_rounded,
@@ -186,7 +206,10 @@ class NearbyPanel extends StatelessWidget {
           ),
           sliver: SliverToBoxAdapter(
             child: Text(
-              '${l10n.demoDataNote}\n${l10n.mapAttribution}',
+              [
+                if (showDemoNote) l10n.demoDataNote,
+                l10n.mapAttribution,
+              ].join('\n'),
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),

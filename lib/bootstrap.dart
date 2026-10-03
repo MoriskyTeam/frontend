@@ -4,6 +4,7 @@ import 'package:dynamic_rcb_alerts/app.dart';
 import 'package:dynamic_rcb_alerts/core/di/injection.dart';
 import 'package:dynamic_rcb_alerts/core/firebase/firebase_bootstrap.dart';
 import 'package:dynamic_rcb_alerts/core/flavor/flavor_config.dart';
+import 'package:dynamic_rcb_alerts/core/supabase/supabase_bootstrap.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -29,13 +30,14 @@ Future<void> bootstrap(Flavor flavor) async {
   // sans on a first launch without network.
   GoogleFonts.config.allowRuntimeFetching = false;
 
+  // Firebase carries push only (mobile); all app logic lives in Supabase.
   await bootstrapFirebase(flavor);
-  // Web delivers background messages through the service worker instead.
   if (!kIsWeb) {
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   }
 
-  await configureDependencies();
+  final environment = await bootstrapSupabase();
+  await configureDependencies(environment: environment);
 
   runApp(const RcbAlertsApp());
 }

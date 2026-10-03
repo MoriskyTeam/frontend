@@ -80,33 +80,41 @@ lint:
 	@$(FLUTTER) analyze --no-pub --suppress-analytics
 
 # --- Flavor-aware run / build targets -------------------------------------
+# Supabase keys are picked up from config/supabase_<flavor>.json when present;
+# without the file the app runs on the mock feed.
+supabase_defines = $(if $(wildcard config/supabase_$(1).json),--dart-define-from-file=config/supabase_$(1).json,)
+
 run-dev:
 	@./ios/scripts/swap_google_service_info.sh development
-	@$(FLUTTER) run --flavor development -t lib/main_development.dart
+	@$(FLUTTER) run --flavor development -t lib/main_development.dart $(call supabase_defines,development)
 
 run-prod:
 	@./ios/scripts/swap_google_service_info.sh production
-	@$(FLUTTER) run --flavor production -t lib/main_production.dart
+	@$(FLUTTER) run --flavor production -t lib/main_production.dart $(call supabase_defines,production)
 
 run-web:
-	@$(FLUTTER) run -d chrome -t lib/main_development.dart
+	@$(FLUTTER) run -d chrome -t lib/main_development.dart $(call supabase_defines,development)
 
 build-web-prod:
-	@$(FLUTTER) build web -t lib/main_production.dart
+	@$(FLUTTER) build web -t lib/main_production.dart $(call supabase_defines,production)
+
+# Firebase Hosting serves the web build; deploys only when run explicitly.
+deploy-web: build-web-prod
+	@firebase deploy --only hosting
 
 build-android-dev:
-	@$(FLUTTER) build apk --flavor development -t lib/main_development.dart
+	@$(FLUTTER) build apk --flavor development -t lib/main_development.dart $(call supabase_defines,development)
 
 build-android-prod:
-	@$(FLUTTER) build appbundle --flavor production -t lib/main_production.dart
+	@$(FLUTTER) build appbundle --flavor production -t lib/main_production.dart $(call supabase_defines,production)
 
 build-ios-dev:
 	@./ios/scripts/swap_google_service_info.sh development
-	@$(FLUTTER) build ios --flavor development -t lib/main_development.dart --no-codesign
+	@$(FLUTTER) build ios --flavor development -t lib/main_development.dart --no-codesign $(call supabase_defines,development)
 
 build-ios-prod:
 	@./ios/scripts/swap_google_service_info.sh production
-	@$(FLUTTER) build ios --flavor production -t lib/main_production.dart --no-codesign
+	@$(FLUTTER) build ios --flavor production -t lib/main_production.dart --no-codesign $(call supabase_defines,production)
 
 cleanBuild:
 	@echo "---------(1/1) Cleaning build..---------"

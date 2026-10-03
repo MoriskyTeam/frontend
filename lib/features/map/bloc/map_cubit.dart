@@ -17,6 +17,7 @@ class MapCubit extends Cubit<MapState>
     this._watchIncidents,
     this._getCurrentLocation,
     this._confirmIncident,
+    this._ensureSignedIn,
   ) : super(const MapState());
 
   /// How long an arrival keeps its "just arrived" treatment.
@@ -26,6 +27,7 @@ class MapCubit extends Cubit<MapState>
   final WatchIncidentsUseCase _watchIncidents;
   final GetCurrentLocationUseCase _getCurrentLocation;
   final ConfirmIncidentUseCase _confirmIncident;
+  final EnsureSignedInUseCase _ensureSignedIn;
 
   StreamSubscription<List<Incident>>? _subscription;
   Timer? _clock;
@@ -45,6 +47,10 @@ class MapCubit extends Cubit<MapState>
       _clockTick,
       (_) => emit(state.copyWith(now: DateTime.now())),
     );
+    // Reading is public; the identity only matters for reporting and
+    // confirming, so a failed sign-in is reported but does not block the map.
+    final signIn = await _ensureSignedIn();
+    signIn.fold((error) => emitPresentation(MapErrorOccurred(error)), (_) {});
     _subscribe();
     await locate();
   }

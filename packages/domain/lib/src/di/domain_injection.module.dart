@@ -7,8 +7,11 @@
 
 import 'dart:async' as _i687;
 
+import 'package:domain/src/repository/auth_repository.dart' as _i722;
 import 'package:domain/src/repository/incident_repository.dart' as _i887;
 import 'package:domain/src/repository/location_repository.dart' as _i71;
+import 'package:domain/src/usecase/auth/ensure_signed_in_use_case.dart'
+    as _i612;
 import 'package:domain/src/usecase/incident/confirm_incident_use_case.dart'
     as _i366;
 import 'package:domain/src/usecase/incident/submit_report_use_case.dart'
@@ -34,6 +37,9 @@ class DomainPackageModule extends _i526.MicroPackageModule {
     );
     gh.factory<_i1038.WatchIncidentsUseCase>(
       () => _i1038.WatchIncidentsUseCase(gh<_i887.IncidentRepository>()),
+    );
+    gh.factory<_i612.EnsureSignedInUseCase>(
+      () => _i612.EnsureSignedInUseCase(gh<_i722.AuthRepository>()),
     );
   }
 }

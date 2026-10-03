@@ -150,5 +150,6 @@
         "type": "int"
       }
     }
-  }
+  },
+  "offlineStatus": "No connection to city data"
 }
