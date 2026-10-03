@@ -50,7 +50,7 @@ create table public.incidents (
   updated_at         timestamptz not null default now(),
   confirmations      integer not null default 0,
   area_radius_meters integer,            -- set for IMGW warning areas
-  air_reading        jsonb,              -- GIOŚ stations: {"pm25": 62, "pm10": 88} (µg/m³); the app derives the index
+  air_reading        jsonb,              -- legacy: the app no longer reads air_quality rows from here, see the GIOŚ tables below
   photo_path         text,               -- public URL in the report-photos bucket
   reporter_id        uuid references auth.users (id)
 );
@@ -114,6 +114,60 @@ end $$;
 grant execute on function public.confirm_incident(text) to authenticated;
 ```
 
+## Tables `public.gios_stations` + `public.gios_readings`
+
+The only source for the air-quality layer. The backend fills them from GIOŚ.
+The app reads both live (`.stream()`, PKs `station_id` / `sensor_id`) as
+the signed-in (anonymous) resident, so `authenticated` needs read access:
+
+```sql
+grant select on public.gios_stations, public.gios_readings to authenticated;
+alter table public.gios_stations enable row level security;
+alter table public.gios_readings enable row level security;
+create policy "gios stations readable" on public.gios_stations
+  for select to authenticated using (true);
+create policy "gios readings readable" on public.gios_readings
+  for select to authenticated using (true);
+```
+
+```sql
+create table public.gios_stations (
+  station_id      integer primary key,
+  code            text not null,
+  name            text not null,
+  city            text,
+  street          text,
+  lat             double precision not null,
+  lng             double precision not null,
+  pm25_sensor_id  integer,
+  pm10_sensor_id  integer,               -- at least one of the two is set
+  discovered_at   timestamptz not null default now()
+);
+
+create table public.gios_readings (      -- latest value per sensor
+  sensor_id    integer primary key,
+  station_id   integer not null references public.gios_stations on delete cascade,
+  pollutant    text not null check (pollutant in ('PM2.5', 'PM10')),
+  value        double precision not null, -- µg/m³
+  measured_at  timestamptz not null,
+  updated_at   timestamptz not null default now(),
+  unique (station_id, pollutant)
+);
+```
+
+The app merges them into `Incident`s (`IncidentRepositoryImpl.watchIncidents`):
+`id = 'gios-<station_id>'`, layer/category `air_quality`, source `gios`,
+title `name`, address `street ?? city`, `reported_at` = newest `measured_at`.
+The GIOŚ index is derived from PM2.5/PM10 (the worse one wins). Stations
+without any reading are hidden.
+
+Live updates need both tables in the Realtime publication. Without it, the
+values load only on start / retry:
+
+```sql
+alter publication supabase_realtime add table public.gios_stations, public.gios_readings;
+```
+
 ## Storage bucket `report-photos`
 
 Public read. A user writes only into their own `<uid>/` folder. The app
@@ -137,8 +191,8 @@ A new report, after an optional photo upload:
   "photo_path": "https://…/report-photos/<uid>/<uuid>.jpg", "reporter_id": "<uid>" }
 ```
 
-Official sources (19115, utilities, IMGW, GIOŚ) are written by the backend
-with the service role.
+Official sources (19115, utilities, IMGW, and GIOŚ into its own tables) are
+written by the backend with the service role.
 
 ## Seed
 

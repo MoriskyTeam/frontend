@@ -10,9 +10,22 @@ class SupabaseAuthService implements AuthService {
 
   final SupabaseClient _client;
 
+  /// A session restored from storage may have an access token that expired
+  /// while the app was closed; Realtime rejects it (`InvalidJWTToken`), so
+  /// refresh it before anything subscribes. A refresh token that no longer
+  /// works falls back to a fresh anonymous identity.
   @override
   Future<void> ensureSignedIn() async {
-    if (_client.auth.currentSession != null) return;
-    await _client.auth.signInAnonymously();
+    final session = _client.auth.currentSession;
+    if (session == null) {
+      await _client.auth.signInAnonymously();
+      return;
+    }
+    if (!session.isExpired) return;
+    try {
+      await _client.auth.refreshSession();
+    } on AuthException {
+      await _client.auth.signInAnonymously();
+    }
   }
 }

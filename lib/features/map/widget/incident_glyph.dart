@@ -31,7 +31,7 @@ class IncidentGlyph extends StatelessWidget {
           border: Border.all(color: RcbColors.asphalt, width: 1.25),
         ),
         child: Text(
-          reading.pm25?.round().toString() ?? '–',
+          reading.headline?.round().toString() ?? '–',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             color: livery.onFill,
             fontWeight: FontWeight.w800,

@@ -317,7 +317,8 @@ class _AirNowRow extends StatelessWidget {
     final theme = Theme.of(context);
     final reading = station.airReading!;
     final muted = theme.colorScheme.onSurfaceVariant;
-    final pm25 = reading.pm25?.round();
+    final headline = reading.headline?.round();
+    final headlineLabel = reading.headlineIsPm10 ? l10n.pm10 : l10n.pm25;
 
     return Material(
       color: theme.colorScheme.surfaceContainerHigh,
@@ -341,8 +342,8 @@ class _AirNowRow extends StatelessWidget {
                     ),
                     Text(
                       [
-                        if (pm25 != null)
-                          '${l10n.pm25} $pm25 ${l10n.unitMicrograms}',
+                        if (headline != null)
+                          '$headlineLabel $headline ${l10n.unitMicrograms}',
                         station.address,
                         distance,
                       ].join('  ·  '),

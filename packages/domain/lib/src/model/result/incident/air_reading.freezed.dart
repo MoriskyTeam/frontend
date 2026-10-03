@@ -201,8 +201,8 @@ return $default(_that.level,_that.pm25,_that.pm10);case _:
 /// @nodoc
 
 
-class _AirReading implements AirReading {
-  const _AirReading({required this.level, required this.pm25, required this.pm10});
+class _AirReading extends AirReading {
+  const _AirReading({required this.level, required this.pm25, required this.pm10}): super._();
   
 
 @override final  AirQualityLevel level;

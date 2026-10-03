@@ -169,7 +169,7 @@ class _StationBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final livery = incident.livery;
     final reading = incident.airReading!;
-    final value = reading.pm25?.round().toString() ?? '–';
+    final value = reading.headline?.round().toString() ?? '–';
     return Container(
       width: 38,
       height: 38,

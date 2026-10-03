@@ -11,4 +11,13 @@ sealed class AirReading with _$AirReading {
     required double? pm25,
     required double? pm10,
   }) = _AirReading;
+
+  const AirReading._();
+
+  /// The value a station is shown by: PM2.5, or PM10 where the station
+  /// measures no PM2.5.
+  double? get headline => pm25 ?? pm10;
+
+  /// Whether [headline] is the PM10 fallback.
+  bool get headlineIsPm10 => pm25 == null && pm10 != null;
 }

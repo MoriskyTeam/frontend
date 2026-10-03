@@ -12,6 +12,9 @@ import 'package:data/src/local_storage/preferences_module.dart' as _i467;
 import 'package:data/src/repository/auth_repository_impl.dart' as _i40;
 import 'package:data/src/repository/incident_repository_impl.dart' as _i635;
 import 'package:data/src/repository/location_repository_impl.dart' as _i27;
+import 'package:data/src/service/air_quality/air_quality_service.dart' as _i219;
+import 'package:data/src/service/air_quality/supabase_air_quality_service.dart'
+    as _i850;
 import 'package:data/src/service/auth/auth_service.dart' as _i1054;
 import 'package:data/src/service/auth/supabase_auth_service.dart' as _i1067;
 import 'package:data/src/service/geocoding/geocoding_service.dart' as _i939;
@@ -40,6 +43,9 @@ class DataPackageModule extends _i526.MicroPackageModule {
     );
     gh.factory<_i554.LocationService>(() => _i744.GeolocatorLocationService());
     gh.factory<_i939.GeocodingService>(() => _i736.NominatimGeocodingService());
+    gh.lazySingleton<_i219.AirQualityService>(
+      () => _i850.SupabaseAirQualityService(gh<_i454.SupabaseClient>()),
+    );
     gh.factory<_i1054.AuthService>(
       () => _i1067.SupabaseAuthService(gh<_i454.SupabaseClient>()),
     );
@@ -55,6 +61,7 @@ class DataPackageModule extends _i526.MicroPackageModule {
     gh.factory<_i494.IncidentRepository>(
       () => _i635.IncidentRepositoryImpl(
         gh<_i912.IncidentService>(),
+        gh<_i219.AirQualityService>(),
         gh<_i1054.AuthService>(),
       ),
     );
