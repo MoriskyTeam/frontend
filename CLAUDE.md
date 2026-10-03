@@ -55,7 +55,8 @@ Two flavors, one Firebase project (`dynamic-rcb-alerts`, push only) for now:
   `configureDependencies(environment:)` → `runApp`.
 - Supabase keys: `config/supabase_<flavor>.json` (gitignored; template
   `config/supabase.example.json`), passed via `--dart-define-from-file` by the
-  Makefile. With keys DI binds the `supabase` environment, without them the
+  Makefile and the `.run/` IDE configs (a plain `flutter run` without it runs
+  on the mock — look for the DEMO badge). With keys DI binds the `supabase` environment, without them the
   `mock` environment (`DataEnvironment` in `packages/data`), so a fresh clone
   still runs.
 - Web deploys to Firebase Hosting with `make deploy-web` — only when
