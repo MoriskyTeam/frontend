@@ -38,15 +38,7 @@ dependencies:
 
   # Firebase
   firebase_core: ^3.13.0
-  firebase_auth: ^5.5.4
-  cloud_firestore: ^5.6.7
-  cloud_functions: ^5.4.0
-  firebase_storage: ^12.4.5
   firebase_messaging: ^15.2.5
-  firebase_analytics: ^11.4.5
-  firebase_crashlytics: ^4.3.5
-  firebase_remote_config: ^5.4.3
-  firebase_app_check: ^0.3.2+5
 
   # UI / UX
   google_fonts: ^6.2.1
@@ -66,6 +58,7 @@ dependencies:
   latlong2: ^0.10.1
   geolocator: ^14.1.1
   image_picker: ^1.2.3
+  supabase_flutter: ^2.18.0
 
 dev_dependencies:
   flutter_test:

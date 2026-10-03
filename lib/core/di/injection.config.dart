@@ -38,6 +38,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i494.WatchIncidentsUseCase>(),
         gh<_i494.GetCurrentLocationUseCase>(),
         gh<_i494.ConfirmIncidentUseCase>(),
+        gh<_i494.EnsureSignedInUseCase>(),
       ),
     );
     return this;

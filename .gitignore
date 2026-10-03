@@ -69,3 +69,7 @@ ios/Runner/GoogleService-Info.plist
 # Impeccable scratch (screenshots, decision pages)
 .impeccable/review/
 .impeccable/questions/
+
+# Supabase keys per flavor (copy config/supabase.example.json)
+config/supabase_*.json
+!config/supabase.example.json

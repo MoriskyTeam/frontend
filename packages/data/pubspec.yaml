@@ -1,5 +1,5 @@
 name: data
-description: Data layer for Dynamic RCB Alerts. Firebase services, DTOs, mappers, repository implementations.
+description: Data layer for Dynamic RCB Alerts. Supabase services, DTOs, mappers, repository implementations.
 publish_to: 'none'
 version: 0.1.0
 
@@ -18,20 +18,15 @@ dependencies:
   equatable: ^2.0.7
   uuid: ^4.5.1
 
-  # Firebase
-  firebase_core: ^3.13.0
-  firebase_auth: ^5.5.4
-  cloud_firestore: ^5.6.7
-  cloud_functions: ^5.4.0
-  firebase_storage: ^12.4.5
-  firebase_remote_config: ^5.4.3
-  firebase_messaging: ^15.2.5
 
   # Local storage
   shared_preferences: ^2.5.3
   flutter:
     sdk: flutter
   geolocator: ^14.1.1
+  supabase_flutter: ^2.18.0
+  http: ^1.6.0
+  cross_file: ^0.3.4+2
 
 dev_dependencies:
   build_runner: ^2.5.4

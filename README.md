@@ -12,7 +12,8 @@ See [`CLAUDE.md`](./CLAUDE.md) for the working contract.
 - Routing: `go_router`
 - Models / serialization: `freezed` + `json_serializable`
 - Functional: `fpdart`
-- Backend: Firebase (`dynamic-rcb-alerts`)
+- Backend logic: Supabase (`docs/supabase_contract.md`); Firebase only for
+  push (FCM) and web hosting (`dynamic-rcb-alerts`)
 
 Three-layer clean architecture:
 
@@ -30,7 +31,12 @@ make b              # codegen (domain → data → app)
 make run-dev        # run dev flavor (mobile)
 make run-prod       # run prod flavor (mobile)
 make run-web        # run dev flavor in Chrome
+make deploy-web     # build prod web + deploy to Firebase Hosting
 ```
+
+Supabase keys: copy `config/supabase.example.json` to
+`config/supabase_development.json` / `config/supabase_production.json`.
+Without them the app runs on the built-in mock feed.
 
 ## Testing
 

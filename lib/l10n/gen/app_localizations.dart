@@ -631,6 +631,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =0{Calm within 2 km} =1{active within 2 km} other{active within 2 km}}'**
   String activeNearbyLabel(int count);
+
+  /// No description provided for @offlineStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'No connection to city data'**
+  String get offlineStatus;
 }
 
 class _AppLocalizationsDelegate

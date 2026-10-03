@@ -1,4 +1,4 @@
-import 'package:data/src/error/firebase_error_mapper.dart';
+import 'package:data/src/error/supabase_error_mapper.dart';
 import 'package:data/src/mapper/location_mappers.dart';
 import 'package:data/src/service/location/location_service.dart';
 import 'package:domain/domain.dart';

@@ -12,11 +12,19 @@ class LiveStatusBar extends StatelessWidget {
   const LiveStatusBar({
     required this.activeNearby,
     required this.locationLabel,
+    required this.showDemoBadge,
+    required this.offline,
     super.key,
   });
 
   final int activeNearby;
   final String locationLabel;
+
+  /// Only the mock feed is labelled demo; real Supabase data is not.
+  final bool showDemoBadge;
+
+  /// The feed failed: never claim "calm" or "live" without data.
+  final bool offline;
 
   @override
   Widget build(BuildContext context) {
@@ -51,60 +59,83 @@ class LiveStatusBar extends StatelessWidget {
               children: [
                 BrandMark(name: l10n.appTitle),
                 const Spacer(),
-                const _LivePill(),
-                const SizedBox(width: RcbSpacing.xs),
-                Tooltip(
-                  message: l10n.demoDataNote,
-                  triggerMode: TooltipTriggerMode.tap,
-                  child: Container(
-                    height: 24,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: RcbSpacing.sm,
-                    ),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      borderRadius: RcbRadii.tightBorder,
-                      border: Border.all(color: scheme.outline),
-                    ),
-                    child: Text(
-                      l10n.demoBadge,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: scheme.onSurfaceVariant,
+                if (!offline) const _LivePill(),
+                if (showDemoBadge) ...[
+                  const SizedBox(width: RcbSpacing.xs),
+                  Tooltip(
+                    message: l10n.demoDataNote,
+                    triggerMode: TooltipTriggerMode.tap,
+                    child: Container(
+                      height: 24,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: RcbSpacing.sm,
                       ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: RcbSpacing.xs),
-            Semantics(
-              liveRegion: true,
-              label: l10n.activeNearby(activeNearby),
-              excludeSemantics: true,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: [
-                  if (activeNearby > 0) ...[
-                    Text(
-                      '$activeNearby',
-                      style: theme.textTheme.displaySmall?.copyWith(
-                        height: 1,
-                        fontWeight: FontWeight.w800,
-                        fontFeatures: RcbTypography.tabular,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        borderRadius: RcbRadii.tightBorder,
+                        border: Border.all(color: scheme.outline),
                       ),
-                    ),
-                    const SizedBox(width: RcbSpacing.sm),
-                  ],
-                  Flexible(
-                    child: Text(
-                      l10n.activeNearbyLabel(activeNearby),
-                      style: theme.textTheme.titleMedium,
+                      child: Text(
+                        l10n.demoBadge,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
                     ),
                   ),
                 ],
-              ),
+              ],
             ),
+            const SizedBox(height: RcbSpacing.xs),
+            if (offline)
+              Semantics(
+                liveRegion: true,
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.cloud_off_rounded,
+                      size: 20,
+                      color: scheme.error,
+                    ),
+                    const SizedBox(width: RcbSpacing.sm),
+                    Flexible(
+                      child: Text(
+                        l10n.offlineStatus,
+                        style: theme.textTheme.titleMedium,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            else
+              Semantics(
+                liveRegion: true,
+                label: l10n.activeNearby(activeNearby),
+                excludeSemantics: true,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    if (activeNearby > 0) ...[
+                      Text(
+                        '$activeNearby',
+                        style: theme.textTheme.displaySmall?.copyWith(
+                          height: 1,
+                          fontWeight: FontWeight.w800,
+                          fontFeatures: RcbTypography.tabular,
+                        ),
+                      ),
+                      const SizedBox(width: RcbSpacing.sm),
+                    ],
+                    Flexible(
+                      child: Text(
+                        l10n.activeNearbyLabel(activeNearby),
+                        style: theme.textTheme.titleMedium,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             Text(
               locationLabel,
               style: theme.textTheme.bodySmall?.copyWith(

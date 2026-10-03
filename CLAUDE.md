@@ -5,8 +5,9 @@ executable. Structure and code conventions mirror the sibling `shapely` repo.
 
 ## Project Snapshot
 
-**Dynamic RCB Alerts** (working name). Product brief: _TBD — paste here once
-shared._
+**CityShield** (repo working name: Dynamic RCB Alerts) — a live Kraków
+threat map: official open data (19115, IMGW, GIOŚ) plus resident
+micro-reports. Product truth: `PRODUCT.md`.
 
 ## Tech Stack
 
@@ -14,9 +15,11 @@ shared._
   and Web**.
 - **State management:** Bloc / Cubit (flutter_bloc + bloc_presentation +
   bloc_test + injectable).
-- **Backend:** Firebase — Auth, Firestore, Functions, Storage, Remote Config,
-  Cloud Messaging, Analytics, Crashlytics (mobile only), App Check (mobile
-  only for now; web needs a reCAPTCHA key).
+- **Backend logic: Supabase** — Postgres/PostGIS (`incidents`), Realtime
+  (live map), Storage (report photos), anonymous Auth. Contract and SQL:
+  `docs/supabase_contract.md`, seed: `docs/supabase_seed.sql`.
+- **Firebase only for push (FCM, mobile) and web hosting** — no Firestore,
+  Auth, Storage, Crashlytics, Analytics or App Check.
 - Lints: `very_good_analysis`. Formatter page width: `80`.
 
 Use `fvm flutter` / `fvm dart` when FVM is installed. The `Makefile` falls back
@@ -29,17 +32,17 @@ Same shape as siblings on Slawek's stack:
 - `packages/domain/` — pure Dart domain package. Entities, request models,
   repository interfaces, use cases, base result/error types. **No Flutter
   imports. No `data` imports.**
-- `packages/data/` — data implementation. Firebase services (Firestore, Auth,
-  Functions, Storage, Remote Config), DTOs, mappers, repository
-  implementations, local storage, test hooks. **May
-  import `domain` only.**
+- `packages/data/` — data implementation. Supabase services (PostgREST,
+  Realtime, Storage, Auth), DTOs, mappers, repository implementations, local
+  storage, plus mock services for running without a backend. **May import
+  `domain` only.**
 - `lib/` — Flutter app and presentation layer. DI (get_it + injectable),
   GoRouter routing, theme/design system, feature UIs, shared
   widgets, styleguide, l10n.
 
 ## Flavors
 
-Two flavors, one Firebase project (`dynamic-rcb-alerts`) for now:
+Two flavors, one Firebase project (`dynamic-rcb-alerts`, push only) for now:
 
 | Flavor      | Android applicationId             | iOS bundle ID                 |
 | ----------- | --------------------------------- | ----------------------------- |
@@ -48,7 +51,15 @@ Two flavors, one Firebase project (`dynamic-rcb-alerts`) for now:
 
 - Entry-points: `lib/main_development.dart`, `lib/main_production.dart`.
 - Shared bootstrap: `lib/bootstrap.dart` → `FlavorConfig.init(flavor)` →
-  `bootstrapFirebase(flavor)` → `configureDependencies()` → `runApp`.
+  `bootstrapFirebase(flavor)` (FCM, mobile only) → `bootstrapSupabase()` →
+  `configureDependencies(environment:)` → `runApp`.
+- Supabase keys: `config/supabase_<flavor>.json` (gitignored; template
+  `config/supabase.example.json`), passed via `--dart-define-from-file` by the
+  Makefile. With keys DI binds the `supabase` environment, without them the
+  `mock` environment (`DataEnvironment` in `packages/data`), so a fresh clone
+  still runs.
+- Web deploys to Firebase Hosting with `make deploy-web` — only when
+  explicitly asked.
 - Android handles its own per-flavor `google-services.json` via `src/<flavor>/`.
 - iOS uses a single bundle ID for both flavors. The Makefile `run-*` /
   `build-ios-*` targets copy the right plist via
@@ -74,7 +85,8 @@ build needed for the change.
 lib/
 ├── core/
 │   ├── di/             # get_it + injectable
-│   ├── firebase/       # Firebase init, App Check, Crashlytics
+│   ├── firebase/       # Firebase init (push only)
+│   ├── supabase/       # Supabase config + init
 │   ├── flavor/         # FlavorConfig
 │   ├── routing/        # GoRouter
 │   └── theme/          # Design tokens (colors, radii, spacing, typography)
@@ -223,7 +235,8 @@ Railway-style `Either<ErrorResult, T>` from `fpdart`.
 Expected flow:
 
 ```text
-DioException | FirebaseException -> ErrorMapper -> ApiException ->
+PostgrestException | AuthException | StorageException -> SupabaseErrorMapper ->
+ApiException ->
 ApiErrorMapper -> Result enum -> BaseUseCase -> Either<ErrorResult, T>
 ```
 
@@ -244,8 +257,8 @@ testDescription(
 
 Conventions:
 
-- Data-layer tests in `packages/data/test/` — may hit real Firebase test
-  project (use a dedicated test project, never prod).
+- Data-layer tests in `packages/data/test/` — unit tests by default; anything
+  hitting Supabase must use a dedicated test project, never prod.
 - App / widget / golden tests in `test/`.
 - Integration tests in `integration_test/`.
 - Data tests set up DI via `injectDependencies()` and call `authorize()` for
@@ -259,7 +272,7 @@ Repo-local skills under `.claude/skills/` (mirror the sibling Flutter project):
 
 - `/add-model` — add a domain model, DTO, and mapper.
 - `/add-usecase` — add a domain use case and repository method.
-- `/add-endpoint` — vertical Firebase endpoint slice across service,
+- `/add-endpoint` — vertical Supabase endpoint slice across service,
   repository, use case, mapper.
 - `/analyze-feature` — map an existing feature before modifying it.
 - `/check-arch` — check layer boundaries.
