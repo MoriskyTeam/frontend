@@ -631,6 +631,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Finding the address…'**
   String get reportAddressLoading;
+
+  /// No description provided for @clusterLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 report here, tap to zoom in} other{{count} reports here, tap to zoom in}}'**
+  String clusterLabel(int count);
+
+  /// No description provided for @categoryWeatherStation.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather station'**
+  String get categoryWeatherStation;
+
+  /// No description provided for @weatherNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather now'**
+  String get weatherNow;
+
+  /// No description provided for @weatherTemperature.
+  ///
+  /// In en, this message translates to:
+  /// **'Temperature'**
+  String get weatherTemperature;
+
+  /// No description provided for @weatherWind.
+  ///
+  /// In en, this message translates to:
+  /// **'Wind'**
+  String get weatherWind;
+
+  /// No description provided for @weatherHumidity.
+  ///
+  /// In en, this message translates to:
+  /// **'Humidity'**
+  String get weatherHumidity;
+
+  /// No description provided for @weatherPrecipitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Precipitation'**
+  String get weatherPrecipitation;
+
+  /// No description provided for @weatherCalm.
+  ///
+  /// In en, this message translates to:
+  /// **'calm'**
+  String get weatherCalm;
+
+  /// No description provided for @weatherPressure.
+  ///
+  /// In en, this message translates to:
+  /// **'Pressure {value} hPa'**
+  String weatherPressure(String value);
+
+  /// No description provided for @weatherWindFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Wind from {degrees}°'**
+  String weatherWindFrom(int degrees);
 }
 
 class _AppLocalizationsDelegate

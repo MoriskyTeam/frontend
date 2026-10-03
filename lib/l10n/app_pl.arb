@@ -88,5 +88,15 @@
   "layerCount": "{layer}, {count} pozycji",
   "activeNearbyLabel": "{count, plural, =0{Spokojnie w promieniu 2 km} =1{aktywne w promieniu 2 km} few{aktywne w promieniu 2 km} other{aktywnych w promieniu 2 km}}",
   "offlineStatus": "Brak połączenia z danymi miasta",
-  "reportAddressLoading": "Ustalanie adresu…"
+  "reportAddressLoading": "Ustalanie adresu…",
+  "clusterLabel": "{count, plural, =1{1 zgłoszenie w tym miejscu, dotknij, aby przybliżyć} few{{count} zgłoszenia w tym miejscu, dotknij, aby przybliżyć} other{{count} zgłoszeń w tym miejscu, dotknij, aby przybliżyć}}",
+  "categoryWeatherStation": "Stacja meteo",
+  "weatherNow": "Pogoda teraz",
+  "weatherTemperature": "Temperatura",
+  "weatherWind": "Wiatr",
+  "weatherHumidity": "Wilgotność",
+  "weatherPrecipitation": "Opad",
+  "weatherCalm": "cisza",
+  "weatherPressure": "Ciśnienie {value} hPa",
+  "weatherWindFrom": "Wiatr z kierunku {degrees}°"
 }

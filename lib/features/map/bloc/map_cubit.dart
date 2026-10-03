@@ -18,19 +18,25 @@ class MapCubit extends Cubit<MapState>
     this._getCurrentLocation,
     this._confirmIncident,
     this._ensureSignedIn,
+    this._getLatestRadarFrame,
   ) : super(const MapState());
 
   /// How long an arrival keeps its "just arrived" treatment.
   static const _arrivalWindow = Duration(seconds: 6);
   static const _clockTick = Duration(seconds: 30);
 
+  /// RainViewer publishes a new frame every 10 minutes.
+  static const _radarTick = Duration(minutes: 10);
+
   final WatchIncidentsUseCase _watchIncidents;
   final GetCurrentLocationUseCase _getCurrentLocation;
   final ConfirmIncidentUseCase _confirmIncident;
   final EnsureSignedInUseCase _ensureSignedIn;
+  final GetLatestRadarFrameUseCase _getLatestRadarFrame;
 
   StreamSubscription<List<Incident>>? _subscription;
   Timer? _clock;
+  Timer? _radarClock;
   final _arrivalTimers = <String, Timer>{};
   String? _pendingFocusId;
 
@@ -50,6 +56,8 @@ class MapCubit extends Cubit<MapState>
     // Reading is public; the identity only matters for reporting and
     // confirming, which surface their own errors. A failed sign-in must not
     // claim the city feed failed.
+    _radarClock = Timer.periodic(_radarTick, (_) => unawaited(_loadRadar()));
+    unawaited(_loadRadar());
     await _ensureSignedIn();
     _subscribe();
     await locate();
@@ -130,6 +138,17 @@ class MapCubit extends Cubit<MapState>
     select(incident.id);
   }
 
+  /// The radar is decoration on top of the weather layer: a failed fetch
+  /// keeps the last frame (or none) and stays silent.
+  Future<void> _loadRadar() async {
+    final result = await _getLatestRadarFrame();
+    if (isClosed) return;
+    result.fold(
+      (_) {},
+      (frame) => emit(state.copyWith(radarFrame: frame ?? state.radarFrame)),
+    );
+  }
+
   void _subscribe() {
     unawaited(_subscription?.cancel());
     _subscription = _watchIncidents.watch().listen(
@@ -185,6 +204,7 @@ class MapCubit extends Cubit<MapState>
   Future<void> close() async {
     await _subscription?.cancel();
     _clock?.cancel();
+    _radarClock?.cancel();
     for (final timer in _arrivalTimers.values) {
       timer.cancel();
     }

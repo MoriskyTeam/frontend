@@ -100,9 +100,19 @@ extension AirQualityLevelLivery on AirQualityLevel {
   };
 }
 
+const _weatherStation = Livery(
+  fill: RcbColors.boneSunken,
+  onFill: RcbColors.asphalt,
+  checker: RcbColors.asphalt,
+  outlineInk: RcbColors.asphaltMuted,
+);
+
 extension IncidentLivery on Incident {
-  /// Air stations are tinted by their index, everything else by layer.
-  Livery get livery => airReading?.level.livery ?? layer.livery;
+  /// Air stations are tinted by their index, weather stations stay neutral
+  /// (a measurement, not a warning), everything else follows its layer.
+  Livery get livery =>
+      airReading?.level.livery ??
+      (weatherReading != null ? _weatherStation : layer.livery);
 
   bool get isActive => status != IncidentStatus.resolved;
 }
@@ -121,6 +131,7 @@ extension IncidentCategoryIcon on IncidentCategory {
     IncidentCategory.storm => Icons.thunderstorm_rounded,
     IncidentCategory.wind => Icons.storm_rounded,
     IncidentCategory.heat => Icons.wb_sunny_rounded,
+    IncidentCategory.weatherStation => Icons.device_thermostat_rounded,
     IncidentCategory.smoke => Icons.local_fire_department_rounded,
     IncidentCategory.other => Icons.report_rounded,
   };

@@ -76,7 +76,7 @@ Czego **nie** udało się sprawdzić: pełnej ścieżki przez REST z prawdziwą 
 
 ## Czego jeszcze nie ma
 
-- **Scrapery 19115 / IMGW / GIOŚ.** `id text` okazało się tu wygodne: oficjalne rekordy mogą nosić naturalny klucz źródła (`19115-<numer>`) jako PK, więc ingest to `insert ... on conflict (id) do update`. Idą jako Edge Function + `pg_cron`, service role omija RLS.
+- **Scrapery 19115 / IMGW.** (GIOŚ jest już w tabelach `gios_stations` + `gios_readings`, aplikacja czyta je bezpośrednio — patrz `supabase_contract.md`.) `id text` okazało się tu wygodne: oficjalne rekordy mogą nosić naturalny klucz źródła (`19115-<numer>`) jako PK, więc ingest to `insert ... on conflict (id) do update`. Idą jako Edge Function + `pg_cron`, service role omija RLS.
 - **Anonymous sign-ins** — przełącznik w dashboardzie, bez niego zapisy nie działają.
 - **Stary bucket `reports`** do usunięcia.
 

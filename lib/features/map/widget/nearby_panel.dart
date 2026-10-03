@@ -4,8 +4,10 @@ import 'package:dynamic_rcb_alerts/core/theme/rcb_radii.dart';
 import 'package:dynamic_rcb_alerts/core/theme/rcb_typography.dart';
 import 'package:dynamic_rcb_alerts/features/map/model/incident_geo.dart';
 import 'package:dynamic_rcb_alerts/features/map/model/map_view_data.dart';
+import 'package:dynamic_rcb_alerts/features/map/model/weather_format.dart';
 import 'package:dynamic_rcb_alerts/features/map/widget/incident_glyph.dart';
 import 'package:dynamic_rcb_alerts/features/map/widget/proof_line.dart';
+import 'package:dynamic_rcb_alerts/features/map/widget/wind_arrow.dart';
 import 'package:dynamic_rcb_alerts/l10n/gen/app_localizations.dart';
 import 'package:dynamic_rcb_alerts/shared/livery/battenburg.dart';
 import 'package:dynamic_rcb_alerts/shared/livery/chevrons.dart';
@@ -55,6 +57,7 @@ class NearbyPanel extends StatelessWidget {
     final hasAnything =
         data.warnings.isNotEmpty ||
         data.nearestStation != null ||
+        data.nearestWeather != null ||
         data.lead != null ||
         data.active.isNotEmpty;
 
@@ -135,6 +138,14 @@ class NearbyPanel extends StatelessWidget {
           if (data.nearestStation case final station?)
             _padded(
               _AirNowRow(
+                station: station,
+                distance: distanceOf(station),
+                onTap: () => onSelect(station),
+              ),
+            ),
+          if (data.nearestWeather case final station?)
+            _padded(
+              _WeatherNowRow(
                 station: station,
                 distance: distanceOf(station),
                 onTap: () => onSelect(station),
@@ -317,7 +328,8 @@ class _AirNowRow extends StatelessWidget {
     final theme = Theme.of(context);
     final reading = station.airReading!;
     final muted = theme.colorScheme.onSurfaceVariant;
-    final pm25 = reading.pm25?.round();
+    final headline = reading.headline?.round();
+    final headlineLabel = reading.headlineIsPm10 ? l10n.pm10 : l10n.pm25;
 
     return Material(
       color: theme.colorScheme.surfaceContainerHigh,
@@ -341,8 +353,8 @@ class _AirNowRow extends StatelessWidget {
                     ),
                     Text(
                       [
-                        if (pm25 != null)
-                          '${l10n.pm25} $pm25 ${l10n.unitMicrograms}',
+                        if (headline != null)
+                          '$headlineLabel $headline ${l10n.unitMicrograms}',
                         station.address,
                         distance,
                       ].join('  ·  '),
@@ -352,6 +364,95 @@ class _AirNowRow extends StatelessWidget {
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right_rounded, color: muted),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _WeatherNowRow extends StatelessWidget {
+  const _WeatherNowRow({
+    required this.station,
+    required this.distance,
+    required this.onTap,
+  });
+
+  final Incident station;
+  final String distance;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final reading = station.weatherReading!;
+    final muted = theme.colorScheme.onSurfaceVariant;
+    final direction = reading.windDirection;
+    final detailStyle = theme.textTheme.bodySmall?.copyWith(
+      color: muted,
+      fontFeatures: RcbTypography.tabular,
+    );
+
+    return Material(
+      color: theme.colorScheme.surfaceContainerHigh,
+      borderRadius: RcbRadii.cardBorder,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: RcbRadii.cardBorder,
+        child: Padding(
+          padding: const EdgeInsets.all(RcbSpacing.md),
+          child: Row(
+            children: [
+              IncidentGlyph(incident: station, size: 44),
+              const SizedBox(width: RcbSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${l10n.weatherNow}: '
+                      '${reading.temperatureLabel(locale)}',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontFeatures: RcbTypography.tabular,
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        if (!reading.isCalm && direction != null) ...[
+                          WindArrow(
+                            fromDegrees: direction,
+                            semanticLabel: l10n.weatherWindFrom(direction),
+                            size: 13,
+                            color: muted,
+                          ),
+                          const SizedBox(width: 2),
+                        ],
+                        Flexible(
+                          child: Text(
+                            [
+                              if (reading.isCalm)
+                                l10n.weatherCalm
+                              else
+                                reading.windSpeedLabel(locale),
+                              reading.humidityLabel(locale),
+                              reading.precipitationLabel(locale),
+                              station.address,
+                              distance,
+                            ].join('  ·  '),
+                            style: detailStyle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

@@ -17,5 +17,8 @@ sealed class MapState with _$MapState {
     @Default({}) Set<String> arrivedIds,
     @Default({}) Set<String> confirmedByMe,
     @Default(null) DateTime? now,
+
+    /// Latest precipitation radar, shown under the weather layer.
+    @Default(null) RadarFrame? radarFrame,
   }) = _MapState;
 }

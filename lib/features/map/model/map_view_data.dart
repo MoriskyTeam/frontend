@@ -12,6 +12,7 @@ class MapViewData {
     required this.lead,
     required this.warnings,
     required this.nearestStation,
+    required this.nearestWeather,
     required this.active,
     required this.resolved,
     required this.counts,
@@ -52,6 +53,15 @@ class MapViewData {
             (a, b) => a.distanceTo(origin) <= b.distanceTo(origin) ? a : b,
           );
 
+    final weatherStations = visible.where(
+      (incident) => incident.weatherReading != null,
+    );
+    final nearestWeather = weatherStations.isEmpty
+        ? null
+        : weatherStations.reduce(
+            (a, b) => a.distanceTo(origin) <= b.distanceTo(origin) ? a : b,
+          );
+
     final counts = <IncidentLayer, int>{
       for (final layer in IncidentLayer.values)
         layer: state.incidents
@@ -68,6 +78,7 @@ class MapViewData {
           (incident) =>
               incident.status != IncidentStatus.resolved &&
               incident.airReading == null &&
+              incident.weatherReading == null &&
               incident.areaRadiusMeters == null &&
               incident.distanceTo(origin) <= nearbyRadiusMeters,
         )
@@ -80,6 +91,7 @@ class MapViewData {
       lead: lead,
       warnings: warnings,
       nearestStation: nearestStation,
+      nearestWeather: nearestWeather,
       active: listed
           .where(
             (incident) =>
@@ -101,6 +113,9 @@ class MapViewData {
   final Incident? lead;
   final List<Incident> warnings;
   final Incident? nearestStation;
+
+  /// Closest IMGW synoptic station, for the "weather now" row.
+  final Incident? nearestWeather;
   final List<Incident> active;
   final List<Incident> resolved;
   final Map<IncidentLayer, int> counts;

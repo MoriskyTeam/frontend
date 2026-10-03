@@ -1,6 +1,20 @@
 import 'package:domain/domain.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
+
+/// Poland's bounding box (its extreme points: Opołonek south, Jastrzębia Góra
+/// north, Osinów Dolny west, Zosin east). The map never pans outside it.
+///
+/// flutter_map constrains to a rectangle, not the border itself, so corners
+/// of neighbouring countries inside this box stay reachable.
+final polandBounds = LatLngBounds(
+  const LatLng(49.002, 14.122),
+  const LatLng(54.836, 24.146),
+);
+
+/// Keeps the whole visible area inside [polandBounds].
+final polandCameraConstraint = CameraConstraint.contain(bounds: polandBounds);
 
 /// Radius the resident's "around me" summary covers.
 const nearbyRadiusMeters = 2000;

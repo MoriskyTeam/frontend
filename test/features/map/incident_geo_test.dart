@@ -23,6 +23,7 @@ Incident _incident({
   confirmations: 0,
   areaRadiusMeters: null,
   airReading: null,
+  weatherReading: null,
   photoPath: null,
   reportedByMe: false,
 );

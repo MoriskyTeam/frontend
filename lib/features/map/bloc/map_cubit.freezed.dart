@@ -14,7 +14,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MapState {
 
- LoadingStatus get loadingStatus; List<Incident> get incidents; Set<IncidentLayer> get enabledLayers; String? get selectedIncidentId; UserLocation? get userLocation; Set<String> get arrivedIds; Set<String> get confirmedByMe; DateTime? get now;
+ LoadingStatus get loadingStatus; List<Incident> get incidents; Set<IncidentLayer> get enabledLayers; String? get selectedIncidentId; UserLocation? get userLocation; Set<String> get arrivedIds; Set<String> get confirmedByMe; DateTime? get now;/// Latest precipitation radar, shown under the weather layer.
+ RadarFrame? get radarFrame;
 /// Create a copy of MapState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +26,16 @@ $MapStateCopyWith<MapState> get copyWith => _$MapStateCopyWithImpl<MapState>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MapState&&(identical(other.loadingStatus, loadingStatus) || other.loadingStatus == loadingStatus)&&const DeepCollectionEquality().equals(other.incidents, incidents)&&const DeepCollectionEquality().equals(other.enabledLayers, enabledLayers)&&(identical(other.selectedIncidentId, selectedIncidentId) || other.selectedIncidentId == selectedIncidentId)&&(identical(other.userLocation, userLocation) || other.userLocation == userLocation)&&const DeepCollectionEquality().equals(other.arrivedIds, arrivedIds)&&const DeepCollectionEquality().equals(other.confirmedByMe, confirmedByMe)&&(identical(other.now, now) || other.now == now));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MapState&&(identical(other.loadingStatus, loadingStatus) || other.loadingStatus == loadingStatus)&&const DeepCollectionEquality().equals(other.incidents, incidents)&&const DeepCollectionEquality().equals(other.enabledLayers, enabledLayers)&&(identical(other.selectedIncidentId, selectedIncidentId) || other.selectedIncidentId == selectedIncidentId)&&(identical(other.userLocation, userLocation) || other.userLocation == userLocation)&&const DeepCollectionEquality().equals(other.arrivedIds, arrivedIds)&&const DeepCollectionEquality().equals(other.confirmedByMe, confirmedByMe)&&(identical(other.now, now) || other.now == now)&&(identical(other.radarFrame, radarFrame) || other.radarFrame == radarFrame));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loadingStatus,const DeepCollectionEquality().hash(incidents),const DeepCollectionEquality().hash(enabledLayers),selectedIncidentId,userLocation,const DeepCollectionEquality().hash(arrivedIds),const DeepCollectionEquality().hash(confirmedByMe),now);
+int get hashCode => Object.hash(runtimeType,loadingStatus,const DeepCollectionEquality().hash(incidents),const DeepCollectionEquality().hash(enabledLayers),selectedIncidentId,userLocation,const DeepCollectionEquality().hash(arrivedIds),const DeepCollectionEquality().hash(confirmedByMe),now,radarFrame);
 
 @override
 String toString() {
-  return 'MapState(loadingStatus: $loadingStatus, incidents: $incidents, enabledLayers: $enabledLayers, selectedIncidentId: $selectedIncidentId, userLocation: $userLocation, arrivedIds: $arrivedIds, confirmedByMe: $confirmedByMe, now: $now)';
+  return 'MapState(loadingStatus: $loadingStatus, incidents: $incidents, enabledLayers: $enabledLayers, selectedIncidentId: $selectedIncidentId, userLocation: $userLocation, arrivedIds: $arrivedIds, confirmedByMe: $confirmedByMe, now: $now, radarFrame: $radarFrame)';
 }
 
 
@@ -45,11 +46,11 @@ abstract mixin class $MapStateCopyWith<$Res>  {
   factory $MapStateCopyWith(MapState value, $Res Function(MapState) _then) = _$MapStateCopyWithImpl;
 @useResult
 $Res call({
- LoadingStatus loadingStatus, List<Incident> incidents, Set<IncidentLayer> enabledLayers, String? selectedIncidentId, UserLocation? userLocation, Set<String> arrivedIds, Set<String> confirmedByMe, DateTime? now
+ LoadingStatus loadingStatus, List<Incident> incidents, Set<IncidentLayer> enabledLayers, String? selectedIncidentId, UserLocation? userLocation, Set<String> arrivedIds, Set<String> confirmedByMe, DateTime? now, RadarFrame? radarFrame
 });
 
 
-$UserLocationCopyWith<$Res>? get userLocation;
+$UserLocationCopyWith<$Res>? get userLocation;$RadarFrameCopyWith<$Res>? get radarFrame;
 
 }
 /// @nodoc
@@ -62,7 +63,7 @@ class _$MapStateCopyWithImpl<$Res>
 
 /// Create a copy of MapState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? loadingStatus = null,Object? incidents = null,Object? enabledLayers = null,Object? selectedIncidentId = freezed,Object? userLocation = freezed,Object? arrivedIds = null,Object? confirmedByMe = null,Object? now = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? loadingStatus = null,Object? incidents = null,Object? enabledLayers = null,Object? selectedIncidentId = freezed,Object? userLocation = freezed,Object? arrivedIds = null,Object? confirmedByMe = null,Object? now = freezed,Object? radarFrame = freezed,}) {
   return _then(_self.copyWith(
 loadingStatus: null == loadingStatus ? _self.loadingStatus : loadingStatus // ignore: cast_nullable_to_non_nullable
 as LoadingStatus,incidents: null == incidents ? _self.incidents : incidents // ignore: cast_nullable_to_non_nullable
@@ -72,7 +73,8 @@ as String?,userLocation: freezed == userLocation ? _self.userLocation : userLoca
 as UserLocation?,arrivedIds: null == arrivedIds ? _self.arrivedIds : arrivedIds // ignore: cast_nullable_to_non_nullable
 as Set<String>,confirmedByMe: null == confirmedByMe ? _self.confirmedByMe : confirmedByMe // ignore: cast_nullable_to_non_nullable
 as Set<String>,now: freezed == now ? _self.now : now // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,radarFrame: freezed == radarFrame ? _self.radarFrame : radarFrame // ignore: cast_nullable_to_non_nullable
+as RadarFrame?,
   ));
 }
 /// Create a copy of MapState
@@ -86,6 +88,18 @@ $UserLocationCopyWith<$Res>? get userLocation {
 
   return $UserLocationCopyWith<$Res>(_self.userLocation!, (value) {
     return _then(_self.copyWith(userLocation: value));
+  });
+}/// Create a copy of MapState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RadarFrameCopyWith<$Res>? get radarFrame {
+    if (_self.radarFrame == null) {
+    return null;
+  }
+
+  return $RadarFrameCopyWith<$Res>(_self.radarFrame!, (value) {
+    return _then(_self.copyWith(radarFrame: value));
   });
 }
 }
@@ -166,10 +180,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( LoadingStatus loadingStatus,  List<Incident> incidents,  Set<IncidentLayer> enabledLayers,  String? selectedIncidentId,  UserLocation? userLocation,  Set<String> arrivedIds,  Set<String> confirmedByMe,  DateTime? now)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( LoadingStatus loadingStatus,  List<Incident> incidents,  Set<IncidentLayer> enabledLayers,  String? selectedIncidentId,  UserLocation? userLocation,  Set<String> arrivedIds,  Set<String> confirmedByMe,  DateTime? now,  RadarFrame? radarFrame)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MapState() when $default != null:
-return $default(_that.loadingStatus,_that.incidents,_that.enabledLayers,_that.selectedIncidentId,_that.userLocation,_that.arrivedIds,_that.confirmedByMe,_that.now);case _:
+return $default(_that.loadingStatus,_that.incidents,_that.enabledLayers,_that.selectedIncidentId,_that.userLocation,_that.arrivedIds,_that.confirmedByMe,_that.now,_that.radarFrame);case _:
   return orElse();
 
 }
@@ -187,10 +201,10 @@ return $default(_that.loadingStatus,_that.incidents,_that.enabledLayers,_that.se
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( LoadingStatus loadingStatus,  List<Incident> incidents,  Set<IncidentLayer> enabledLayers,  String? selectedIncidentId,  UserLocation? userLocation,  Set<String> arrivedIds,  Set<String> confirmedByMe,  DateTime? now)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( LoadingStatus loadingStatus,  List<Incident> incidents,  Set<IncidentLayer> enabledLayers,  String? selectedIncidentId,  UserLocation? userLocation,  Set<String> arrivedIds,  Set<String> confirmedByMe,  DateTime? now,  RadarFrame? radarFrame)  $default,) {final _that = this;
 switch (_that) {
 case _MapState():
-return $default(_that.loadingStatus,_that.incidents,_that.enabledLayers,_that.selectedIncidentId,_that.userLocation,_that.arrivedIds,_that.confirmedByMe,_that.now);}
+return $default(_that.loadingStatus,_that.incidents,_that.enabledLayers,_that.selectedIncidentId,_that.userLocation,_that.arrivedIds,_that.confirmedByMe,_that.now,_that.radarFrame);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -204,10 +218,10 @@ return $default(_that.loadingStatus,_that.incidents,_that.enabledLayers,_that.se
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( LoadingStatus loadingStatus,  List<Incident> incidents,  Set<IncidentLayer> enabledLayers,  String? selectedIncidentId,  UserLocation? userLocation,  Set<String> arrivedIds,  Set<String> confirmedByMe,  DateTime? now)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( LoadingStatus loadingStatus,  List<Incident> incidents,  Set<IncidentLayer> enabledLayers,  String? selectedIncidentId,  UserLocation? userLocation,  Set<String> arrivedIds,  Set<String> confirmedByMe,  DateTime? now,  RadarFrame? radarFrame)?  $default,) {final _that = this;
 switch (_that) {
 case _MapState() when $default != null:
-return $default(_that.loadingStatus,_that.incidents,_that.enabledLayers,_that.selectedIncidentId,_that.userLocation,_that.arrivedIds,_that.confirmedByMe,_that.now);case _:
+return $default(_that.loadingStatus,_that.incidents,_that.enabledLayers,_that.selectedIncidentId,_that.userLocation,_that.arrivedIds,_that.confirmedByMe,_that.now,_that.radarFrame);case _:
   return null;
 
 }
@@ -219,7 +233,7 @@ return $default(_that.loadingStatus,_that.incidents,_that.enabledLayers,_that.se
 
 
 class _MapState implements MapState {
-  const _MapState({this.loadingStatus = LoadingStatus.initial, final  List<Incident> incidents = const [], final  Set<IncidentLayer> enabledLayers = const {IncidentLayer.infrastructure, IncidentLayer.airQuality, IncidentLayer.weather, IncidentLayer.neighbours}, this.selectedIncidentId = null, this.userLocation = null, final  Set<String> arrivedIds = const {}, final  Set<String> confirmedByMe = const {}, this.now = null}): _incidents = incidents,_enabledLayers = enabledLayers,_arrivedIds = arrivedIds,_confirmedByMe = confirmedByMe;
+  const _MapState({this.loadingStatus = LoadingStatus.initial, final  List<Incident> incidents = const [], final  Set<IncidentLayer> enabledLayers = const {IncidentLayer.infrastructure, IncidentLayer.airQuality, IncidentLayer.weather, IncidentLayer.neighbours}, this.selectedIncidentId = null, this.userLocation = null, final  Set<String> arrivedIds = const {}, final  Set<String> confirmedByMe = const {}, this.now = null, this.radarFrame = null}): _incidents = incidents,_enabledLayers = enabledLayers,_arrivedIds = arrivedIds,_confirmedByMe = confirmedByMe;
   
 
 @override@JsonKey() final  LoadingStatus loadingStatus;
@@ -254,6 +268,8 @@ class _MapState implements MapState {
 }
 
 @override@JsonKey() final  DateTime? now;
+/// Latest precipitation radar, shown under the weather layer.
+@override@JsonKey() final  RadarFrame? radarFrame;
 
 /// Create a copy of MapState
 /// with the given fields replaced by the non-null parameter values.
@@ -265,16 +281,16 @@ _$MapStateCopyWith<_MapState> get copyWith => __$MapStateCopyWithImpl<_MapState>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MapState&&(identical(other.loadingStatus, loadingStatus) || other.loadingStatus == loadingStatus)&&const DeepCollectionEquality().equals(other._incidents, _incidents)&&const DeepCollectionEquality().equals(other._enabledLayers, _enabledLayers)&&(identical(other.selectedIncidentId, selectedIncidentId) || other.selectedIncidentId == selectedIncidentId)&&(identical(other.userLocation, userLocation) || other.userLocation == userLocation)&&const DeepCollectionEquality().equals(other._arrivedIds, _arrivedIds)&&const DeepCollectionEquality().equals(other._confirmedByMe, _confirmedByMe)&&(identical(other.now, now) || other.now == now));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MapState&&(identical(other.loadingStatus, loadingStatus) || other.loadingStatus == loadingStatus)&&const DeepCollectionEquality().equals(other._incidents, _incidents)&&const DeepCollectionEquality().equals(other._enabledLayers, _enabledLayers)&&(identical(other.selectedIncidentId, selectedIncidentId) || other.selectedIncidentId == selectedIncidentId)&&(identical(other.userLocation, userLocation) || other.userLocation == userLocation)&&const DeepCollectionEquality().equals(other._arrivedIds, _arrivedIds)&&const DeepCollectionEquality().equals(other._confirmedByMe, _confirmedByMe)&&(identical(other.now, now) || other.now == now)&&(identical(other.radarFrame, radarFrame) || other.radarFrame == radarFrame));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loadingStatus,const DeepCollectionEquality().hash(_incidents),const DeepCollectionEquality().hash(_enabledLayers),selectedIncidentId,userLocation,const DeepCollectionEquality().hash(_arrivedIds),const DeepCollectionEquality().hash(_confirmedByMe),now);
+int get hashCode => Object.hash(runtimeType,loadingStatus,const DeepCollectionEquality().hash(_incidents),const DeepCollectionEquality().hash(_enabledLayers),selectedIncidentId,userLocation,const DeepCollectionEquality().hash(_arrivedIds),const DeepCollectionEquality().hash(_confirmedByMe),now,radarFrame);
 
 @override
 String toString() {
-  return 'MapState(loadingStatus: $loadingStatus, incidents: $incidents, enabledLayers: $enabledLayers, selectedIncidentId: $selectedIncidentId, userLocation: $userLocation, arrivedIds: $arrivedIds, confirmedByMe: $confirmedByMe, now: $now)';
+  return 'MapState(loadingStatus: $loadingStatus, incidents: $incidents, enabledLayers: $enabledLayers, selectedIncidentId: $selectedIncidentId, userLocation: $userLocation, arrivedIds: $arrivedIds, confirmedByMe: $confirmedByMe, now: $now, radarFrame: $radarFrame)';
 }
 
 
@@ -285,11 +301,11 @@ abstract mixin class _$MapStateCopyWith<$Res> implements $MapStateCopyWith<$Res>
   factory _$MapStateCopyWith(_MapState value, $Res Function(_MapState) _then) = __$MapStateCopyWithImpl;
 @override @useResult
 $Res call({
- LoadingStatus loadingStatus, List<Incident> incidents, Set<IncidentLayer> enabledLayers, String? selectedIncidentId, UserLocation? userLocation, Set<String> arrivedIds, Set<String> confirmedByMe, DateTime? now
+ LoadingStatus loadingStatus, List<Incident> incidents, Set<IncidentLayer> enabledLayers, String? selectedIncidentId, UserLocation? userLocation, Set<String> arrivedIds, Set<String> confirmedByMe, DateTime? now, RadarFrame? radarFrame
 });
 
 
-@override $UserLocationCopyWith<$Res>? get userLocation;
+@override $UserLocationCopyWith<$Res>? get userLocation;@override $RadarFrameCopyWith<$Res>? get radarFrame;
 
 }
 /// @nodoc
@@ -302,7 +318,7 @@ class __$MapStateCopyWithImpl<$Res>
 
 /// Create a copy of MapState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? loadingStatus = null,Object? incidents = null,Object? enabledLayers = null,Object? selectedIncidentId = freezed,Object? userLocation = freezed,Object? arrivedIds = null,Object? confirmedByMe = null,Object? now = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? loadingStatus = null,Object? incidents = null,Object? enabledLayers = null,Object? selectedIncidentId = freezed,Object? userLocation = freezed,Object? arrivedIds = null,Object? confirmedByMe = null,Object? now = freezed,Object? radarFrame = freezed,}) {
   return _then(_MapState(
 loadingStatus: null == loadingStatus ? _self.loadingStatus : loadingStatus // ignore: cast_nullable_to_non_nullable
 as LoadingStatus,incidents: null == incidents ? _self._incidents : incidents // ignore: cast_nullable_to_non_nullable
@@ -312,7 +328,8 @@ as String?,userLocation: freezed == userLocation ? _self.userLocation : userLoca
 as UserLocation?,arrivedIds: null == arrivedIds ? _self._arrivedIds : arrivedIds // ignore: cast_nullable_to_non_nullable
 as Set<String>,confirmedByMe: null == confirmedByMe ? _self._confirmedByMe : confirmedByMe // ignore: cast_nullable_to_non_nullable
 as Set<String>,now: freezed == now ? _self.now : now // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,radarFrame: freezed == radarFrame ? _self.radarFrame : radarFrame // ignore: cast_nullable_to_non_nullable
+as RadarFrame?,
   ));
 }
 
@@ -327,6 +344,18 @@ $UserLocationCopyWith<$Res>? get userLocation {
 
   return $UserLocationCopyWith<$Res>(_self.userLocation!, (value) {
     return _then(_self.copyWith(userLocation: value));
+  });
+}/// Create a copy of MapState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RadarFrameCopyWith<$Res>? get radarFrame {
+    if (_self.radarFrame == null) {
+    return null;
+  }
+
+  return $RadarFrameCopyWith<$Res>(_self.radarFrame!, (value) {
+    return _then(_self.copyWith(radarFrame: value));
   });
 }
 }

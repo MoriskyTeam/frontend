@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Incident {
 
- String get id; IncidentLayer get layer; IncidentCategory get category; IncidentSeverity get severity; IncidentStatus get status; IncidentSource get source; String get title; String get description; String get address; GeoPoint get location; DateTime get reportedAt; DateTime? get updatedAt; int get confirmations; int? get areaRadiusMeters; AirReading? get airReading; String? get photoPath;/// True when the current resident filed this report.
+ String get id; IncidentLayer get layer; IncidentCategory get category; IncidentSeverity get severity; IncidentStatus get status; IncidentSource get source; String get title; String get description; String get address; GeoPoint get location; DateTime get reportedAt; DateTime? get updatedAt; int get confirmations; int? get areaRadiusMeters; AirReading? get airReading; WeatherReading? get weatherReading; String? get photoPath;/// True when the current resident filed this report.
  bool get reportedByMe;
 /// Create a copy of Incident
 /// with the given fields replaced by the non-null parameter values.
@@ -26,16 +26,16 @@ $IncidentCopyWith<Incident> get copyWith => _$IncidentCopyWithImpl<Incident>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Incident&&(identical(other.id, id) || other.id == id)&&(identical(other.layer, layer) || other.layer == layer)&&(identical(other.category, category) || other.category == category)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.status, status) || other.status == status)&&(identical(other.source, source) || other.source == source)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.address, address) || other.address == address)&&(identical(other.location, location) || other.location == location)&&(identical(other.reportedAt, reportedAt) || other.reportedAt == reportedAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.confirmations, confirmations) || other.confirmations == confirmations)&&(identical(other.areaRadiusMeters, areaRadiusMeters) || other.areaRadiusMeters == areaRadiusMeters)&&(identical(other.airReading, airReading) || other.airReading == airReading)&&(identical(other.photoPath, photoPath) || other.photoPath == photoPath)&&(identical(other.reportedByMe, reportedByMe) || other.reportedByMe == reportedByMe));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Incident&&(identical(other.id, id) || other.id == id)&&(identical(other.layer, layer) || other.layer == layer)&&(identical(other.category, category) || other.category == category)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.status, status) || other.status == status)&&(identical(other.source, source) || other.source == source)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.address, address) || other.address == address)&&(identical(other.location, location) || other.location == location)&&(identical(other.reportedAt, reportedAt) || other.reportedAt == reportedAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.confirmations, confirmations) || other.confirmations == confirmations)&&(identical(other.areaRadiusMeters, areaRadiusMeters) || other.areaRadiusMeters == areaRadiusMeters)&&(identical(other.airReading, airReading) || other.airReading == airReading)&&(identical(other.weatherReading, weatherReading) || other.weatherReading == weatherReading)&&(identical(other.photoPath, photoPath) || other.photoPath == photoPath)&&(identical(other.reportedByMe, reportedByMe) || other.reportedByMe == reportedByMe));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,layer,category,severity,status,source,title,description,address,location,reportedAt,updatedAt,confirmations,areaRadiusMeters,airReading,photoPath,reportedByMe);
+int get hashCode => Object.hash(runtimeType,id,layer,category,severity,status,source,title,description,address,location,reportedAt,updatedAt,confirmations,areaRadiusMeters,airReading,weatherReading,photoPath,reportedByMe);
 
 @override
 String toString() {
-  return 'Incident(id: $id, layer: $layer, category: $category, severity: $severity, status: $status, source: $source, title: $title, description: $description, address: $address, location: $location, reportedAt: $reportedAt, updatedAt: $updatedAt, confirmations: $confirmations, areaRadiusMeters: $areaRadiusMeters, airReading: $airReading, photoPath: $photoPath, reportedByMe: $reportedByMe)';
+  return 'Incident(id: $id, layer: $layer, category: $category, severity: $severity, status: $status, source: $source, title: $title, description: $description, address: $address, location: $location, reportedAt: $reportedAt, updatedAt: $updatedAt, confirmations: $confirmations, areaRadiusMeters: $areaRadiusMeters, airReading: $airReading, weatherReading: $weatherReading, photoPath: $photoPath, reportedByMe: $reportedByMe)';
 }
 
 
@@ -46,11 +46,11 @@ abstract mixin class $IncidentCopyWith<$Res>  {
   factory $IncidentCopyWith(Incident value, $Res Function(Incident) _then) = _$IncidentCopyWithImpl;
 @useResult
 $Res call({
- String id, IncidentLayer layer, IncidentCategory category, IncidentSeverity severity, IncidentStatus status, IncidentSource source, String title, String description, String address, GeoPoint location, DateTime reportedAt, DateTime? updatedAt, int confirmations, int? areaRadiusMeters, AirReading? airReading, String? photoPath, bool reportedByMe
+ String id, IncidentLayer layer, IncidentCategory category, IncidentSeverity severity, IncidentStatus status, IncidentSource source, String title, String description, String address, GeoPoint location, DateTime reportedAt, DateTime? updatedAt, int confirmations, int? areaRadiusMeters, AirReading? airReading, WeatherReading? weatherReading, String? photoPath, bool reportedByMe
 });
 
 
-$GeoPointCopyWith<$Res> get location;$AirReadingCopyWith<$Res>? get airReading;
+$GeoPointCopyWith<$Res> get location;$AirReadingCopyWith<$Res>? get airReading;$WeatherReadingCopyWith<$Res>? get weatherReading;
 
 }
 /// @nodoc
@@ -63,7 +63,7 @@ class _$IncidentCopyWithImpl<$Res>
 
 /// Create a copy of Incident
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? layer = null,Object? category = null,Object? severity = null,Object? status = null,Object? source = null,Object? title = null,Object? description = null,Object? address = null,Object? location = null,Object? reportedAt = null,Object? updatedAt = freezed,Object? confirmations = null,Object? areaRadiusMeters = freezed,Object? airReading = freezed,Object? photoPath = freezed,Object? reportedByMe = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? layer = null,Object? category = null,Object? severity = null,Object? status = null,Object? source = null,Object? title = null,Object? description = null,Object? address = null,Object? location = null,Object? reportedAt = null,Object? updatedAt = freezed,Object? confirmations = null,Object? areaRadiusMeters = freezed,Object? airReading = freezed,Object? weatherReading = freezed,Object? photoPath = freezed,Object? reportedByMe = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,layer: null == layer ? _self.layer : layer // ignore: cast_nullable_to_non_nullable
@@ -80,7 +80,8 @@ as DateTime,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ign
 as DateTime?,confirmations: null == confirmations ? _self.confirmations : confirmations // ignore: cast_nullable_to_non_nullable
 as int,areaRadiusMeters: freezed == areaRadiusMeters ? _self.areaRadiusMeters : areaRadiusMeters // ignore: cast_nullable_to_non_nullable
 as int?,airReading: freezed == airReading ? _self.airReading : airReading // ignore: cast_nullable_to_non_nullable
-as AirReading?,photoPath: freezed == photoPath ? _self.photoPath : photoPath // ignore: cast_nullable_to_non_nullable
+as AirReading?,weatherReading: freezed == weatherReading ? _self.weatherReading : weatherReading // ignore: cast_nullable_to_non_nullable
+as WeatherReading?,photoPath: freezed == photoPath ? _self.photoPath : photoPath // ignore: cast_nullable_to_non_nullable
 as String?,reportedByMe: null == reportedByMe ? _self.reportedByMe : reportedByMe // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
@@ -105,6 +106,18 @@ $AirReadingCopyWith<$Res>? get airReading {
 
   return $AirReadingCopyWith<$Res>(_self.airReading!, (value) {
     return _then(_self.copyWith(airReading: value));
+  });
+}/// Create a copy of Incident
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WeatherReadingCopyWith<$Res>? get weatherReading {
+    if (_self.weatherReading == null) {
+    return null;
+  }
+
+  return $WeatherReadingCopyWith<$Res>(_self.weatherReading!, (value) {
+    return _then(_self.copyWith(weatherReading: value));
   });
 }
 }
@@ -185,10 +198,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  IncidentLayer layer,  IncidentCategory category,  IncidentSeverity severity,  IncidentStatus status,  IncidentSource source,  String title,  String description,  String address,  GeoPoint location,  DateTime reportedAt,  DateTime? updatedAt,  int confirmations,  int? areaRadiusMeters,  AirReading? airReading,  String? photoPath,  bool reportedByMe)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  IncidentLayer layer,  IncidentCategory category,  IncidentSeverity severity,  IncidentStatus status,  IncidentSource source,  String title,  String description,  String address,  GeoPoint location,  DateTime reportedAt,  DateTime? updatedAt,  int confirmations,  int? areaRadiusMeters,  AirReading? airReading,  WeatherReading? weatherReading,  String? photoPath,  bool reportedByMe)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Incident() when $default != null:
-return $default(_that.id,_that.layer,_that.category,_that.severity,_that.status,_that.source,_that.title,_that.description,_that.address,_that.location,_that.reportedAt,_that.updatedAt,_that.confirmations,_that.areaRadiusMeters,_that.airReading,_that.photoPath,_that.reportedByMe);case _:
+return $default(_that.id,_that.layer,_that.category,_that.severity,_that.status,_that.source,_that.title,_that.description,_that.address,_that.location,_that.reportedAt,_that.updatedAt,_that.confirmations,_that.areaRadiusMeters,_that.airReading,_that.weatherReading,_that.photoPath,_that.reportedByMe);case _:
   return orElse();
 
 }
@@ -206,10 +219,10 @@ return $default(_that.id,_that.layer,_that.category,_that.severity,_that.status,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  IncidentLayer layer,  IncidentCategory category,  IncidentSeverity severity,  IncidentStatus status,  IncidentSource source,  String title,  String description,  String address,  GeoPoint location,  DateTime reportedAt,  DateTime? updatedAt,  int confirmations,  int? areaRadiusMeters,  AirReading? airReading,  String? photoPath,  bool reportedByMe)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  IncidentLayer layer,  IncidentCategory category,  IncidentSeverity severity,  IncidentStatus status,  IncidentSource source,  String title,  String description,  String address,  GeoPoint location,  DateTime reportedAt,  DateTime? updatedAt,  int confirmations,  int? areaRadiusMeters,  AirReading? airReading,  WeatherReading? weatherReading,  String? photoPath,  bool reportedByMe)  $default,) {final _that = this;
 switch (_that) {
 case _Incident():
-return $default(_that.id,_that.layer,_that.category,_that.severity,_that.status,_that.source,_that.title,_that.description,_that.address,_that.location,_that.reportedAt,_that.updatedAt,_that.confirmations,_that.areaRadiusMeters,_that.airReading,_that.photoPath,_that.reportedByMe);}
+return $default(_that.id,_that.layer,_that.category,_that.severity,_that.status,_that.source,_that.title,_that.description,_that.address,_that.location,_that.reportedAt,_that.updatedAt,_that.confirmations,_that.areaRadiusMeters,_that.airReading,_that.weatherReading,_that.photoPath,_that.reportedByMe);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -223,10 +236,10 @@ return $default(_that.id,_that.layer,_that.category,_that.severity,_that.status,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  IncidentLayer layer,  IncidentCategory category,  IncidentSeverity severity,  IncidentStatus status,  IncidentSource source,  String title,  String description,  String address,  GeoPoint location,  DateTime reportedAt,  DateTime? updatedAt,  int confirmations,  int? areaRadiusMeters,  AirReading? airReading,  String? photoPath,  bool reportedByMe)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  IncidentLayer layer,  IncidentCategory category,  IncidentSeverity severity,  IncidentStatus status,  IncidentSource source,  String title,  String description,  String address,  GeoPoint location,  DateTime reportedAt,  DateTime? updatedAt,  int confirmations,  int? areaRadiusMeters,  AirReading? airReading,  WeatherReading? weatherReading,  String? photoPath,  bool reportedByMe)?  $default,) {final _that = this;
 switch (_that) {
 case _Incident() when $default != null:
-return $default(_that.id,_that.layer,_that.category,_that.severity,_that.status,_that.source,_that.title,_that.description,_that.address,_that.location,_that.reportedAt,_that.updatedAt,_that.confirmations,_that.areaRadiusMeters,_that.airReading,_that.photoPath,_that.reportedByMe);case _:
+return $default(_that.id,_that.layer,_that.category,_that.severity,_that.status,_that.source,_that.title,_that.description,_that.address,_that.location,_that.reportedAt,_that.updatedAt,_that.confirmations,_that.areaRadiusMeters,_that.airReading,_that.weatherReading,_that.photoPath,_that.reportedByMe);case _:
   return null;
 
 }
@@ -238,7 +251,7 @@ return $default(_that.id,_that.layer,_that.category,_that.severity,_that.status,
 
 
 class _Incident implements Incident {
-  const _Incident({required this.id, required this.layer, required this.category, required this.severity, required this.status, required this.source, required this.title, required this.description, required this.address, required this.location, required this.reportedAt, required this.updatedAt, required this.confirmations, required this.areaRadiusMeters, required this.airReading, required this.photoPath, required this.reportedByMe});
+  const _Incident({required this.id, required this.layer, required this.category, required this.severity, required this.status, required this.source, required this.title, required this.description, required this.address, required this.location, required this.reportedAt, required this.updatedAt, required this.confirmations, required this.areaRadiusMeters, required this.airReading, required this.weatherReading, required this.photoPath, required this.reportedByMe});
   
 
 @override final  String id;
@@ -256,6 +269,7 @@ class _Incident implements Incident {
 @override final  int confirmations;
 @override final  int? areaRadiusMeters;
 @override final  AirReading? airReading;
+@override final  WeatherReading? weatherReading;
 @override final  String? photoPath;
 /// True when the current resident filed this report.
 @override final  bool reportedByMe;
@@ -270,16 +284,16 @@ _$IncidentCopyWith<_Incident> get copyWith => __$IncidentCopyWithImpl<_Incident>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Incident&&(identical(other.id, id) || other.id == id)&&(identical(other.layer, layer) || other.layer == layer)&&(identical(other.category, category) || other.category == category)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.status, status) || other.status == status)&&(identical(other.source, source) || other.source == source)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.address, address) || other.address == address)&&(identical(other.location, location) || other.location == location)&&(identical(other.reportedAt, reportedAt) || other.reportedAt == reportedAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.confirmations, confirmations) || other.confirmations == confirmations)&&(identical(other.areaRadiusMeters, areaRadiusMeters) || other.areaRadiusMeters == areaRadiusMeters)&&(identical(other.airReading, airReading) || other.airReading == airReading)&&(identical(other.photoPath, photoPath) || other.photoPath == photoPath)&&(identical(other.reportedByMe, reportedByMe) || other.reportedByMe == reportedByMe));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Incident&&(identical(other.id, id) || other.id == id)&&(identical(other.layer, layer) || other.layer == layer)&&(identical(other.category, category) || other.category == category)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.status, status) || other.status == status)&&(identical(other.source, source) || other.source == source)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.address, address) || other.address == address)&&(identical(other.location, location) || other.location == location)&&(identical(other.reportedAt, reportedAt) || other.reportedAt == reportedAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.confirmations, confirmations) || other.confirmations == confirmations)&&(identical(other.areaRadiusMeters, areaRadiusMeters) || other.areaRadiusMeters == areaRadiusMeters)&&(identical(other.airReading, airReading) || other.airReading == airReading)&&(identical(other.weatherReading, weatherReading) || other.weatherReading == weatherReading)&&(identical(other.photoPath, photoPath) || other.photoPath == photoPath)&&(identical(other.reportedByMe, reportedByMe) || other.reportedByMe == reportedByMe));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,layer,category,severity,status,source,title,description,address,location,reportedAt,updatedAt,confirmations,areaRadiusMeters,airReading,photoPath,reportedByMe);
+int get hashCode => Object.hash(runtimeType,id,layer,category,severity,status,source,title,description,address,location,reportedAt,updatedAt,confirmations,areaRadiusMeters,airReading,weatherReading,photoPath,reportedByMe);
 
 @override
 String toString() {
-  return 'Incident(id: $id, layer: $layer, category: $category, severity: $severity, status: $status, source: $source, title: $title, description: $description, address: $address, location: $location, reportedAt: $reportedAt, updatedAt: $updatedAt, confirmations: $confirmations, areaRadiusMeters: $areaRadiusMeters, airReading: $airReading, photoPath: $photoPath, reportedByMe: $reportedByMe)';
+  return 'Incident(id: $id, layer: $layer, category: $category, severity: $severity, status: $status, source: $source, title: $title, description: $description, address: $address, location: $location, reportedAt: $reportedAt, updatedAt: $updatedAt, confirmations: $confirmations, areaRadiusMeters: $areaRadiusMeters, airReading: $airReading, weatherReading: $weatherReading, photoPath: $photoPath, reportedByMe: $reportedByMe)';
 }
 
 
@@ -290,11 +304,11 @@ abstract mixin class _$IncidentCopyWith<$Res> implements $IncidentCopyWith<$Res>
   factory _$IncidentCopyWith(_Incident value, $Res Function(_Incident) _then) = __$IncidentCopyWithImpl;
 @override @useResult
 $Res call({
- String id, IncidentLayer layer, IncidentCategory category, IncidentSeverity severity, IncidentStatus status, IncidentSource source, String title, String description, String address, GeoPoint location, DateTime reportedAt, DateTime? updatedAt, int confirmations, int? areaRadiusMeters, AirReading? airReading, String? photoPath, bool reportedByMe
+ String id, IncidentLayer layer, IncidentCategory category, IncidentSeverity severity, IncidentStatus status, IncidentSource source, String title, String description, String address, GeoPoint location, DateTime reportedAt, DateTime? updatedAt, int confirmations, int? areaRadiusMeters, AirReading? airReading, WeatherReading? weatherReading, String? photoPath, bool reportedByMe
 });
 
 
-@override $GeoPointCopyWith<$Res> get location;@override $AirReadingCopyWith<$Res>? get airReading;
+@override $GeoPointCopyWith<$Res> get location;@override $AirReadingCopyWith<$Res>? get airReading;@override $WeatherReadingCopyWith<$Res>? get weatherReading;
 
 }
 /// @nodoc
@@ -307,7 +321,7 @@ class __$IncidentCopyWithImpl<$Res>
 
 /// Create a copy of Incident
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? layer = null,Object? category = null,Object? severity = null,Object? status = null,Object? source = null,Object? title = null,Object? description = null,Object? address = null,Object? location = null,Object? reportedAt = null,Object? updatedAt = freezed,Object? confirmations = null,Object? areaRadiusMeters = freezed,Object? airReading = freezed,Object? photoPath = freezed,Object? reportedByMe = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? layer = null,Object? category = null,Object? severity = null,Object? status = null,Object? source = null,Object? title = null,Object? description = null,Object? address = null,Object? location = null,Object? reportedAt = null,Object? updatedAt = freezed,Object? confirmations = null,Object? areaRadiusMeters = freezed,Object? airReading = freezed,Object? weatherReading = freezed,Object? photoPath = freezed,Object? reportedByMe = null,}) {
   return _then(_Incident(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,layer: null == layer ? _self.layer : layer // ignore: cast_nullable_to_non_nullable
@@ -324,7 +338,8 @@ as DateTime,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ign
 as DateTime?,confirmations: null == confirmations ? _self.confirmations : confirmations // ignore: cast_nullable_to_non_nullable
 as int,areaRadiusMeters: freezed == areaRadiusMeters ? _self.areaRadiusMeters : areaRadiusMeters // ignore: cast_nullable_to_non_nullable
 as int?,airReading: freezed == airReading ? _self.airReading : airReading // ignore: cast_nullable_to_non_nullable
-as AirReading?,photoPath: freezed == photoPath ? _self.photoPath : photoPath // ignore: cast_nullable_to_non_nullable
+as AirReading?,weatherReading: freezed == weatherReading ? _self.weatherReading : weatherReading // ignore: cast_nullable_to_non_nullable
+as WeatherReading?,photoPath: freezed == photoPath ? _self.photoPath : photoPath // ignore: cast_nullable_to_non_nullable
 as String?,reportedByMe: null == reportedByMe ? _self.reportedByMe : reportedByMe // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
@@ -350,6 +365,18 @@ $AirReadingCopyWith<$Res>? get airReading {
 
   return $AirReadingCopyWith<$Res>(_self.airReading!, (value) {
     return _then(_self.copyWith(airReading: value));
+  });
+}/// Create a copy of Incident
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WeatherReadingCopyWith<$Res>? get weatherReading {
+    if (_self.weatherReading == null) {
+    return null;
+  }
+
+  return $WeatherReadingCopyWith<$Res>(_self.weatherReading!, (value) {
+    return _then(_self.copyWith(weatherReading: value));
   });
 }
 }

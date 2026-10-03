@@ -2,6 +2,7 @@ import 'package:domain/domain.dart';
 import 'package:dynamic_rcb_alerts/core/theme/rcb_colors.dart';
 import 'package:dynamic_rcb_alerts/core/theme/rcb_radii.dart';
 import 'package:dynamic_rcb_alerts/core/theme/rcb_typography.dart';
+import 'package:dynamic_rcb_alerts/features/map/model/weather_format.dart';
 import 'package:dynamic_rcb_alerts/shared/livery/battenburg.dart';
 import 'package:dynamic_rcb_alerts/shared/livery/incident_livery.dart';
 import 'package:dynamic_rcb_alerts/shared/livery/odblask_sweep.dart';
@@ -15,7 +16,8 @@ const incidentMarkerExtent = 56.0;
 ///
 /// Low severity is hollow, medium is a solid livery block, high gets a
 /// Battenburg frame and a slow pulse. Air stations are round and show their
-/// PM2.5 reading. Resolved incidents are struck through and faded.
+/// PM2.5 reading, weather stations their temperature. Resolved incidents
+/// are struck through and faded.
 class IncidentMarker extends StatelessWidget {
   const IncidentMarker({
     required this.incident,
@@ -62,9 +64,21 @@ class IncidentMarker extends StatelessWidget {
                   if (pulsing) _Pulse(color: incident.livery.fill),
                   OdblaskSweep(
                     active: arrived,
-                    child: incident.airReading != null
-                        ? _StationBody(incident: incident, selected: selected)
-                        : _IncidentBody(incident: incident, selected: selected),
+                    child: switch (incident) {
+                      Incident(airReading: _?) => _StationBody(
+                        incident: incident,
+                        selected: selected,
+                      ),
+                      Incident(weatherReading: final weather?) =>
+                        _WeatherStationBody(
+                          reading: weather,
+                          selected: selected,
+                        ),
+                      _ => _IncidentBody(
+                        incident: incident,
+                        selected: selected,
+                      ),
+                    },
                   ),
                   if (resolved) const _Strike(),
                 ],
@@ -169,7 +183,7 @@ class _StationBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final livery = incident.livery;
     final reading = incident.airReading!;
-    final value = reading.pm25?.round().toString() ?? '–';
+    final value = reading.headline?.round().toString() ?? '–';
     return Container(
       width: 38,
       height: 38,
@@ -193,6 +207,48 @@ class _StationBody extends StatelessWidget {
         value,
         style: Theme.of(context).textTheme.titleMedium?.copyWith(
           color: livery.onFill,
+          fontWeight: FontWeight.w800,
+          height: 1,
+          fontFeatures: RcbTypography.tabular,
+        ),
+      ),
+    );
+  }
+}
+
+/// A weather station: a bone disc with the temperature, ringed in asphalt so
+/// it reads as a measurement rather than a red warning.
+class _WeatherStationBody extends StatelessWidget {
+  const _WeatherStationBody({required this.reading, required this.selected});
+
+  final WeatherReading reading;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 40,
+      height: 40,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: RcbColors.boneRaised,
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: RcbColors.asphalt,
+          width: selected ? 2.5 : 1.25,
+        ),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x3316181B),
+            offset: Offset(0, 2),
+            blurRadius: 6,
+          ),
+        ],
+      ),
+      child: Text(
+        reading.temperatureShort,
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          color: RcbColors.asphalt,
           fontWeight: FontWeight.w800,
           height: 1,
           fontFeatures: RcbTypography.tabular,

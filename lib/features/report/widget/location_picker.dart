@@ -41,6 +41,7 @@ class LocationPicker extends StatelessWidget {
                   minZoom: 12,
                   maxZoom: 18,
                   backgroundColor: dark ? RcbColors.night : RcbColors.bone,
+                  cameraConstraint: polandCameraConstraint,
                   interactionOptions: const InteractionOptions(
                     flags:
                         InteractiveFlag.drag |

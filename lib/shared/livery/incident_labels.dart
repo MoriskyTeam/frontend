@@ -24,6 +24,7 @@ extension IncidentLabels on AppLocalizations {
     IncidentCategory.storm => categoryStorm,
     IncidentCategory.wind => categoryWind,
     IncidentCategory.heat => categoryHeat,
+    IncidentCategory.weatherStation => categoryWeatherStation,
     IncidentCategory.smoke => categorySmoke,
     IncidentCategory.other => categoryOther,
   };

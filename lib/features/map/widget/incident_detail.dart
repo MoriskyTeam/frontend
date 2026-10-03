@@ -3,8 +3,10 @@ import 'package:dynamic_rcb_alerts/core/theme/rcb_colors.dart';
 import 'package:dynamic_rcb_alerts/core/theme/rcb_radii.dart';
 import 'package:dynamic_rcb_alerts/core/theme/rcb_typography.dart';
 import 'package:dynamic_rcb_alerts/features/map/model/incident_geo.dart';
+import 'package:dynamic_rcb_alerts/features/map/model/weather_format.dart';
 import 'package:dynamic_rcb_alerts/features/map/widget/incident_glyph.dart';
 import 'package:dynamic_rcb_alerts/features/map/widget/proof_line.dart';
+import 'package:dynamic_rcb_alerts/features/map/widget/wind_arrow.dart';
 import 'package:dynamic_rcb_alerts/l10n/gen/app_localizations.dart';
 import 'package:dynamic_rcb_alerts/shared/livery/battenburg.dart';
 import 'package:dynamic_rcb_alerts/shared/livery/chevrons.dart';
@@ -52,6 +54,8 @@ class IncidentDetail extends StatelessWidget {
     final locale = Localizations.localeOf(context).toLanguageTag();
     final distance = formatDistance(incident.distanceTo(origin), locale);
     final reading = incident.airReading;
+    final weather = incident.weatherReading;
+    final isStation = reading != null || weather != null;
     final photo = incident.photoPath;
 
     return ListView(
@@ -77,7 +81,7 @@ class IncidentDetail extends StatelessWidget {
             ],
           ),
         ),
-        if (incident.severity.isHigh && reading == null)
+        if (incident.severity.isHigh && !isStation)
           BattenburgBand(
             primary: livery.fill,
             secondary: livery.checker,
@@ -106,15 +110,23 @@ class IncidentDetail extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: RcbSpacing.xs),
-                        if (reading == null)
-                          SeverityBadge(
-                            level: incident.severity.index + 1,
-                            label: l10n.severity(incident.severity),
-                          )
-                        else
+                        if (reading != null)
                           Text(
                             '${l10n.airNow}: ${l10n.airLevel(reading.level)}',
                             style: theme.textTheme.titleMedium,
+                          )
+                        else if (weather != null)
+                          Text(
+                            '${l10n.weatherNow}: '
+                            '${weather.temperatureLabel(locale)}',
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontFeatures: RcbTypography.tabular,
+                            ),
+                          )
+                        else
+                          SeverityBadge(
+                            level: incident.severity.index + 1,
+                            label: l10n.severity(incident.severity),
                           ),
                       ],
                     ),
@@ -133,6 +145,10 @@ class IncidentDetail extends StatelessWidget {
               if (reading != null) ...[
                 const SizedBox(height: RcbSpacing.lg),
                 _Readings(reading: reading),
+              ],
+              if (weather != null) ...[
+                const SizedBox(height: RcbSpacing.lg),
+                _WeatherReadings(reading: weather),
               ],
               if (photo != null) ...[
                 const SizedBox(height: RcbSpacing.lg),
@@ -248,6 +264,104 @@ class _Readings extends StatelessWidget {
         ),
         const SizedBox(height: RcbSpacing.sm),
         _AirScale(level: reading.level),
+      ],
+    );
+  }
+}
+
+/// The station's observation as a 2×2 grid of figures, pressure below.
+class _WeatherReadings extends StatelessWidget {
+  const _WeatherReadings({required this.reading});
+
+  final WeatherReading reading;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final direction = reading.windDirection;
+
+    Widget cell(String label, String value, {Widget? trailing}) => Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(RcbSpacing.md),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceContainerHigh,
+          borderRadius: RcbRadii.cardBorder,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(label, style: theme.textTheme.labelMedium),
+            Row(
+              children: [
+                Flexible(
+                  child: Text(
+                    value,
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      fontFeatures: RcbTypography.tabular,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (trailing != null) ...[
+                  const SizedBox(width: RcbSpacing.xs),
+                  trailing,
+                ],
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            cell(
+              l10n.weatherTemperature,
+              reading.temperatureLabel(locale),
+            ),
+            const SizedBox(width: RcbSpacing.sm),
+            cell(
+              l10n.weatherWind,
+              reading.isCalm
+                  ? l10n.weatherCalm
+                  : reading.windSpeedLabel(locale),
+              trailing: reading.isCalm || direction == null
+                  ? null
+                  : WindArrow(
+                      fromDegrees: direction,
+                      semanticLabel: l10n.weatherWindFrom(direction),
+                      size: 22,
+                    ),
+            ),
+          ],
+        ),
+        const SizedBox(height: RcbSpacing.sm),
+        Row(
+          children: [
+            cell(l10n.weatherHumidity, reading.humidityLabel(locale)),
+            const SizedBox(width: RcbSpacing.sm),
+            cell(
+              l10n.weatherPrecipitation,
+              reading.precipitationLabel(locale),
+            ),
+          ],
+        ),
+        if (reading.pressure != null) ...[
+          const SizedBox(height: RcbSpacing.sm),
+          Text(
+            l10n.weatherPressure(reading.pressureValue(locale)),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+              fontFeatures: RcbTypography.tabular,
+            ),
+          ),
+        ],
       ],
     );
   }

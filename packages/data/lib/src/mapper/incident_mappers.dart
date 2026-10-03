@@ -23,6 +23,7 @@ extension IncidentDTOMapper on IncidentDTO {
       confirmations: confirmations ?? 0,
       areaRadiusMeters: areaRadiusMeters,
       airReading: airReading?.toDomain(),
+      weatherReading: null,
       photoPath: photoPath,
       reportedByMe: reportedByMe ?? false,
     );
@@ -65,6 +66,7 @@ extension IncidentCategoryDataMapper on IncidentCategory {
     IncidentCategory.storm => 'storm',
     IncidentCategory.wind => 'wind',
     IncidentCategory.heat => 'heat',
+    IncidentCategory.weatherStation => 'weather_station',
     IncidentCategory.smoke => 'smoke',
     IncidentCategory.other => 'other',
   };

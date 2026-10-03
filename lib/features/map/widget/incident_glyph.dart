@@ -2,6 +2,7 @@ import 'package:domain/domain.dart';
 import 'package:dynamic_rcb_alerts/core/theme/rcb_colors.dart';
 import 'package:dynamic_rcb_alerts/core/theme/rcb_radii.dart';
 import 'package:dynamic_rcb_alerts/core/theme/rcb_typography.dart';
+import 'package:dynamic_rcb_alerts/features/map/model/weather_format.dart';
 import 'package:dynamic_rcb_alerts/shared/livery/battenburg.dart';
 import 'package:dynamic_rcb_alerts/shared/livery/incident_livery.dart';
 import 'package:flutter/material.dart';
@@ -31,9 +32,31 @@ class IncidentGlyph extends StatelessWidget {
           border: Border.all(color: RcbColors.asphalt, width: 1.25),
         ),
         child: Text(
-          reading.pm25?.round().toString() ?? '–',
+          reading.headline?.round().toString() ?? '–',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             color: livery.onFill,
+            fontWeight: FontWeight.w800,
+            height: 1,
+            fontFeatures: RcbTypography.tabular,
+          ),
+        ),
+      );
+    }
+
+    if (incident.weatherReading case final weather?) {
+      return Container(
+        width: size,
+        height: size,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: RcbColors.boneRaised,
+          shape: BoxShape.circle,
+          border: Border.all(color: RcbColors.asphalt, width: 1.25),
+        ),
+        child: Text(
+          weather.temperatureShort,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            color: RcbColors.asphalt,
             fontWeight: FontWeight.w800,
             height: 1,
             fontFeatures: RcbTypography.tabular,

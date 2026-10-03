@@ -20,7 +20,9 @@ class ProofLine extends StatelessWidget {
     final resolved = incident.status == IncidentStatus.resolved;
     // Station readings and weather warnings have no report lifecycle.
     final hasLifecycle =
-        incident.airReading == null && incident.areaRadiusMeters == null;
+        incident.airReading == null &&
+        incident.weatherReading == null &&
+        incident.areaRadiusMeters == null;
 
     return Row(
       children: [
