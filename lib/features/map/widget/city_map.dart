@@ -31,6 +31,7 @@ class CityMap extends HookWidget {
     required this.focusInset,
     required this.topInset,
     required this.reveal,
+    required this.recenter,
     required this.onIncidentTap,
     required this.onMapTap,
     required this.controller,
@@ -51,6 +52,9 @@ class CityMap extends HookWidget {
 
   /// Live arrivals to bring into view without selecting them.
   final ValueListenable<Incident?> reveal;
+
+  /// Each bump flies the camera to the resident's current position.
+  final ValueListenable<int> recenter;
   final ValueChanged<Incident> onIncidentTap;
   final VoidCallback onMapTap;
   final MapController controller;
@@ -130,6 +134,10 @@ class CityMap extends HookWidget {
     }
 
     useOnListenableChange(reveal, revealArrival);
+    useOnListenableChange(recenter, () {
+      final location = latest.value.userLocation;
+      if (location != null) flyTo(location.point.latLng, _focusZoom);
+    });
 
     useEffect(() {
       if (selected != null) {
@@ -170,6 +178,7 @@ class CityMap extends HookWidget {
         minZoom: 10,
         maxZoom: 18,
         backgroundColor: dark ? RcbColors.night : RcbColors.bone,
+        cameraConstraint: polandCameraConstraint,
         interactionOptions: const InteractionOptions(
           flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
         ),

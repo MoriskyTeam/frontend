@@ -47,6 +47,7 @@ class _MapHandles {
     required this.sheetController,
     required this.sheetExtent,
     required this.reveal,
+    required this.recenter,
     required this.topChromeKey,
   });
 
@@ -54,6 +55,9 @@ class _MapHandles {
   final DraggableScrollableController sheetController;
   final ValueNotifier<double> sheetExtent;
   final ValueNotifier<Incident?> reveal;
+
+  /// Bumped to fly the camera back to the resident's position.
+  final ValueNotifier<int> recenter;
   final GlobalKey topChromeKey;
 
   /// Height of the status card + chips overlay, so the camera keeps targets
@@ -158,6 +162,7 @@ class _MapPageCore extends HookWidget {
       sheetController: useDraggableScrollableController(),
       sheetExtent: useValueNotifier(_sheetPeek),
       reveal: useValueNotifier<Incident?>(null),
+      recenter: useValueNotifier(0),
       topChromeKey: useMemoized(GlobalKey.new),
     );
 
@@ -226,13 +231,35 @@ class _MapPageCore extends HookWidget {
     );
   }
 
-  Widget _reportButton(BuildContext context) {
+  /// Clears the selection, flies to the last known position at once, then
+  /// refreshes the fix and follows it if the resident has moved.
+  Future<void> _recenter(BuildContext context, _MapHandles handles) async {
+    unawaited(HapticFeedback.selectionClick());
+    final cubit = context.read<MapCubit>()..select(null);
+    handles.recenter.value++;
+    await cubit.locate();
+    handles.recenter.value++;
+  }
+
+  /// "My location" above the primary report action, bottom-right of the map.
+  Widget _mapActions(BuildContext context, _MapHandles handles) {
     final l10n = AppLocalizations.of(context);
-    return FloatingActionButton.extended(
-      heroTag: 'report',
-      onPressed: () => _openReport(context),
-      icon: const Icon(Icons.add_a_photo_outlined),
-      label: Text(l10n.reportAction.toUpperCase()),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        _LocateButton(
+          tooltip: l10n.myLocation,
+          onPressed: () => _recenter(context, handles),
+        ),
+        const SizedBox(height: RcbSpacing.md),
+        FloatingActionButton.extended(
+          heroTag: 'report',
+          onPressed: () => _openReport(context),
+          icon: const Icon(Icons.add_a_photo_outlined),
+          label: Text(l10n.reportAction.toUpperCase()),
+        ),
+      ],
     );
   }
 
@@ -264,6 +291,7 @@ class _MapPageCore extends HookWidget {
                       : handles.sheetExtent.value),
               topInset: handles.topChromeHeight,
               reveal: handles.reveal,
+              recenter: handles.recenter,
               onIncidentTap: (incident) => _select(context, incident),
               onMapTap: () => _select(context, null),
             ),
@@ -350,7 +378,7 @@ class _MapPageCore extends HookWidget {
                 child: child,
               ),
             ),
-            child: _reportButton(context),
+            child: _mapActions(context, handles),
           ),
         ],
       ),
@@ -429,6 +457,7 @@ class _MapPageCore extends HookWidget {
                     focusInset: () => 0,
                     topInset: () => 0,
                     reveal: handles.reveal,
+                    recenter: handles.recenter,
                     onIncidentTap: (incident) => _select(context, incident),
                     onMapTap: () => _select(context, null),
                   ),
@@ -436,7 +465,7 @@ class _MapPageCore extends HookWidget {
                 Positioned(
                   right: RcbSpacing.xl,
                   bottom: RcbSpacing.xl,
-                  child: _reportButton(context),
+                  child: _mapActions(context, handles),
                 ),
               ],
             ),
@@ -488,6 +517,39 @@ class _FadeIn extends StatelessWidget {
         child: Transform.translate(
           offset: Offset(0, (1 - t) * 12),
           child: child,
+        ),
+      ),
+    );
+  }
+}
+
+/// Square map control in the chip language: bone card, hairline, soft lift.
+class _LocateButton extends StatelessWidget {
+  const _LocateButton({required this.tooltip, required this.onPressed});
+
+  final String tooltip;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: scheme.surface,
+        elevation: 2,
+        shadowColor: scheme.shadow,
+        shape: RoundedRectangleBorder(
+          borderRadius: RcbRadii.buttonBorder,
+          side: BorderSide(color: scheme.outlineVariant),
+        ),
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: RcbRadii.buttonBorder,
+          child: SizedBox.square(
+            dimension: 52,
+            child: Icon(Icons.my_location_rounded, color: scheme.onSurface),
+          ),
         ),
       ),
     );
