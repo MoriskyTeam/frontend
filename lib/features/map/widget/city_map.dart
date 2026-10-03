@@ -1,3 +1,5 @@
+import 'dart:ui' show lerpDouble;
+
 import 'package:domain/domain.dart';
 import 'package:dynamic_rcb_alerts/core/theme/rcb_colors.dart';
 import 'package:dynamic_rcb_alerts/core/theme/rcb_radii.dart';
@@ -9,17 +11,18 @@ import 'package:dynamic_rcb_alerts/shared/livery/incident_labels.dart';
 import 'package:dynamic_rcb_alerts/shared/widgets/neutral_tile_layer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 /// Rynek Główny — the camera's starting point before a position arrives.
 const krakowCentre = LatLng(50.0617, 19.9373);
 
-/// The live city map: neutral CARTO basemap, warning areas, markers.
+/// The live city map: neutral OSM basemap, warning areas, markers.
 ///
 /// Moves the camera to [selected] whenever it changes, keeping it clear of
 /// whatever overlays the bottom [focusInset] of the map.
-class CityMap extends StatefulWidget {
+class CityMap extends HookWidget {
   const CityMap({
     required this.incidents,
     required this.selected,
@@ -52,123 +55,107 @@ class CityMap extends StatefulWidget {
   final VoidCallback onMapTap;
   final MapController controller;
 
-  @override
-  State<CityMap> createState() => _CityMapState();
-}
-
-class _CityMapState extends State<CityMap> with TickerProviderStateMixin {
   static const _initialZoom = 13.4;
   static const _focusZoom = 15.0;
-
-  AnimationController? _camera;
-  bool _mapReady = false;
-
-  @override
-  void initState() {
-    super.initState();
-    widget.reveal.addListener(_onReveal);
-  }
-
-  /// Pans (without zooming) so a live arrival lands in the clear band
-  /// between the top chrome and the sheet — the odblask sweep must play
-  /// where the resident can see it.
-  void _onReveal() {
-    final incident = widget.reveal.value;
-    if (incident == null || !_mapReady || widget.selected != null) return;
-    final camera = widget.controller.camera;
-    final point = camera.latLngToScreenOffset(incident.location.latLng);
-    final top = widget.topInset();
-    final bottom = camera.size.height - widget.focusInset();
-    const margin = incidentMarkerExtent;
-    final visible =
-        point.dx >= margin &&
-        point.dx <= camera.size.width - margin &&
-        point.dy >= top + margin &&
-        point.dy <= bottom - margin;
-    if (!visible) _flyTo(incident.location.latLng, camera.zoom);
-  }
-
-  @override
-  void didUpdateWidget(CityMap oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    final selected = widget.selected;
-    if (selected != null && selected.id != oldWidget.selected?.id) {
-      _focusSelected();
-    }
-    final location = widget.userLocation;
-    if (location != null &&
-        oldWidget.userLocation == null &&
-        selected == null) {
-      _flyTo(location.point.latLng, 14);
-    }
-  }
-
-  void _focusSelected() {
-    final selected = widget.selected;
-    if (selected == null) return;
-    final zoom = selected.areaRadiusMeters != null ? 12.0 : _focusZoom;
-    _flyTo(selected.location.latLng, zoom);
-  }
-
-  void _flyTo(LatLng target, double zoom) {
-    // A shared link can select before the map has laid out; onMapReady
-    // replays the focus then.
-    if (!_mapReady) return;
-    _camera?.dispose();
-    final camera = widget.controller.camera;
-    // Centre the target in the band between the top chrome and the sheet.
-    final offset = Offset(0, (widget.topInset() - widget.focusInset()) / 2);
-    if (MediaQuery.disableAnimationsOf(context)) {
-      widget.controller.move(target, zoom, offset: offset);
-      return;
-    }
-    final latTween = Tween(
-      begin: camera.center.latitude,
-      end: target.latitude,
-    );
-    final lngTween = Tween(
-      begin: camera.center.longitude,
-      end: target.longitude,
-    );
-    final zoomTween = Tween(begin: camera.zoom, end: zoom);
-    final offsetTween = Tween(begin: Offset.zero, end: offset);
-    final controller = AnimationController(
-      vsync: this,
-      duration: RcbMotion.camera,
-    );
-    final curve = CurvedAnimation(
-      parent: controller,
-      curve: Curves.easeInOutCubic,
-    );
-    controller.addListener(() {
-      widget.controller.move(
-        LatLng(latTween.evaluate(curve), lngTween.evaluate(curve)),
-        zoomTween.evaluate(curve),
-        offset: offsetTween.evaluate(curve),
-      );
-    });
-    _camera = controller..forward();
-  }
-
-  @override
-  void dispose() {
-    widget.reveal.removeListener(_onReveal);
-    _camera?.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final dark = Theme.of(context).brightness == Brightness.dark;
-    final selectedId = widget.selected?.id;
-    final warnings = widget.incidents.where(
+    final reduceMotion = MediaQuery.disableAnimationsOf(context);
+
+    // Camera callbacks fire after this build (post-frame, onMapReady, live
+    // reveals), so they read the latest props instead of a captured build.
+    final latest = useRef(this)..value = this;
+    final mapReady = useRef(false);
+    final flight = useRef<_Flight?>(null);
+    final camera = useAnimationController(duration: RcbMotion.camera);
+
+    useOnListenableChange(camera, () {
+      final current = flight.value;
+      if (current == null) return;
+      current.apply(
+        latest.value.controller,
+        Curves.easeInOutCubic.transform(camera.value),
+      );
+    });
+
+    void flyTo(LatLng target, double zoom) {
+      // A shared link can select before the map has laid out; onMapReady
+      // replays the focus then.
+      if (!mapReady.value) return;
+      final map = latest.value;
+      // Centre the target in the band between the top chrome and the sheet.
+      final offset = Offset(0, (map.topInset() - map.focusInset()) / 2);
+      if (reduceMotion) {
+        map.controller.move(target, zoom, offset: offset);
+        return;
+      }
+      final from = map.controller.camera;
+      flight.value = _Flight(
+        fromCenter: from.center,
+        toCenter: target,
+        fromZoom: from.zoom,
+        toZoom: zoom,
+        offset: offset,
+      );
+      camera.forward(from: 0);
+    }
+
+    void focusSelected() {
+      final selected = latest.value.selected;
+      if (selected == null) return;
+      final zoom = selected.areaRadiusMeters != null ? 12.0 : _focusZoom;
+      flyTo(selected.location.latLng, zoom);
+    }
+
+    /// Pans (without zooming) so a live arrival lands in the clear band
+    /// between the top chrome and the sheet — the odblask sweep must play
+    /// where the resident can see it.
+    void revealArrival() {
+      final map = latest.value;
+      final incident = map.reveal.value;
+      if (incident == null || !mapReady.value || map.selected != null) return;
+      final view = map.controller.camera;
+      final point = view.latLngToScreenOffset(incident.location.latLng);
+      final top = map.topInset();
+      final bottom = view.size.height - map.focusInset();
+      const margin = incidentMarkerExtent;
+      final visible =
+          point.dx >= margin &&
+          point.dx <= view.size.width - margin &&
+          point.dy >= top + margin &&
+          point.dy <= bottom - margin;
+      if (!visible) flyTo(incident.location.latLng, view.zoom);
+    }
+
+    useOnListenableChange(reveal, revealArrival);
+
+    useEffect(() {
+      if (selected != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => focusSelected());
+      }
+      return null;
+    }, [selected?.id]);
+
+    useEffect(() {
+      final location = userLocation;
+      if (location != null && selected == null) {
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) => flyTo(location.point.latLng, 14),
+        );
+      }
+      return null;
+    }, [userLocation != null]);
+
+    final selectedId = selected?.id;
+    final warnings = incidents.where(
       (incident) =>
           incident.areaRadiusMeters != null &&
           incident.status != IncidentStatus.resolved,
     );
     // Draw low severity first so serious incidents sit on top.
-    final ordered = [...widget.incidents]
+    final ordered = [...incidents]
       ..sort((a, b) {
         if (a.id == selectedId) return 1;
         if (b.id == selectedId) return -1;
@@ -176,7 +163,7 @@ class _CityMapState extends State<CityMap> with TickerProviderStateMixin {
       });
 
     return FlutterMap(
-      mapController: widget.controller,
+      mapController: controller,
       options: MapOptions(
         initialCenter: krakowCentre,
         initialZoom: _initialZoom,
@@ -186,10 +173,10 @@ class _CityMapState extends State<CityMap> with TickerProviderStateMixin {
         interactionOptions: const InteractionOptions(
           flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
         ),
-        onTap: (_, _) => widget.onMapTap(),
+        onTap: (_, _) => onMapTap(),
         onMapReady: () {
-          _mapReady = true;
-          _focusSelected();
+          mapReady.value = true;
+          focusSelected();
         },
       ),
       children: [
@@ -209,7 +196,7 @@ class _CityMapState extends State<CityMap> with TickerProviderStateMixin {
                 borderColor: RcbColors.signalRed.withValues(alpha: 0.55),
                 borderStrokeWidth: 1.5,
               ),
-            if (widget.userLocation case final location?)
+            if (userLocation case final location?)
               CircleMarker(
                 point: location.point.latLng,
                 radius: nearbyRadiusMeters.toDouble(),
@@ -233,15 +220,15 @@ class _CityMapState extends State<CityMap> with TickerProviderStateMixin {
                   incident: incident,
                   selected: incident.id == selectedId,
                   dimmed: selectedId != null && incident.id != selectedId,
-                  arrived: widget.arrivedIds.contains(incident.id),
+                  arrived: arrivedIds.contains(incident.id),
                   semanticLabel:
                       '${l10n.titleOf(incident)}, '
                       '${l10n.severity(incident.severity)}, '
                       '${l10n.source(incident.source)}',
-                  onTap: () => widget.onIncidentTap(incident),
+                  onTap: () => onIncidentTap(incident),
                 ),
               ),
-            if (widget.userLocation case final location?)
+            if (userLocation case final location?)
               Marker(
                 point: location.point.latLng,
                 width: 28,
@@ -251,6 +238,34 @@ class _CityMapState extends State<CityMap> with TickerProviderStateMixin {
           ],
         ),
       ],
+    );
+  }
+}
+
+/// One camera move, interpolated by the shared camera controller.
+class _Flight {
+  const _Flight({
+    required this.fromCenter,
+    required this.toCenter,
+    required this.fromZoom,
+    required this.toZoom,
+    required this.offset,
+  });
+
+  final LatLng fromCenter;
+  final LatLng toCenter;
+  final double fromZoom;
+  final double toZoom;
+  final Offset offset;
+
+  void apply(MapController controller, double t) {
+    controller.move(
+      LatLng(
+        lerpDouble(fromCenter.latitude, toCenter.latitude, t)!,
+        lerpDouble(fromCenter.longitude, toCenter.longitude, t)!,
+      ),
+      lerpDouble(fromZoom, toZoom, t)!,
+      offset: Offset.lerp(Offset.zero, offset, t)!,
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:dynamic_rcb_alerts/shared/livery/battenburg.dart';
 import 'package:dynamic_rcb_alerts/shared/livery/incident_livery.dart';
 import 'package:dynamic_rcb_alerts/shared/livery/odblask_sweep.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 /// Outer box every marker is laid out in; keeps the 48 dp touch target.
 const incidentMarkerExtent = 56.0;
@@ -235,51 +236,36 @@ class _StrikePainter extends CustomPainter {
 }
 
 /// Slow expanding ring behind high-severity markers.
-class _Pulse extends StatefulWidget {
+class _Pulse extends HookWidget {
   const _Pulse({required this.color});
 
   final Color color;
 
   @override
-  State<_Pulse> createState() => _PulseState();
-}
-
-class _PulseState extends State<_Pulse> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-    duration: RcbMotion.pulse,
-  );
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (MediaQuery.disableAnimationsOf(context)) {
-      _controller.stop();
-    } else if (!_controller.isAnimating) {
-      _controller.repeat();
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final controller = useAnimationController(duration: RcbMotion.pulse);
+    final reduceMotion = MediaQuery.disableAnimationsOf(context);
+    useEffect(() {
+      if (reduceMotion) {
+        controller.stop();
+      } else {
+        controller.repeat();
+      }
+      return null;
+    }, [reduceMotion]);
+
     return IgnorePointer(
       child: AnimatedBuilder(
-        animation: _controller,
+        animation: controller,
         builder: (context, _) {
-          final t = Curves.easeOut.transform(_controller.value);
+          final t = Curves.easeOut.transform(controller.value);
           return Container(
             width: 40 + 16 * t,
             height: 40 + 16 * t,
             decoration: BoxDecoration(
               borderRadius: RcbRadii.cardBorder,
               border: Border.all(
-                color: widget.color.withValues(alpha: (1 - t) * 0.8),
+                color: color.withValues(alpha: (1 - t) * 0.8),
                 width: 2,
               ),
             ),

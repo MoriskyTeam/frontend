@@ -1,12 +1,13 @@
 import 'package:dynamic_rcb_alerts/core/theme/rcb_radii.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 /// The signature move: when [active] turns on, a band of light crosses the
 /// child diagonally, like headlights catching retroreflective tape.
 ///
 /// Plays twice and settles. Under reduced motion it renders nothing extra —
 /// the arrival is still announced by the surrounding UI.
-class OdblaskSweep extends StatefulWidget {
+class OdblaskSweep extends HookWidget {
   const OdblaskSweep({
     required this.active,
     required this.child,
@@ -19,55 +20,31 @@ class OdblaskSweep extends StatefulWidget {
   final double intensity;
 
   @override
-  State<OdblaskSweep> createState() => _OdblaskSweepState();
-}
-
-class _OdblaskSweepState extends State<OdblaskSweep>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-    duration: RcbMotion.sweep,
-  );
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.active) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _play());
-    }
-    WidgetsBinding.instance.addPostFrameCallback((_) => _play());
-  }
-
-  @override
-  void didUpdateWidget(OdblaskSweep oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.active && !oldWidget.active) _play();
-  }
-
-  Future<void> _play() async {
-    if (!mounted || MediaQuery.disableAnimationsOf(context)) return;
-    for (var pass = 0; pass < 2 && mounted; pass++) {
-      await _controller.forward(from: 0);
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final controller = useAnimationController(duration: RcbMotion.sweep);
+    final reduceMotion = MediaQuery.disableAnimationsOf(context);
+
+    // Plays on mount when already active, and whenever it turns on.
+    useEffect(() {
+      if (!active || reduceMotion) return null;
+      var cancelled = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        for (var pass = 0; pass < 2 && !cancelled; pass++) {
+          await controller.forward(from: 0);
+        }
+      });
+      return () => cancelled = true;
+    }, [active]);
+
     return AnimatedBuilder(
-      animation: _controller,
-      child: widget.child,
+      animation: controller,
+      child: child,
       builder: (context, child) {
-        if (!_controller.isAnimating) return child!;
-        final t = RcbMotion.standard.transform(_controller.value);
+        if (!controller.isAnimating) return child!;
+        final t = RcbMotion.standard.transform(controller.value);
         // Band travels from beyond the top-left to beyond the bottom-right.
         final centre = -0.6 + t * 2.2;
-        final light = Colors.white.withValues(alpha: widget.intensity);
+        final light = Colors.white.withValues(alpha: intensity);
         return ShaderMask(
           blendMode: BlendMode.srcATop,
           shaderCallback: (bounds) => LinearGradient(
