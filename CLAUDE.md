@@ -53,12 +53,12 @@ Two flavors, one Firebase project (`dynamic-rcb-alerts`, push only) for now:
 - Shared bootstrap: `lib/bootstrap.dart` → `FlavorConfig.init(flavor)` →
   `bootstrapFirebase(flavor)` (FCM, mobile only) → `bootstrapSupabase()` →
   `configureDependencies(environment:)` → `runApp`.
-- Supabase keys: `config/supabase_<flavor>.json` (gitignored; template
-  `config/supabase.example.json`), passed via `--dart-define-from-file` by the
-  Makefile and the `.run/` IDE configs (a plain `flutter run` without it runs
-  on the mock — look for the DEMO badge). With keys DI binds the `supabase` environment, without them the
-  `mock` environment (`DataEnvironment` in `packages/data`), so a fresh clone
-  still runs.
+- Supabase: the project URL and publishable key are built into
+  `lib/core/supabase/supabase_bootstrap.dart` (public by design, access is
+  enforced by RLS), so every run talks to Supabase. `config/supabase_<flavor>.json`
+  (gitignored, template `config/supabase.example.json`) can override them via
+  `--dart-define-from-file`. The mock feed runs only with
+  `--dart-define=USE_MOCK=true` (DI `mock` environment, DEMO badge).
 - Web deploys to Firebase Hosting with `make deploy-web` — only when
   explicitly asked.
 - Android handles its own per-flavor `google-services.json` via `src/<flavor>/`.

@@ -13,8 +13,8 @@ Keys go to `config/supabase_<flavor>.json` (gitignored, template in
 { "SUPABASE_URL": "https://<project-ref>.supabase.co", "SUPABASE_KEY": "<publishable-or-anon-key>" }
 ```
 
-`make run-dev` / `make run-web` pass the file automatically. Without it the app
-runs on the built-in mock feed.
+The URL and publishable key are also built into the app as defaults, so the
+file is only an override. The mock feed runs only with `--dart-define=USE_MOCK=true`.
 
 ## Auth
 

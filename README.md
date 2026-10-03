@@ -34,9 +34,10 @@ make run-web        # run dev flavor in Chrome
 make deploy-web     # build prod web + deploy to Firebase Hosting
 ```
 
-Supabase keys: copy `config/supabase.example.json` to
-`config/supabase_development.json` / `config/supabase_production.json`.
-Without them the app runs on the built-in mock feed.
+Supabase is built in (project URL + publishable key in
+`lib/core/supabase/supabase_bootstrap.dart`); `config/supabase_<flavor>.json`
+can override it. Run on the offline mock feed with
+`--dart-define=USE_MOCK=true`.
 
 ## Testing
 
