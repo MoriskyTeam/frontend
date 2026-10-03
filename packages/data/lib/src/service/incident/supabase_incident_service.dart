@@ -3,6 +3,7 @@ import 'package:data/src/di/data_environment.dart';
 import 'package:data/src/model/incident/incident_dto.dart';
 import 'package:data/src/model/incident/submit_report_dto.dart';
 import 'package:data/src/service/incident/incident_service.dart';
+import 'package:domain/domain.dart';
 import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
@@ -31,10 +32,18 @@ class SupabaseIncidentService implements IncidentService {
 
   @override
   Future<IncidentDTO> submitReport({required SubmitReportDTO data}) async {
-    final userId = _userId;
-    final photoUrl = data.photoPath == null || userId == null
+    // RLS only accepts reports filed as the signed-in resident; fail loudly
+    // instead of sending `reporter_id: null` and losing the photo.
+    final userId =
+        _userId ??
+        (throw const ApiException(
+          kind: ApiErrorKind.unauthorized,
+          message: 'No Supabase session for the report',
+        ));
+    final photoPath = data.photoPath;
+    final photoUrl = photoPath == null
         ? null
-        : await _uploadPhoto(path: data.photoPath!, userId: userId);
+        : await _uploadPhoto(path: photoPath, userId: userId);
 
     final row = await _client
         .from(_table)

@@ -64,7 +64,10 @@ class DataPackageModule extends _i526.MicroPackageModule {
       registerFor: {_supabase},
     );
     gh.factory<_i494.IncidentRepository>(
-      () => _i635.IncidentRepositoryImpl(gh<_i912.IncidentService>()),
+      () => _i635.IncidentRepositoryImpl(
+        gh<_i912.IncidentService>(),
+        gh<_i1054.AuthService>(),
+      ),
     );
     gh.factory<_i494.AuthRepository>(
       () => _i40.AuthRepositoryImpl(gh<_i1054.AuthService>()),
