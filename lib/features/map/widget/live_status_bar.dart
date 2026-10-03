@@ -4,6 +4,7 @@ import 'package:dynamic_rcb_alerts/core/theme/rcb_typography.dart';
 import 'package:dynamic_rcb_alerts/l10n/gen/app_localizations.dart';
 import 'package:dynamic_rcb_alerts/shared/widgets/brand_mark.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 /// Top bar: wordmark, live state, and the one-line answer to "is anything
 /// happening around me?".
@@ -119,39 +120,29 @@ class LiveStatusBar extends StatelessWidget {
   }
 }
 
-class _LivePill extends StatefulWidget {
+class _LivePill extends HookWidget {
   const _LivePill();
-
-  @override
-  State<_LivePill> createState() => _LivePillState();
-}
-
-class _LivePillState extends State<_LivePill>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _blink = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 1400),
-  );
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (MediaQuery.disableAnimationsOf(context)) {
-      _blink.value = 1;
-    } else if (!_blink.isAnimating) {
-      _blink.repeat(reverse: true);
-    }
-  }
-
-  @override
-  void dispose() {
-    _blink.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final blink = useAnimationController(
+      duration: const Duration(milliseconds: 1400),
+    );
+    final reduceMotion = MediaQuery.disableAnimationsOf(context);
+    useEffect(() {
+      if (reduceMotion) {
+        blink.value = 1;
+      } else {
+        blink.repeat(reverse: true);
+      }
+      return null;
+    }, [reduceMotion]);
+    final opacity = useMemoized(
+      () => Tween<double>(begin: 0.25, end: 1).animate(blink),
+      [blink],
+    );
+
     return Container(
       height: 24,
       padding: const EdgeInsets.symmetric(horizontal: RcbSpacing.sm),
@@ -164,7 +155,7 @@ class _LivePillState extends State<_LivePill>
         mainAxisSize: MainAxisSize.min,
         children: [
           FadeTransition(
-            opacity: Tween<double>(begin: 0.25, end: 1).animate(_blink),
+            opacity: opacity,
             child: Container(
               width: 7,
               height: 7,

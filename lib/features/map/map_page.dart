@@ -17,6 +17,7 @@ import 'package:dynamic_rcb_alerts/shared/livery/incident_labels.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_map/flutter_map.dart' show MapController;
 import 'package:go_router/go_router.dart';
 
@@ -39,50 +40,49 @@ class MapPage extends StatelessWidget {
   }
 }
 
-class _MapPageCore extends StatefulWidget {
-  const _MapPageCore();
+/// Controllers the map screen keeps across rebuilds, owned by hooks.
+class _MapHandles {
+  const _MapHandles({
+    required this.mapController,
+    required this.sheetController,
+    required this.sheetExtent,
+    required this.reveal,
+    required this.topChromeKey,
+  });
 
-  @override
-  State<_MapPageCore> createState() => _MapPageCoreState();
+  final MapController mapController;
+  final DraggableScrollableController sheetController;
+  final ValueNotifier<double> sheetExtent;
+  final ValueNotifier<Incident?> reveal;
+  final GlobalKey topChromeKey;
+
+  /// Height of the status card + chips overlay, so the camera keeps targets
+  /// out from under it.
+  double topChromeHeight() {
+    final box = topChromeKey.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null || !box.hasSize) return 0;
+    return box.localToGlobal(Offset.zero).dy + box.size.height;
+  }
 }
 
-class _MapPageCoreState extends State<_MapPageCore> {
+class _MapPageCore extends HookWidget {
+  const _MapPageCore();
+
   static const _wideBreakpoint = 840.0;
   static const _sheetPeek = 0.34;
   static const _sheetMin = 0.16;
   static const _sheetDetail = 0.58;
   static const _sheetMax = 0.92;
 
-  final _mapController = MapController();
-  final _sheetController = DraggableScrollableController();
-  final _sheetExtent = ValueNotifier<double>(_sheetPeek);
-  final _reveal = ValueNotifier<Incident?>(null);
-  final GlobalKey _topChromeKey = GlobalKey();
-
-  /// Height of the status card + chips overlay, so the camera keeps targets
-  /// out from under it.
-  double _topChromeHeight() {
-    final box = _topChromeKey.currentContext?.findRenderObject() as RenderBox?;
-    if (box == null || !box.hasSize) return 0;
-    return box.localToGlobal(Offset.zero).dy + box.size.height;
-  }
-
-  @override
-  void dispose() {
-    _sheetController.dispose();
-    _sheetExtent.dispose();
-    _reveal.dispose();
-    super.dispose();
-  }
-
-  void _select(Incident? incident) =>
+  void _select(BuildContext context, Incident? incident) =>
       context.read<MapCubit>().select(incident?.id);
 
-  void _syncSheet(MapState state) {
-    if (!_sheetController.isAttached) return;
+  void _syncSheet(_MapHandles handles, MapState state) {
+    final sheet = handles.sheetController;
+    if (!sheet.isAttached) return;
     final target = state.selectedIncidentId == null ? _sheetPeek : _sheetDetail;
     unawaited(
-      _sheetController.animateTo(
+      sheet.animateTo(
         target,
         duration: RcbMotion.medium,
         curve: RcbMotion.standard,
@@ -90,25 +90,26 @@ class _MapPageCoreState extends State<_MapPageCore> {
     );
   }
 
-  Future<void> _openReport() async {
+  Future<void> _openReport(BuildContext context) async {
     unawaited(HapticFeedback.mediumImpact());
     final cubit = context.read<MapCubit>();
     final messenger = ScaffoldMessenger.of(context);
     final l10n = AppLocalizations.of(context);
     final incident = await context.push<Incident>('/report');
-    if (incident == null || !mounted) return;
-    cubit.focusOwnReport(incident);
-    _select(incident);
+    if (incident == null || !context.mounted) return;
+    cubit
+      ..focusOwnReport(incident)
+      ..select(incident.id);
     messenger.showSnackBar(_snackBar(context, Text(l10n.reportSent)));
   }
 
-  void _onEvent(BuildContext context, MapEvent event) {
+  void _onEvent(BuildContext context, _MapHandles handles, MapEvent event) {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     switch (event) {
       case IncidentArrived(:final incident):
         unawaited(HapticFeedback.lightImpact());
-        _reveal.value = incident;
+        handles.reveal.value = incident;
         final state = context.read<MapCubit>().state;
         final origin = MapViewData.from(state).origin;
         final distance = formatDistance(
@@ -123,7 +124,7 @@ class _MapPageCoreState extends State<_MapPageCore> {
               Text(l10n.newNearby(l10n.titleOf(incident), distance)),
               action: SnackBarAction(
                 label: l10n.show,
-                onPressed: () => _select(incident),
+                onPressed: () => _select(context, incident),
               ),
             ),
           );
@@ -152,19 +153,27 @@ class _MapPageCoreState extends State<_MapPageCore> {
 
   @override
   Widget build(BuildContext context) {
+    final handles = _MapHandles(
+      mapController: useMemoized(MapController.new),
+      sheetController: useDraggableScrollableController(),
+      sheetExtent: useValueNotifier(_sheetPeek),
+      reveal: useValueNotifier<Incident?>(null),
+      topChromeKey: useMemoized(GlobalKey.new),
+    );
+
     return BlocPresentationListener<MapCubit, MapEvent>(
-      listener: _onEvent,
+      listener: (context, event) => _onEvent(context, handles, event),
       child: BlocConsumer<MapCubit, MapState>(
         listenWhen: (previous, current) =>
             previous.selectedIncidentId != current.selectedIncidentId,
-        listener: (_, state) => _syncSheet(state),
+        listener: (_, state) => _syncSheet(handles, state),
         builder: (context, state) {
           final data = MapViewData.from(state);
           return LayoutBuilder(
             builder: (context, constraints) =>
                 constraints.maxWidth >= _wideBreakpoint
-                ? _buildWide(context, state, data)
-                : _buildCompact(context, state, data, constraints),
+                ? _buildWide(context, handles, state, data)
+                : _buildCompact(context, handles, state, data, constraints),
           );
         },
       ),
@@ -197,7 +206,7 @@ class _MapPageCoreState extends State<_MapPageCore> {
               origin: data.origin,
               now: now,
               confirmedByMe: state.confirmedByMe.contains(selected.id),
-              onClose: () => _select(null),
+              onClose: () => _select(context, null),
               onConfirm: () => cubit.confirm(selected.id),
               scrollController: scrollController,
               header: header,
@@ -207,7 +216,7 @@ class _MapPageCoreState extends State<_MapPageCore> {
               now: now,
               arrivedIds: state.arrivedIds,
               allLayersOff: state.enabledLayers.isEmpty,
-              onSelect: _select,
+              onSelect: (incident) => _select(context, incident),
               onEnableAllLayers: cubit.enableAllLayers,
               scrollController: scrollController,
               header: header,
@@ -219,7 +228,7 @@ class _MapPageCoreState extends State<_MapPageCore> {
     final l10n = AppLocalizations.of(context);
     return FloatingActionButton.extended(
       heroTag: 'report',
-      onPressed: _openReport,
+      onPressed: () => _openReport(context),
       icon: const Icon(Icons.add_a_photo_outlined),
       label: Text(l10n.reportAction.toUpperCase()),
     );
@@ -227,6 +236,7 @@ class _MapPageCoreState extends State<_MapPageCore> {
 
   Widget _buildCompact(
     BuildContext context,
+    _MapHandles handles,
     MapState state,
     MapViewData data,
     BoxConstraints constraints,
@@ -240,7 +250,7 @@ class _MapPageCoreState extends State<_MapPageCore> {
         children: [
           Positioned.fill(
             child: CityMap(
-              controller: _mapController,
+              controller: handles.mapController,
               incidents: data.visible,
               selected: data.selected,
               arrivedIds: state.arrivedIds,
@@ -249,17 +259,17 @@ class _MapPageCoreState extends State<_MapPageCore> {
                   height *
                   (state.selectedIncidentId != null
                       ? _sheetDetail
-                      : _sheetExtent.value),
-              topInset: _topChromeHeight,
-              reveal: _reveal,
-              onIncidentTap: _select,
-              onMapTap: () => _select(null),
+                      : handles.sheetExtent.value),
+              topInset: handles.topChromeHeight,
+              reveal: handles.reveal,
+              onIncidentTap: (incident) => _select(context, incident),
+              onMapTap: () => _select(context, null),
             ),
           ),
           SafeArea(
             bottom: false,
             child: Column(
-              key: _topChromeKey,
+              key: handles.topChromeKey,
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -288,11 +298,11 @@ class _MapPageCoreState extends State<_MapPageCore> {
           ),
           NotificationListener<DraggableScrollableNotification>(
             onNotification: (notification) {
-              _sheetExtent.value = notification.extent;
+              handles.sheetExtent.value = notification.extent;
               return false;
             },
             child: DraggableScrollableSheet(
-              controller: _sheetController,
+              controller: handles.sheetController,
               initialChildSize: _sheetPeek,
               minChildSize: _sheetMin,
               maxChildSize: _sheetMax,
@@ -327,7 +337,7 @@ class _MapPageCoreState extends State<_MapPageCore> {
             ),
           ),
           ValueListenableBuilder<double>(
-            valueListenable: _sheetExtent,
+            valueListenable: handles.sheetExtent,
             builder: (context, extent, child) => Positioned(
               right: RcbSpacing.lg,
               bottom: height * extent + RcbSpacing.md,
@@ -346,6 +356,7 @@ class _MapPageCoreState extends State<_MapPageCore> {
 
   Widget _buildWide(
     BuildContext context,
+    _MapHandles handles,
     MapState state,
     MapViewData data,
   ) {
@@ -406,16 +417,16 @@ class _MapPageCoreState extends State<_MapPageCore> {
               children: [
                 Positioned.fill(
                   child: CityMap(
-                    controller: _mapController,
+                    controller: handles.mapController,
                     incidents: data.visible,
                     selected: data.selected,
                     arrivedIds: state.arrivedIds,
                     userLocation: state.userLocation,
                     focusInset: () => 0,
                     topInset: () => 0,
-                    reveal: _reveal,
-                    onIncidentTap: _select,
-                    onMapTap: () => _select(null),
+                    reveal: handles.reveal,
+                    onIncidentTap: (incident) => _select(context, incident),
+                    onMapTap: () => _select(context, null),
                   ),
                 ),
                 Positioned(
