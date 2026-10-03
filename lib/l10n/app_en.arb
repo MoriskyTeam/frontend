@@ -2,8 +2,6 @@
   "@@locale": "en",
   "appTitle": "CityShield",
   "liveBadge": "LIVE",
-  "demoBadge": "DEMO",
-  "demoDataNote": "Demo data — incidents are synthetic",
   "layerInfrastructure": "Outages",
   "layerAirQuality": "Air",
   "layerWeather": "Weather",

@@ -34,7 +34,7 @@ Same shape as siblings on Slawek's stack:
   imports. No `data` imports.**
 - `packages/data/` — data implementation. Supabase services (PostgREST,
   Realtime, Storage, Auth), DTOs, mappers, repository implementations, local
-  storage, plus mock services for running without a backend. **May import
+  storage. No mock data sources. **May import
   `domain` only.**
 - `lib/` — Flutter app and presentation layer. DI (get_it + injectable),
   GoRouter routing, theme/design system, feature UIs, shared
@@ -57,8 +57,8 @@ Two flavors, one Firebase project (`dynamic-rcb-alerts`, push only) for now:
   `lib/core/supabase/supabase_bootstrap.dart` (public by design, access is
   enforced by RLS), so every run talks to Supabase. `config/supabase_<flavor>.json`
   (gitignored, template `config/supabase.example.json`) can override them via
-  `--dart-define-from-file`. The mock feed runs only with
-  `--dart-define=USE_MOCK=true` (DI `mock` environment, DEMO badge).
+  `--dart-define-from-file`. There is no mock feed: without a connection the
+  map stays empty with an offline state and a retry.
 - Web deploys to Firebase Hosting with `make deploy-web` — only when
   explicitly asked.
 - Android handles its own per-flavor `google-services.json` via `src/<flavor>/`.

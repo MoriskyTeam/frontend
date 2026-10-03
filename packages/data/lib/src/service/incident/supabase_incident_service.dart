@@ -1,5 +1,4 @@
 import 'package:cross_file/cross_file.dart';
-import 'package:data/src/di/data_environment.dart';
 import 'package:data/src/model/incident/incident_dto.dart';
 import 'package:data/src/model/incident/submit_report_dto.dart';
 import 'package:data/src/service/incident/incident_service.dart';
@@ -10,7 +9,6 @@ import 'package:uuid/uuid.dart';
 
 /// Incidents from the `incidents` table, kept live through Supabase
 /// Realtime. Schema contract: `docs/supabase_contract.md`.
-@supabaseEnv
 @LazySingleton(as: IncidentService)
 class SupabaseIncidentService implements IncidentService {
   SupabaseIncidentService(this._client);

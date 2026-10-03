@@ -1,5 +1,5 @@
--- Kraków demo data (synthetic). Generated from
--- packages/data/lib/src/service/incident/mock_incident_seed.dart.
+-- Kraków demo data (synthetic) — official sources and resident reports for
+-- a lively map from day one. Times are relative to now().
 insert into public.incidents (id, layer, category, severity, status, source, title, description, address, lat, lng, reported_at, updated_at, confirmations, area_radius_meters, air_reading) values
   ('inf-001', 'infrastructure', 'power_outage', 'high', 'confirmed', 'utility', 'Brak prądu', 'Awaria kabla średniego napięcia. Bez zasilania ok. 40 budynków. Przewidywane przywrócenie: 18:30.', 'Kazimierz, ul. Józefa', 50.0515, 19.9446, now() - interval '34 minutes', now() - interval '34 minutes', 12, null, null),
   ('inf-002', 'infrastructure', 'flooding', 'high', 'confirmed', 'city19115', 'Zalane przejście podziemne', 'Woda po kostki w przejściu pod rondem. Zejścia od strony ul. Lubicz zamknięte, służby pompują.', 'Rondo Mogilskie', 50.0655, 19.96, now() - interval '18 minutes', now() - interval '18 minutes', 7, null, null),

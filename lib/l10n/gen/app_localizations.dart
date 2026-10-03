@@ -110,18 +110,6 @@ abstract class AppLocalizations {
   /// **'LIVE'**
   String get liveBadge;
 
-  /// No description provided for @demoBadge.
-  ///
-  /// In en, this message translates to:
-  /// **'DEMO'**
-  String get demoBadge;
-
-  /// No description provided for @demoDataNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Demo data — incidents are synthetic'**
-  String get demoDataNote;
-
   /// No description provided for @layerInfrastructure.
   ///
   /// In en, this message translates to:

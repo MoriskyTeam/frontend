@@ -44,8 +44,9 @@ each. CityShield shows them together, around you, as it happens.
 - One-handed phone use outdoors, often in sunlight or at night, often in a
   hurry.
 - Glance first (map + nearest alerts), act second (report).
-- Live updates arrive over WebSocket/SSE from the backend built by a teammate;
-  the Flutter app currently runs on **mock data** only.
+- The backend (built by a teammate) is Supabase; the Flutter app reads and
+  writes it directly, with Realtime for live updates. There is no offline
+  mock.
 
 ## Capabilities and Constraints
 
@@ -54,9 +55,9 @@ each. CityShield shows them together, around you, as it happens.
   **Zgłoszenia sąsiedzkie** (resident reports).
 - Quick report form: category, photo, geolocation, short note.
 - Map: `flutter_map` with OSM-compatible tiles, no API keys.
-- Starting view and mock data: **Kraków**.
-- Backend is out of scope for this repo's current work; data layer is mocked
-  behind the domain repository interfaces so the real feed can be swapped in.
+- Starting view and demo data: **Kraków**.
+- Backend lives in the teammate's `cityshield-api` repo (Supabase); this repo
+  holds the client contract in `docs/supabase_contract.md`.
 - 24h hackathon build.
 
 ## Brand Commitments
@@ -65,7 +66,7 @@ Working name "CityShield". No logo, palette or voice assets exist yet.
 
 ## Evidence on Hand
 
-None. All incidents, stations and reports are mock data and must be clearly
+None. The seeded incidents, stations and reports are synthetic demo data and must be clearly
 treated as such; do not invent usage numbers, partners or endorsements.
 
 ## Product Principles

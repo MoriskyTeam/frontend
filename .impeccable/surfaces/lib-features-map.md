@@ -9,7 +9,7 @@ related_targets: ["lib/features/report"]
 
 Scope: `lib/features/map` (live map, layer filters, nearby list, incident detail) and `lib/features/report` (quick report flow). Visitor mode: **Operate**.
 
-Task: a Kraków resident glances at what is wrong around them (3 s) and reports a problem with photo + location (15 s). Content: mock incidents across four layers (Awarie/19115, Jakość powietrza GIOŚ, Ostrzeżenia IMGW, Zgłoszenia sąsiedzkie), simulated live arrivals. Constraints: flutter_map, no API keys, Android/iOS/Web, mock data labelled as demo.
+Task: a Kraków resident glances at what is wrong around them (3 s) and reports a problem with photo + location (15 s). Content: Supabase incidents across four layers (Awarie/19115, Jakość powietrza GIOŚ, Ostrzeżenia IMGW, Zgłoszenia sąsiedzkie), live arrivals over Realtime. Constraints: flutter_map, no API keys, Android/iOS/Web; no connection means an empty map with an offline state.
 
 ## Direction contract
 

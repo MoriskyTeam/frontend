@@ -24,7 +24,6 @@ class NearbyPanel extends StatelessWidget {
     required this.arrivedIds,
     required this.allLayersOff,
     required this.loadFailed,
-    required this.showDemoNote,
     required this.onRetry,
     required this.onSelect,
     required this.onEnableAllLayers,
@@ -40,7 +39,6 @@ class NearbyPanel extends StatelessWidget {
 
   /// The feed failed; shown instead of the (empty) list.
   final bool loadFailed;
-  final bool showDemoNote;
   final VoidCallback onRetry;
   final ValueChanged<Incident> onSelect;
   final VoidCallback onEnableAllLayers;
@@ -206,10 +204,7 @@ class NearbyPanel extends StatelessWidget {
           ),
           sliver: SliverToBoxAdapter(
             child: Text(
-              [
-                if (showDemoNote) l10n.demoDataNote,
-                l10n.mapAttribution,
-              ].join('\n'),
+              l10n.mapAttribution,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),

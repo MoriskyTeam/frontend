@@ -15,12 +15,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get liveBadge => 'NA ŻYWO';
 
   @override
-  String get demoBadge => 'DEMO';
-
-  @override
-  String get demoDataNote => 'Dane demonstracyjne — zdarzenia są fikcyjne';
-
-  @override
   String get layerInfrastructure => 'Awarie';
 
   @override

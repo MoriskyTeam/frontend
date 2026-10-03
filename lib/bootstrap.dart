@@ -36,8 +36,8 @@ Future<void> bootstrap(Flavor flavor) async {
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   }
 
-  final environment = await bootstrapSupabase();
-  await configureDependencies(environment: environment);
+  await bootstrapSupabase();
+  await configureDependencies();
 
   runApp(const RcbAlertsApp());
 }

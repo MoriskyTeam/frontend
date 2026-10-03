@@ -36,8 +36,8 @@ make deploy-web     # build prod web + deploy to Firebase Hosting
 
 Supabase is built in (project URL + publishable key in
 `lib/core/supabase/supabase_bootstrap.dart`); `config/supabase_<flavor>.json`
-can override it. Run on the offline mock feed with
-`--dart-define=USE_MOCK=true`.
+can override it. There is no offline mock: without a connection the map stays
+empty and says so.
 
 ## Testing
 

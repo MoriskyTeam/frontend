@@ -15,12 +15,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get liveBadge => 'LIVE';
 
   @override
-  String get demoBadge => 'DEMO';
-
-  @override
-  String get demoDataNote => 'Demo data — incidents are synthetic';
-
-  @override
   String get layerInfrastructure => 'Outages';
 
   @override

@@ -2,8 +2,6 @@
   "@@locale": "pl",
   "appTitle": "CityShield",
   "liveBadge": "NA ŻYWO",
-  "demoBadge": "DEMO",
-  "demoDataNote": "Dane demonstracyjne — zdarzenia są fikcyjne",
   "layerInfrastructure": "Awarie",
   "layerAirQuality": "Powietrze",
   "layerWeather": "Pogoda",

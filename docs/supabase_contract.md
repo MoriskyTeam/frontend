@@ -14,7 +14,8 @@ Keys go to `config/supabase_<flavor>.json` (gitignored, template in
 ```
 
 The URL and publishable key are also built into the app as defaults, so the
-file is only an override. The mock feed runs only with `--dart-define=USE_MOCK=true`.
+file is only an override. The app has no offline mock — no connection means an
+empty map with an offline message.
 
 ## Auth
 
@@ -141,6 +142,6 @@ with the service role.
 
 ## Seed
 
-`docs/supabase_seed.sql` holds the Kraków demo data (synthetic) from the app's
-mock feed, so the map has content from day one. Its `reported_at` values are
+`docs/supabase_seed.sql` holds the Kraków demo data (synthetic), so the map
+has content from day one. Its `reported_at` values are
 relative to `now()`.
