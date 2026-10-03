@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc_presentation/bloc_presentation.dart';
+import 'package:domain/domain.dart';
 import 'package:dynamic_rcb_alerts/core/di/injection.dart';
 import 'package:dynamic_rcb_alerts/core/theme/rcb_radii.dart';
 import 'package:dynamic_rcb_alerts/features/report/bloc/report_cubit.dart';
@@ -8,6 +9,7 @@ import 'package:dynamic_rcb_alerts/features/report/widget/category_picker.dart';
 import 'package:dynamic_rcb_alerts/features/report/widget/location_picker.dart';
 import 'package:dynamic_rcb_alerts/features/report/widget/photo_field.dart';
 import 'package:dynamic_rcb_alerts/l10n/gen/app_localizations.dart';
+import 'package:dynamic_rcb_alerts/shared/livery/incident_labels.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,14 +44,20 @@ class _ReportPageCore extends StatelessWidget {
         switch (event) {
           case ReportSubmitted(:final incident):
             unawaited(HapticFeedback.mediumImpact());
-            context.pop(incident);
+            // Opened from a link or after a refresh there is no map below
+            // to return to — land on the map, focused on the new report.
+            if (context.canPop()) {
+              context.pop(incident);
+            } else {
+              context.go('/?incident=${incident.id}');
+            }
           case ReportFailed():
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(l10n.reportFailed),
                 action: SnackBarAction(
                   label: l10n.retry,
-                  onPressed: context.read<ReportCubit>().submit,
+                  onPressed: () => _submit(context),
                 ),
               ),
             );
@@ -94,7 +102,7 @@ class _ReportPageBody extends StatelessWidget {
         leading: IconButton(
           tooltip: l10n.close,
           icon: const Icon(Icons.close_rounded),
-          onPressed: () => context.pop(),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/'),
         ),
         title: Text(l10n.reportTitle),
         bottom: PreferredSize(
@@ -146,6 +154,14 @@ class _ReportPageBody extends StatelessWidget {
                         ),
                       ),
                     const SizedBox(height: RcbSpacing.sm),
+                    if (state.location case final location?)
+                      Text(
+                        state.address ??
+                            (state.addressStatus.isLoading
+                                ? l10n.reportAddressLoading
+                                : location.coordinatesLabel),
+                        style: theme.textTheme.titleMedium,
+                      ),
                     Text(
                       [
                         if (state.locationIsFallback)
@@ -209,7 +225,7 @@ class _ReportPageBody extends StatelessWidget {
                         ),
                       ),
                     FilledButton(
-                      onPressed: canSend ? cubit.submit : null,
+                      onPressed: canSend ? () => _submit(context) : null,
                       child: sending
                           ? Row(
                               mainAxisSize: MainAxisSize.min,
@@ -236,4 +252,20 @@ class _ReportPageBody extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Sends the report with its headline: the localised category name, so every
+/// client (and the backend) shows the same title the map shows.
+void _submit(BuildContext context) {
+  final cubit = context.read<ReportCubit>();
+  final category = cubit.state.category;
+  if (category == null) return;
+  unawaited(
+    cubit.submit(title: AppLocalizations.of(context).category(category)),
+  );
+}
+
+extension on GeoPoint {
+  String get coordinatesLabel =>
+      '${latitude.toStringAsFixed(4)}, ${longitude.toStringAsFixed(4)}';
 }

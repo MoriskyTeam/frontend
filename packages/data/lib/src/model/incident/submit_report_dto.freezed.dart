@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SubmitReportDTO {
 
- String? get category; double? get lat; double? get lng; String? get description; String? get photoPath;
+ String? get category; String? get title; double? get lat; double? get lng; String? get address; String? get description; String? get photoPath;
 /// Create a copy of SubmitReportDTO
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $SubmitReportDTOCopyWith<SubmitReportDTO> get copyWith => _$SubmitReportDTOCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmitReportDTO&&(identical(other.category, category) || other.category == category)&&(identical(other.lat, lat) || other.lat == lat)&&(identical(other.lng, lng) || other.lng == lng)&&(identical(other.description, description) || other.description == description)&&(identical(other.photoPath, photoPath) || other.photoPath == photoPath));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmitReportDTO&&(identical(other.category, category) || other.category == category)&&(identical(other.title, title) || other.title == title)&&(identical(other.lat, lat) || other.lat == lat)&&(identical(other.lng, lng) || other.lng == lng)&&(identical(other.address, address) || other.address == address)&&(identical(other.description, description) || other.description == description)&&(identical(other.photoPath, photoPath) || other.photoPath == photoPath));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,category,lat,lng,description,photoPath);
+int get hashCode => Object.hash(runtimeType,category,title,lat,lng,address,description,photoPath);
 
 @override
 String toString() {
-  return 'SubmitReportDTO(category: $category, lat: $lat, lng: $lng, description: $description, photoPath: $photoPath)';
+  return 'SubmitReportDTO(category: $category, title: $title, lat: $lat, lng: $lng, address: $address, description: $description, photoPath: $photoPath)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $SubmitReportDTOCopyWith<$Res>  {
   factory $SubmitReportDTOCopyWith(SubmitReportDTO value, $Res Function(SubmitReportDTO) _then) = _$SubmitReportDTOCopyWithImpl;
 @useResult
 $Res call({
- String? category, double? lat, double? lng, String? description, String? photoPath
+ String? category, String? title, double? lat, double? lng, String? address, String? description, String? photoPath
 });
 
 
@@ -65,12 +65,14 @@ class _$SubmitReportDTOCopyWithImpl<$Res>
 
 /// Create a copy of SubmitReportDTO
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? category = freezed,Object? lat = freezed,Object? lng = freezed,Object? description = freezed,Object? photoPath = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? category = freezed,Object? title = freezed,Object? lat = freezed,Object? lng = freezed,Object? address = freezed,Object? description = freezed,Object? photoPath = freezed,}) {
   return _then(_self.copyWith(
 category: freezed == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
+as String?,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String?,lat: freezed == lat ? _self.lat : lat // ignore: cast_nullable_to_non_nullable
 as double?,lng: freezed == lng ? _self.lng : lng // ignore: cast_nullable_to_non_nullable
-as double?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as double?,address: freezed == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
+as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,photoPath: freezed == photoPath ? _self.photoPath : photoPath // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -154,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? category,  double? lat,  double? lng,  String? description,  String? photoPath)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? category,  String? title,  double? lat,  double? lng,  String? address,  String? description,  String? photoPath)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SubmitReportDTO() when $default != null:
-return $default(_that.category,_that.lat,_that.lng,_that.description,_that.photoPath);case _:
+return $default(_that.category,_that.title,_that.lat,_that.lng,_that.address,_that.description,_that.photoPath);case _:
   return orElse();
 
 }
@@ -175,10 +177,10 @@ return $default(_that.category,_that.lat,_that.lng,_that.description,_that.photo
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? category,  double? lat,  double? lng,  String? description,  String? photoPath)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? category,  String? title,  double? lat,  double? lng,  String? address,  String? description,  String? photoPath)  $default,) {final _that = this;
 switch (_that) {
 case _SubmitReportDTO():
-return $default(_that.category,_that.lat,_that.lng,_that.description,_that.photoPath);}
+return $default(_that.category,_that.title,_that.lat,_that.lng,_that.address,_that.description,_that.photoPath);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -192,10 +194,10 @@ return $default(_that.category,_that.lat,_that.lng,_that.description,_that.photo
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? category,  double? lat,  double? lng,  String? description,  String? photoPath)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? category,  String? title,  double? lat,  double? lng,  String? address,  String? description,  String? photoPath)?  $default,) {final _that = this;
 switch (_that) {
 case _SubmitReportDTO() when $default != null:
-return $default(_that.category,_that.lat,_that.lng,_that.description,_that.photoPath);case _:
+return $default(_that.category,_that.title,_that.lat,_that.lng,_that.address,_that.description,_that.photoPath);case _:
   return null;
 
 }
@@ -207,12 +209,14 @@ return $default(_that.category,_that.lat,_that.lng,_that.description,_that.photo
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _SubmitReportDTO implements SubmitReportDTO {
-  const _SubmitReportDTO({required this.category, required this.lat, required this.lng, required this.description, required this.photoPath});
+  const _SubmitReportDTO({required this.category, required this.title, required this.lat, required this.lng, required this.address, required this.description, required this.photoPath});
   factory _SubmitReportDTO.fromJson(Map<String, dynamic> json) => _$SubmitReportDTOFromJson(json);
 
 @override final  String? category;
+@override final  String? title;
 @override final  double? lat;
 @override final  double? lng;
+@override final  String? address;
 @override final  String? description;
 @override final  String? photoPath;
 
@@ -229,16 +233,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubmitReportDTO&&(identical(other.category, category) || other.category == category)&&(identical(other.lat, lat) || other.lat == lat)&&(identical(other.lng, lng) || other.lng == lng)&&(identical(other.description, description) || other.description == description)&&(identical(other.photoPath, photoPath) || other.photoPath == photoPath));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubmitReportDTO&&(identical(other.category, category) || other.category == category)&&(identical(other.title, title) || other.title == title)&&(identical(other.lat, lat) || other.lat == lat)&&(identical(other.lng, lng) || other.lng == lng)&&(identical(other.address, address) || other.address == address)&&(identical(other.description, description) || other.description == description)&&(identical(other.photoPath, photoPath) || other.photoPath == photoPath));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,category,lat,lng,description,photoPath);
+int get hashCode => Object.hash(runtimeType,category,title,lat,lng,address,description,photoPath);
 
 @override
 String toString() {
-  return 'SubmitReportDTO(category: $category, lat: $lat, lng: $lng, description: $description, photoPath: $photoPath)';
+  return 'SubmitReportDTO(category: $category, title: $title, lat: $lat, lng: $lng, address: $address, description: $description, photoPath: $photoPath)';
 }
 
 
@@ -249,7 +253,7 @@ abstract mixin class _$SubmitReportDTOCopyWith<$Res> implements $SubmitReportDTO
   factory _$SubmitReportDTOCopyWith(_SubmitReportDTO value, $Res Function(_SubmitReportDTO) _then) = __$SubmitReportDTOCopyWithImpl;
 @override @useResult
 $Res call({
- String? category, double? lat, double? lng, String? description, String? photoPath
+ String? category, String? title, double? lat, double? lng, String? address, String? description, String? photoPath
 });
 
 
@@ -266,12 +270,14 @@ class __$SubmitReportDTOCopyWithImpl<$Res>
 
 /// Create a copy of SubmitReportDTO
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? category = freezed,Object? lat = freezed,Object? lng = freezed,Object? description = freezed,Object? photoPath = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? category = freezed,Object? title = freezed,Object? lat = freezed,Object? lng = freezed,Object? address = freezed,Object? description = freezed,Object? photoPath = freezed,}) {
   return _then(_SubmitReportDTO(
 category: freezed == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
+as String?,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String?,lat: freezed == lat ? _self.lat : lat // ignore: cast_nullable_to_non_nullable
 as double?,lng: freezed == lng ? _self.lng : lng // ignore: cast_nullable_to_non_nullable
-as double?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as double?,address: freezed == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
+as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,photoPath: freezed == photoPath ? _self.photoPath : photoPath // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

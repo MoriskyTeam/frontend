@@ -637,6 +637,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No connection to city data'**
   String get offlineStatus;
+
+  /// No description provided for @reportAddressLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Finding the address…'**
+  String get reportAddressLoading;
 }
 
 class _AppLocalizationsDelegate

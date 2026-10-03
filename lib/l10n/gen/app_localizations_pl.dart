@@ -321,4 +321,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get offlineStatus => 'Brak połączenia z danymi miasta';
+
+  @override
+  String get reportAddressLoading => 'Ustalanie adresu…';
 }

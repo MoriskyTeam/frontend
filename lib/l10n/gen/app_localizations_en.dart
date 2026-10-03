@@ -317,4 +317,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get offlineStatus => 'No connection to city data';
+
+  @override
+  String get reportAddressLoading => 'Finding the address…';
 }

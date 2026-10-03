@@ -30,6 +30,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i71.ReportCubit>(
       () => _i71.ReportCubit(
         gh<_i494.GetCurrentLocationUseCase>(),
+        gh<_i494.GetAddressUseCase>(),
         gh<_i494.SubmitReportUseCase>(),
       ),
     );

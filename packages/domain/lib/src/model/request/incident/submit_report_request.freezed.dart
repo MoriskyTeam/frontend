@@ -14,7 +14,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SubmitReportRequest {
 
- IncidentCategory get category; GeoPoint get location; String get description; String? get photoPath;
+ IncidentCategory get category;/// Human-readable headline, e.g. the localised category name.
+ String get title; GeoPoint get location;/// Street address of [location], when it could be resolved.
+ String? get address; String get description; String? get photoPath;
 /// Create a copy of SubmitReportRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +27,16 @@ $SubmitReportRequestCopyWith<SubmitReportRequest> get copyWith => _$SubmitReport
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmitReportRequest&&(identical(other.category, category) || other.category == category)&&(identical(other.location, location) || other.location == location)&&(identical(other.description, description) || other.description == description)&&(identical(other.photoPath, photoPath) || other.photoPath == photoPath));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmitReportRequest&&(identical(other.category, category) || other.category == category)&&(identical(other.title, title) || other.title == title)&&(identical(other.location, location) || other.location == location)&&(identical(other.address, address) || other.address == address)&&(identical(other.description, description) || other.description == description)&&(identical(other.photoPath, photoPath) || other.photoPath == photoPath));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,category,location,description,photoPath);
+int get hashCode => Object.hash(runtimeType,category,title,location,address,description,photoPath);
 
 @override
 String toString() {
-  return 'SubmitReportRequest(category: $category, location: $location, description: $description, photoPath: $photoPath)';
+  return 'SubmitReportRequest(category: $category, title: $title, location: $location, address: $address, description: $description, photoPath: $photoPath)';
 }
 
 
@@ -45,7 +47,7 @@ abstract mixin class $SubmitReportRequestCopyWith<$Res>  {
   factory $SubmitReportRequestCopyWith(SubmitReportRequest value, $Res Function(SubmitReportRequest) _then) = _$SubmitReportRequestCopyWithImpl;
 @useResult
 $Res call({
- IncidentCategory category, GeoPoint location, String description, String? photoPath
+ IncidentCategory category, String title, GeoPoint location, String? address, String description, String? photoPath
 });
 
 
@@ -62,11 +64,13 @@ class _$SubmitReportRequestCopyWithImpl<$Res>
 
 /// Create a copy of SubmitReportRequest
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? category = null,Object? location = null,Object? description = null,Object? photoPath = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? category = null,Object? title = null,Object? location = null,Object? address = freezed,Object? description = null,Object? photoPath = freezed,}) {
   return _then(_self.copyWith(
 category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
-as IncidentCategory,location: null == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
-as GeoPoint,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as IncidentCategory,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,location: null == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
+as GeoPoint,address: freezed == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
+as String?,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,photoPath: freezed == photoPath ? _self.photoPath : photoPath // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -159,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( IncidentCategory category,  GeoPoint location,  String description,  String? photoPath)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( IncidentCategory category,  String title,  GeoPoint location,  String? address,  String description,  String? photoPath)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SubmitReportRequest() when $default != null:
-return $default(_that.category,_that.location,_that.description,_that.photoPath);case _:
+return $default(_that.category,_that.title,_that.location,_that.address,_that.description,_that.photoPath);case _:
   return orElse();
 
 }
@@ -180,10 +184,10 @@ return $default(_that.category,_that.location,_that.description,_that.photoPath)
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( IncidentCategory category,  GeoPoint location,  String description,  String? photoPath)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( IncidentCategory category,  String title,  GeoPoint location,  String? address,  String description,  String? photoPath)  $default,) {final _that = this;
 switch (_that) {
 case _SubmitReportRequest():
-return $default(_that.category,_that.location,_that.description,_that.photoPath);}
+return $default(_that.category,_that.title,_that.location,_that.address,_that.description,_that.photoPath);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -197,10 +201,10 @@ return $default(_that.category,_that.location,_that.description,_that.photoPath)
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( IncidentCategory category,  GeoPoint location,  String description,  String? photoPath)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( IncidentCategory category,  String title,  GeoPoint location,  String? address,  String description,  String? photoPath)?  $default,) {final _that = this;
 switch (_that) {
 case _SubmitReportRequest() when $default != null:
-return $default(_that.category,_that.location,_that.description,_that.photoPath);case _:
+return $default(_that.category,_that.title,_that.location,_that.address,_that.description,_that.photoPath);case _:
   return null;
 
 }
@@ -212,11 +216,15 @@ return $default(_that.category,_that.location,_that.description,_that.photoPath)
 
 
 class _SubmitReportRequest implements SubmitReportRequest {
-  const _SubmitReportRequest({required this.category, required this.location, required this.description, required this.photoPath});
+  const _SubmitReportRequest({required this.category, required this.title, required this.location, required this.address, required this.description, required this.photoPath});
   
 
 @override final  IncidentCategory category;
+/// Human-readable headline, e.g. the localised category name.
+@override final  String title;
 @override final  GeoPoint location;
+/// Street address of [location], when it could be resolved.
+@override final  String? address;
 @override final  String description;
 @override final  String? photoPath;
 
@@ -230,16 +238,16 @@ _$SubmitReportRequestCopyWith<_SubmitReportRequest> get copyWith => __$SubmitRep
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubmitReportRequest&&(identical(other.category, category) || other.category == category)&&(identical(other.location, location) || other.location == location)&&(identical(other.description, description) || other.description == description)&&(identical(other.photoPath, photoPath) || other.photoPath == photoPath));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubmitReportRequest&&(identical(other.category, category) || other.category == category)&&(identical(other.title, title) || other.title == title)&&(identical(other.location, location) || other.location == location)&&(identical(other.address, address) || other.address == address)&&(identical(other.description, description) || other.description == description)&&(identical(other.photoPath, photoPath) || other.photoPath == photoPath));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,category,location,description,photoPath);
+int get hashCode => Object.hash(runtimeType,category,title,location,address,description,photoPath);
 
 @override
 String toString() {
-  return 'SubmitReportRequest(category: $category, location: $location, description: $description, photoPath: $photoPath)';
+  return 'SubmitReportRequest(category: $category, title: $title, location: $location, address: $address, description: $description, photoPath: $photoPath)';
 }
 
 
@@ -250,7 +258,7 @@ abstract mixin class _$SubmitReportRequestCopyWith<$Res> implements $SubmitRepor
   factory _$SubmitReportRequestCopyWith(_SubmitReportRequest value, $Res Function(_SubmitReportRequest) _then) = __$SubmitReportRequestCopyWithImpl;
 @override @useResult
 $Res call({
- IncidentCategory category, GeoPoint location, String description, String? photoPath
+ IncidentCategory category, String title, GeoPoint location, String? address, String description, String? photoPath
 });
 
 
@@ -267,11 +275,13 @@ class __$SubmitReportRequestCopyWithImpl<$Res>
 
 /// Create a copy of SubmitReportRequest
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? category = null,Object? location = null,Object? description = null,Object? photoPath = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? category = null,Object? title = null,Object? location = null,Object? address = freezed,Object? description = null,Object? photoPath = freezed,}) {
   return _then(_SubmitReportRequest(
 category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
-as IncidentCategory,location: null == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
-as GeoPoint,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as IncidentCategory,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,location: null == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
+as GeoPoint,address: freezed == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
+as String?,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,photoPath: freezed == photoPath ? _self.photoPath : photoPath // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

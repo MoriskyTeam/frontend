@@ -15,6 +15,9 @@ import 'package:data/src/repository/location_repository_impl.dart' as _i27;
 import 'package:data/src/service/auth/auth_service.dart' as _i1054;
 import 'package:data/src/service/auth/mock_auth_service.dart' as _i150;
 import 'package:data/src/service/auth/supabase_auth_service.dart' as _i1067;
+import 'package:data/src/service/geocoding/geocoding_service.dart' as _i939;
+import 'package:data/src/service/geocoding/nominatim_geocoding_service.dart'
+    as _i736;
 import 'package:data/src/service/incident/incident_service.dart' as _i912;
 import 'package:data/src/service/incident/mock_incident_service.dart' as _i627;
 import 'package:data/src/service/incident/supabase_incident_service.dart'
@@ -52,9 +55,7 @@ class DataPackageModule extends _i526.MicroPackageModule {
       () => supabaseModule.client,
       registerFor: {_supabase},
     );
-    gh.factory<_i494.LocationRepository>(
-      () => _i27.LocationRepositoryImpl(gh<_i554.LocationService>()),
-    );
+    gh.factory<_i939.GeocodingService>(() => _i736.NominatimGeocodingService());
     gh.factory<_i1054.AuthService>(
       () => _i1067.SupabaseAuthService(gh<_i454.SupabaseClient>()),
       registerFor: {_supabase},
@@ -62,6 +63,12 @@ class DataPackageModule extends _i526.MicroPackageModule {
     gh.lazySingleton<_i912.IncidentService>(
       () => _i899.SupabaseIncidentService(gh<_i454.SupabaseClient>()),
       registerFor: {_supabase},
+    );
+    gh.factory<_i494.LocationRepository>(
+      () => _i27.LocationRepositoryImpl(
+        gh<_i554.LocationService>(),
+        gh<_i939.GeocodingService>(),
+      ),
     );
     gh.factory<_i494.IncidentRepository>(
       () => _i635.IncidentRepositoryImpl(

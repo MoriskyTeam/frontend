@@ -8,7 +8,13 @@ part 'submit_report_request.freezed.dart';
 sealed class SubmitReportRequest with _$SubmitReportRequest {
   const factory SubmitReportRequest({
     required IncidentCategory category,
+
+    /// Human-readable headline, e.g. the localised category name.
+    required String title,
     required GeoPoint location,
+
+    /// Street address of [location], when it could be resolved.
+    required String? address,
     required String description,
     required String? photoPath,
   }) = _SubmitReportRequest;

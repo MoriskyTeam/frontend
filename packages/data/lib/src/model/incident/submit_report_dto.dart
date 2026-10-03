@@ -8,8 +8,10 @@ sealed class SubmitReportDTO with _$SubmitReportDTO {
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory SubmitReportDTO({
     required String? category,
+    required String? title,
     required double? lat,
     required double? lng,
+    required String? address,
     required String? description,
     required String? photoPath,
   }) = _SubmitReportDTO;

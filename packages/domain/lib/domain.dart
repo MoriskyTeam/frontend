@@ -29,4 +29,5 @@ export 'src/usecase/base_use_case.dart';
 export 'src/usecase/incident/confirm_incident_use_case.dart';
 export 'src/usecase/incident/submit_report_use_case.dart';
 export 'src/usecase/incident/watch_incidents_use_case.dart';
+export 'src/usecase/location/get_address_use_case.dart';
 export 'src/usecase/location/get_current_location_use_case.dart';

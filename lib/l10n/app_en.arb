@@ -151,5 +151,6 @@
       }
     }
   },
-  "offlineStatus": "No connection to city data"
+  "offlineStatus": "No connection to city data",
+  "reportAddressLoading": "Finding the address…"
 }

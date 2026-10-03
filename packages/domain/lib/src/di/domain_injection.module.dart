@@ -18,6 +18,7 @@ import 'package:domain/src/usecase/incident/submit_report_use_case.dart'
     as _i49;
 import 'package:domain/src/usecase/incident/watch_incidents_use_case.dart'
     as _i1038;
+import 'package:domain/src/usecase/location/get_address_use_case.dart' as _i932;
 import 'package:domain/src/usecase/location/get_current_location_use_case.dart'
     as _i148;
 import 'package:injectable/injectable.dart' as _i526;
@@ -26,6 +27,9 @@ class DomainPackageModule extends _i526.MicroPackageModule {
   // initializes the registration of main-scope dependencies inside of GetIt
   @override
   _i687.FutureOr<void> init(_i526.GetItHelper gh) {
+    gh.factory<_i932.GetAddressUseCase>(
+      () => _i932.GetAddressUseCase(gh<_i71.LocationRepository>()),
+    );
     gh.factory<_i148.GetCurrentLocationUseCase>(
       () => _i148.GetCurrentLocationUseCase(gh<_i71.LocationRepository>()),
     );

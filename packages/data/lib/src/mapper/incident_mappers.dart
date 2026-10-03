@@ -42,8 +42,10 @@ extension AirReadingDTOMapper on AirReadingDTO {
 extension SubmitReportRequestMapper on SubmitReportRequest {
   SubmitReportDTO toData() => SubmitReportDTO(
     category: category.toData(),
+    title: title,
     lat: location.latitude,
     lng: location.longitude,
+    address: address,
     description: description,
     photoPath: photoPath,
   );
