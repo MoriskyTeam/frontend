@@ -48,9 +48,9 @@ class MapCubit extends Cubit<MapState>
       (_) => emit(state.copyWith(now: DateTime.now())),
     );
     // Reading is public; the identity only matters for reporting and
-    // confirming, so a failed sign-in is reported but does not block the map.
-    final signIn = await _ensureSignedIn();
-    signIn.fold((error) => emitPresentation(MapErrorOccurred(error)), (_) {});
+    // confirming, which surface their own errors. A failed sign-in must not
+    // claim the city feed failed.
+    await _ensureSignedIn();
     _subscribe();
     await locate();
   }

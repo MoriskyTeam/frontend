@@ -18,6 +18,9 @@ void main() {
         expect(kindOf('23505'), ApiErrorKind.conflict);
         expect(kindOf('23502'), ApiErrorKind.validation);
         expect(kindOf('PGRST116'), ApiErrorKind.notFound);
+        expect(kindOf('PT400'), ApiErrorKind.validation);
+        expect(kindOf('PT401'), ApiErrorKind.unauthorized);
+        expect(kindOf('PT404'), ApiErrorKind.notFound);
         expect(kindOf('401'), ApiErrorKind.unauthorized);
         expect(kindOf('503'), ApiErrorKind.server);
       },

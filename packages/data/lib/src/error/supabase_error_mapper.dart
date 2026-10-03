@@ -48,8 +48,12 @@ extension SupabaseErrorMapper on Object {
 }
 
 /// PostgREST surfaces Postgres error codes (e.g. `23505`), PostgREST codes
-/// (`PGRST116`) or a bare HTTP status.
+/// (`PGRST116`), our own `PTxxx` codes raised by RPCs to set the HTTP status
+/// (see `docs/supabase_backend_status.md`) or a bare HTTP status.
 ApiErrorKind postgrestKind(String? code) => switch (code) {
+  'PT400' => ApiErrorKind.validation,
+  'PT401' => ApiErrorKind.unauthorized,
+  'PT404' => ApiErrorKind.notFound,
   '42501' => ApiErrorKind.forbidden,
   '23505' => ApiErrorKind.conflict,
   '23502' || '23503' || '23514' || '22P02' => ApiErrorKind.validation,
