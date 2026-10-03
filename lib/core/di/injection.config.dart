@@ -40,6 +40,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i494.GetCurrentLocationUseCase>(),
         gh<_i494.ConfirmIncidentUseCase>(),
         gh<_i494.EnsureSignedInUseCase>(),
+        gh<_i494.GetLatestRadarFrameUseCase>(),
       ),
     );
     return this;

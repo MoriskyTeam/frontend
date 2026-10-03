@@ -150,5 +150,36 @@
     }
   },
   "offlineStatus": "No connection to city data",
-  "reportAddressLoading": "Finding the address…"
+  "reportAddressLoading": "Finding the address…",
+  "clusterLabel": "{count, plural, =1{1 report here, tap to zoom in} other{{count} reports here, tap to zoom in}}",
+  "@clusterLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "categoryWeatherStation": "Weather station",
+  "weatherNow": "Weather now",
+  "weatherTemperature": "Temperature",
+  "weatherWind": "Wind",
+  "weatherHumidity": "Humidity",
+  "weatherPrecipitation": "Precipitation",
+  "weatherCalm": "calm",
+  "weatherPressure": "Pressure {value} hPa",
+  "@weatherPressure": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "weatherWindFrom": "Wind from {degrees}°",
+  "@weatherWindFrom": {
+    "placeholders": {
+      "degrees": {
+        "type": "int"
+      }
+    }
+  }
 }

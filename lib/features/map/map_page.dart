@@ -284,6 +284,9 @@ class _MapPageCore extends HookWidget {
               selected: data.selected,
               arrivedIds: state.arrivedIds,
               userLocation: state.userLocation,
+              radar: state.enabledLayers.contains(IncidentLayer.weather)
+                  ? state.radarFrame
+                  : null,
               focusInset: () =>
                   height *
                   (state.selectedIncidentId != null
@@ -454,6 +457,9 @@ class _MapPageCore extends HookWidget {
                     selected: data.selected,
                     arrivedIds: state.arrivedIds,
                     userLocation: state.userLocation,
+                    radar: state.enabledLayers.contains(IncidentLayer.weather)
+                        ? state.radarFrame
+                        : null,
                     focusInset: () => 0,
                     topInset: () => 0,
                     reveal: handles.reveal,

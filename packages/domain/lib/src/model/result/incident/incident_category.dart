@@ -14,6 +14,7 @@ enum IncidentCategory {
   storm(IncidentLayer.weather),
   wind(IncidentLayer.weather),
   heat(IncidentLayer.weather),
+  weatherStation(IncidentLayer.weather),
   smoke(IncidentLayer.neighbours),
   other(IncidentLayer.neighbours)
   ;

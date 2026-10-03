@@ -1,11 +1,17 @@
+import 'dart:math' as math;
 import 'dart:ui' show lerpDouble;
 
 import 'package:domain/domain.dart';
 import 'package:dynamic_rcb_alerts/core/theme/rcb_colors.dart';
 import 'package:dynamic_rcb_alerts/core/theme/rcb_radii.dart';
+import 'package:dynamic_rcb_alerts/features/map/model/incident_cluster.dart';
 import 'package:dynamic_rcb_alerts/features/map/model/incident_geo.dart';
+import 'package:dynamic_rcb_alerts/features/map/widget/air_halo_layer.dart';
+import 'package:dynamic_rcb_alerts/features/map/widget/cluster_bubble.dart';
 import 'package:dynamic_rcb_alerts/features/map/widget/incident_marker.dart';
+import 'package:dynamic_rcb_alerts/features/map/widget/radar_layer.dart';
 import 'package:dynamic_rcb_alerts/features/map/widget/user_location_marker.dart';
+import 'package:dynamic_rcb_alerts/features/map/widget/warning_zone_layer.dart';
 import 'package:dynamic_rcb_alerts/l10n/gen/app_localizations.dart';
 import 'package:dynamic_rcb_alerts/shared/livery/incident_labels.dart';
 import 'package:dynamic_rcb_alerts/shared/widgets/neutral_tile_layer.dart';
@@ -18,7 +24,8 @@ import 'package:latlong2/latlong.dart';
 /// Rynek Główny — the camera's starting point before a position arrives.
 const krakowCentre = LatLng(50.0617, 19.9373);
 
-/// The live city map: neutral OSM basemap, warning areas, markers.
+/// The live city map: neutral OSM basemap, rain radar, air halos, warning
+/// areas and clustered markers.
 ///
 /// Moves the camera to [selected] whenever it changes, keeping it clear of
 /// whatever overlays the bottom [focusInset] of the map.
@@ -28,6 +35,7 @@ class CityMap extends HookWidget {
     required this.selected,
     required this.arrivedIds,
     required this.userLocation,
+    required this.radar,
     required this.focusInset,
     required this.topInset,
     required this.reveal,
@@ -42,6 +50,9 @@ class CityMap extends HookWidget {
   final Incident? selected;
   final Set<String> arrivedIds;
   final UserLocation? userLocation;
+
+  /// Precipitation radar to lay under the markers, null to hide it.
+  final RadarFrame? radar;
 
   /// Screen space at the bottom covered by the sheet (or zero on wide
   /// layouts), read when the camera moves.
@@ -133,6 +144,18 @@ class CityMap extends HookWidget {
       if (!visible) flyTo(incident.location.latLng, view.zoom);
     }
 
+    /// Zooms until a cluster's members fit on screen with room around them.
+    void zoomInto(List<Incident> members) {
+      if (!mapReady.value) return;
+      final camera = latest.value.controller.camera;
+      final fitted = CameraFit.coordinates(
+        coordinates: [for (final m in members) m.location.latLng],
+        padding: const EdgeInsets.all(incidentMarkerExtent * 1.5),
+        maxZoom: clusteringOffZoom + 1.0,
+      ).fit(camera);
+      flyTo(fitted.center, math.max(fitted.zoom, camera.zoom + 1));
+    }
+
     useOnListenableChange(reveal, revealArrival);
     useOnListenableChange(recenter, () {
       final location = latest.value.userLocation;
@@ -157,18 +180,12 @@ class CityMap extends HookWidget {
     }, [userLocation != null]);
 
     final selectedId = selected?.id;
-    final warnings = incidents.where(
-      (incident) =>
-          incident.areaRadiusMeters != null &&
-          incident.status != IncidentStatus.resolved,
-    );
-    // Draw low severity first so serious incidents sit on top.
-    final ordered = [...incidents]
-      ..sort((a, b) {
-        if (a.id == selectedId) return 1;
-        if (b.id == selectedId) return -1;
-        return a.severity.index.compareTo(b.severity.index);
-      });
+    final warnings = [
+      for (final incident in incidents)
+        if (incident.areaRadiusMeters != null &&
+            incident.status != IncidentStatus.resolved)
+          incident,
+    ];
 
     return FlutterMap(
       mapController: controller,
@@ -190,22 +207,12 @@ class CityMap extends HookWidget {
       ),
       children: [
         const NeutralTileLayer(),
-        CircleLayer(
-          circles: [
-            for (final warning in warnings)
-              CircleMarker(
-                point: warning.location.latLng,
-                radius: warning.areaRadiusMeters!.toDouble(),
-                useRadiusInMeter: true,
-                // A city-wide area must not tint the whole basemap; it is
-                // filled only while the resident is reading it.
-                color: warning.id == selectedId
-                    ? RcbColors.signalRed.withValues(alpha: 0.1)
-                    : Colors.transparent,
-                borderColor: RcbColors.signalRed.withValues(alpha: 0.55),
-                borderStrokeWidth: 1.5,
-              ),
-            if (userLocation case final location?)
+        if (radar case final frame?) RadarLayer(frame: frame),
+        AirHaloLayer(incidents: incidents, dimmed: selectedId != null),
+        WarningZoneLayer(warnings: warnings, selectedId: selectedId),
+        if (userLocation case final location?)
+          CircleLayer(
+            circles: [
               CircleMarker(
                 point: location.point.latLng,
                 radius: nearbyRadiusMeters.toDouble(),
@@ -215,37 +222,109 @@ class CityMap extends HookWidget {
                     .withValues(alpha: 0.35),
                 borderStrokeWidth: 1,
               ),
-          ],
+            ],
+          ),
+        _IncidentMarkers(
+          incidents: incidents,
+          selectedId: selectedId,
+          arrivedIds: arrivedIds,
+          onIncidentTap: onIncidentTap,
+          onClusterTap: zoomInto,
         ),
-        MarkerLayer(
-          markers: [
-            for (final incident in ordered)
-              Marker(
-                key: ValueKey(incident.id),
-                point: incident.location.latLng,
-                width: incidentMarkerExtent,
-                height: incidentMarkerExtent,
-                child: IncidentMarker(
-                  incident: incident,
-                  selected: incident.id == selectedId,
-                  dimmed: selectedId != null && incident.id != selectedId,
-                  arrived: arrivedIds.contains(incident.id),
-                  semanticLabel:
-                      '${l10n.titleOf(incident)}, '
-                      '${l10n.severity(incident.severity)}, '
-                      '${l10n.source(incident.source)}',
-                  onTap: () => onIncidentTap(incident),
-                ),
-              ),
-            if (userLocation case final location?)
+        if (userLocation case final location?)
+          MarkerLayer(
+            markers: [
               Marker(
                 point: location.point.latLng,
                 width: 28,
                 height: 28,
                 child: UserLocationMarker(label: l10n.myLocation),
               ),
-          ],
-        ),
+            ],
+          ),
+      ],
+    );
+  }
+}
+
+/// Incident markers, grouped into [ClusterBubble]s while zoomed out.
+///
+/// Reads the camera, so it rebuilds as the map moves; the grouping itself
+/// only changes with whole zoom levels.
+class _IncidentMarkers extends HookWidget {
+  const _IncidentMarkers({
+    required this.incidents,
+    required this.selectedId,
+    required this.arrivedIds,
+    required this.onIncidentTap,
+    required this.onClusterTap,
+  });
+
+  final List<Incident> incidents;
+  final String? selectedId;
+  final Set<String> arrivedIds;
+  final ValueChanged<Incident> onIncidentTap;
+  final ValueChanged<List<Incident>> onClusterTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final camera = MapCamera.of(context);
+    final zoomLevel = camera.zoom.floor();
+    final clusters = useMemoized(
+      () {
+        final groups = clusterIncidents(
+          incidents,
+          camera: camera,
+          standalone: {?selectedId, ...arrivedIds},
+        );
+        // Low severity first so serious incidents sit on top, the
+        // selection above everything.
+        return groups..sort((a, b) {
+          if (a.seed.id == selectedId) return 1;
+          if (b.seed.id == selectedId) return -1;
+          final byGroup = (a.isSingle ? 0 : 1).compareTo(b.isSingle ? 0 : 1);
+          if (byGroup != 0) return byGroup;
+          return a.seed.severity.index.compareTo(b.seed.severity.index);
+        });
+      },
+      [incidents, zoomLevel, selectedId, arrivedIds],
+    );
+
+    return MarkerLayer(
+      markers: [
+        for (final cluster in clusters)
+          if (cluster.isSingle)
+            Marker(
+              key: ValueKey(cluster.key),
+              point: cluster.point,
+              width: incidentMarkerExtent,
+              height: incidentMarkerExtent,
+              child: IncidentMarker(
+                incident: cluster.seed,
+                selected: cluster.seed.id == selectedId,
+                dimmed: selectedId != null && cluster.seed.id != selectedId,
+                arrived: arrivedIds.contains(cluster.seed.id),
+                semanticLabel:
+                    '${l10n.titleOf(cluster.seed)}, '
+                    '${l10n.severity(cluster.seed.severity)}, '
+                    '${l10n.source(cluster.seed.source)}',
+                onTap: () => onIncidentTap(cluster.seed),
+              ),
+            )
+          else
+            Marker(
+              key: ValueKey(cluster.key),
+              point: cluster.point,
+              width: clusterBubbleExtent,
+              height: clusterBubbleExtent,
+              child: ClusterBubble(
+                members: cluster.members,
+                dimmed: selectedId != null,
+                semanticLabel: l10n.clusterLabel(cluster.members.length),
+                onTap: () => onClusterTap(cluster.members),
+              ),
+            ),
       ],
     );
   }

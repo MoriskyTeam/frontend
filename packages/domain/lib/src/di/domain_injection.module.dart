@@ -10,6 +10,7 @@ import 'dart:async' as _i687;
 import 'package:domain/src/repository/auth_repository.dart' as _i722;
 import 'package:domain/src/repository/incident_repository.dart' as _i887;
 import 'package:domain/src/repository/location_repository.dart' as _i71;
+import 'package:domain/src/repository/radar_repository.dart' as _i288;
 import 'package:domain/src/usecase/auth/ensure_signed_in_use_case.dart'
     as _i612;
 import 'package:domain/src/usecase/incident/confirm_incident_use_case.dart'
@@ -21,6 +22,8 @@ import 'package:domain/src/usecase/incident/watch_incidents_use_case.dart'
 import 'package:domain/src/usecase/location/get_address_use_case.dart' as _i932;
 import 'package:domain/src/usecase/location/get_current_location_use_case.dart'
     as _i148;
+import 'package:domain/src/usecase/radar/get_latest_radar_frame_use_case.dart'
+    as _i511;
 import 'package:injectable/injectable.dart' as _i526;
 
 class DomainPackageModule extends _i526.MicroPackageModule {
@@ -32,6 +35,9 @@ class DomainPackageModule extends _i526.MicroPackageModule {
     );
     gh.factory<_i148.GetCurrentLocationUseCase>(
       () => _i148.GetCurrentLocationUseCase(gh<_i71.LocationRepository>()),
+    );
+    gh.factory<_i511.GetLatestRadarFrameUseCase>(
+      () => _i511.GetLatestRadarFrameUseCase(gh<_i288.RadarRepository>()),
     );
     gh.factory<_i366.ConfirmIncidentUseCase>(
       () => _i366.ConfirmIncidentUseCase(gh<_i887.IncidentRepository>()),

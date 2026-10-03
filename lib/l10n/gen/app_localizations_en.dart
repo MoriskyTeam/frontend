@@ -314,4 +314,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reportAddressLoading => 'Finding the address…';
+
+  @override
+  String clusterLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count reports here, tap to zoom in',
+      one: '1 report here, tap to zoom in',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get categoryWeatherStation => 'Weather station';
+
+  @override
+  String get weatherNow => 'Weather now';
+
+  @override
+  String get weatherTemperature => 'Temperature';
+
+  @override
+  String get weatherWind => 'Wind';
+
+  @override
+  String get weatherHumidity => 'Humidity';
+
+  @override
+  String get weatherPrecipitation => 'Precipitation';
+
+  @override
+  String get weatherCalm => 'calm';
+
+  @override
+  String weatherPressure(String value) {
+    return 'Pressure $value hPa';
+  }
+
+  @override
+  String weatherWindFrom(int degrees) {
+    return 'Wind from $degrees°';
+  }
 }

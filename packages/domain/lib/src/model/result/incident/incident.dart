@@ -4,13 +4,14 @@ import 'package:domain/src/model/result/incident/incident_layer.dart';
 import 'package:domain/src/model/result/incident/incident_severity.dart';
 import 'package:domain/src/model/result/incident/incident_source.dart';
 import 'package:domain/src/model/result/incident/incident_status.dart';
+import 'package:domain/src/model/result/incident/weather_reading.dart';
 import 'package:domain/src/model/result/location/geo_point.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'incident.freezed.dart';
 
-/// One thing happening in the city: an outage, a warning, a station reading
-/// or a resident report.
+/// One thing happening in the city: an outage, a warning, an air or weather
+/// station reading or a resident report.
 @freezed
 sealed class Incident with _$Incident {
   const factory Incident({
@@ -29,6 +30,7 @@ sealed class Incident with _$Incident {
     required int confirmations,
     required int? areaRadiusMeters,
     required AirReading? airReading,
+    required WeatherReading? weatherReading,
     required String? photoPath,
 
     /// True when the current resident filed this report.

@@ -56,6 +56,7 @@ extension GiosStationMapper on GiosStationDTO {
       confirmations: 0,
       areaRadiusMeters: null,
       airReading: AirReading(level: level, pm25: pm25, pm10: pm10),
+      weatherReading: null,
       photoPath: null,
       reportedByMe: false,
     );
