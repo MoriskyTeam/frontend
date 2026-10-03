@@ -9,8 +9,8 @@ enum Flavor {
   ;
 
   String get displayName => switch (this) {
-    Flavor.development => 'RCB Alerts Dev',
-    Flavor.production => 'RCB Alerts',
+    Flavor.development => 'CityShield Dev',
+    Flavor.production => 'CityShield',
   };
 
   bool get isDevelopment => this == Flavor.development;

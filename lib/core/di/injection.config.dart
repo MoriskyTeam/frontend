@@ -15,6 +15,9 @@ import 'package:domain/domain.dart' as _i494;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../../features/map/bloc/map_cubit.dart' as _i275;
+import '../../features/report/bloc/report_cubit.dart' as _i71;
+
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
   Future<_i174.GetIt> init({
@@ -24,6 +27,19 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     await _i494.DomainPackageModule().init(gh);
     await _i437.DataPackageModule().init(gh);
+    gh.factory<_i71.ReportCubit>(
+      () => _i71.ReportCubit(
+        gh<_i494.GetCurrentLocationUseCase>(),
+        gh<_i494.SubmitReportUseCase>(),
+      ),
+    );
+    gh.factory<_i275.MapCubit>(
+      () => _i275.MapCubit(
+        gh<_i494.WatchIncidentsUseCase>(),
+        gh<_i494.GetCurrentLocationUseCase>(),
+        gh<_i494.ConfirmIncidentUseCase>(),
+      ),
+    );
     return this;
   }
 }

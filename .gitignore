@@ -65,3 +65,7 @@ ios/Runner/GoogleService-Info.plist
 
 # Impeccable engine binary (re-downloaded by the launcher on first run)
 .claude/skills/impeccable/scripts/bin/
+
+# Impeccable scratch (screenshots, decision pages)
+.impeccable/review/
+.impeccable/questions/

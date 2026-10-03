@@ -2,12 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>CityShield pokazuje zdarzenia w Twojej okolicy i przypina zgłoszenie do miejsca, w którym jesteś.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Zrób zdjęcie problemu, żeby dołączyć je do zgłoszenia.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Wybierz zdjęcie problemu, żeby dołączyć je do zgłoszenia.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Dynamic Rcb Alerts</string>
+	<string>CityShield</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
