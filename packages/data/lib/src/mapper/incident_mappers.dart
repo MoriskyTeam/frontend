@@ -1,5 +1,6 @@
 import 'package:data/src/model/incident/incident_dto.dart';
 import 'package:data/src/model/incident/submit_report_dto.dart';
+import 'package:data/src/model/incident/update_report_dto.dart';
 import 'package:domain/domain.dart';
 
 extension IncidentDTOMapper on IncidentDTO {
@@ -50,6 +51,38 @@ extension SubmitReportRequestMapper on SubmitReportRequest {
     description: description,
     photoPath: photoPath,
   );
+}
+
+extension UpdateReportRequestMapper on UpdateReportRequest {
+  UpdateReportDTO toData() => UpdateReportDTO(
+    id: incidentId,
+    category: category.toData(),
+    title: title,
+    description: description,
+    keepPhotoUrl: switch (photo) {
+      ReportPhotoKeep(:final url) => url,
+      _ => null,
+    },
+    newPhotoPath: switch (photo) {
+      ReportPhotoReplace(:final localPath) => localPath,
+      _ => null,
+    },
+    previousPhotoUrl: previousPhotoUrl,
+  );
+}
+
+extension ReportPhotoUrlMapper on String {
+  /// `<uid>/<file>.jpg` inside the `report-photos` bucket for a public URL
+  /// the app stored in `photo_path`; null for anything else.
+  String? toReportPhotoObjectPath() {
+    const marker = '/report-photos/';
+    final at = indexOf(marker);
+    if (at < 0) return null;
+    final path = Uri.decodeComponent(
+      substring(at + marker.length).split('?').first,
+    );
+    return path.isEmpty ? null : path;
+  }
 }
 
 extension IncidentCategoryDataMapper on IncidentCategory {

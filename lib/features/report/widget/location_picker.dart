@@ -16,7 +16,9 @@ class LocationPicker extends StatelessWidget {
   });
 
   final GeoPoint initial;
-  final ValueChanged<GeoPoint> onMoved;
+
+  /// Null shows the pin read-only (an edited report keeps its place).
+  final ValueChanged<GeoPoint>? onMoved;
 
   @override
   Widget build(BuildContext context) {
@@ -42,17 +44,19 @@ class LocationPicker extends StatelessWidget {
                   maxZoom: 18,
                   backgroundColor: dark ? RcbColors.night : RcbColors.bone,
                   cameraConstraint: polandCameraConstraint,
-                  interactionOptions: const InteractionOptions(
-                    flags:
-                        InteractiveFlag.drag |
-                        InteractiveFlag.pinchZoom |
-                        InteractiveFlag.doubleTapZoom |
-                        InteractiveFlag.scrollWheelZoom,
+                  interactionOptions: InteractionOptions(
+                    flags: onMoved == null
+                        ? InteractiveFlag.none
+                        : InteractiveFlag.drag |
+                              InteractiveFlag.pinchZoom |
+                              InteractiveFlag.doubleTapZoom |
+                              InteractiveFlag.scrollWheelZoom,
                   ),
                   onPositionChanged: (camera, hasGesture) {
-                    if (!hasGesture) return;
+                    final moved = onMoved;
+                    if (!hasGesture || moved == null) return;
                     final LatLng(:latitude, :longitude) = camera.center;
-                    onMoved(GeoPoint(latitude: latitude, longitude: longitude));
+                    moved(GeoPoint(latitude: latitude, longitude: longitude));
                   },
                 ),
                 children: const [NeutralTileLayer()],

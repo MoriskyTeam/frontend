@@ -408,4 +408,50 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get alarmFullScreenGrantedBody =>
       'Zablokowany telefon wybudzi się przy alarmie.';
+
+  @override
+  String get reportEditTitle => 'Edytuj zgłoszenie';
+
+  @override
+  String get reportSave => 'Zapisz zmiany';
+
+  @override
+  String get reportSaving => 'Zapisywanie…';
+
+  @override
+  String get reportSaved => 'Zapisano zmiany.';
+
+  @override
+  String get reportSaveFailed =>
+      'Nie udało się zapisać. Sprawdź połączenie i spróbuj ponownie.';
+
+  @override
+  String get reportWhereLocked =>
+      'Miejsca nie można zmienić: sąsiedzi potwierdzali to miejsce.';
+
+  @override
+  String get reportEdit => 'Edytuj';
+
+  @override
+  String get reportDelete => 'Usuń';
+
+  @override
+  String get reportDeleteTitle => 'Usunąć to zgłoszenie?';
+
+  @override
+  String get reportDeleteBody =>
+      'Zniknie z mapy u wszystkich, razem ze zdjęciem i potwierdzeniami.';
+
+  @override
+  String get reportDeleteConfirm => 'Usuń';
+
+  @override
+  String get reportDeleted => 'Usunięto zgłoszenie.';
+
+  @override
+  String get reportDeleteFailed =>
+      'Nie udało się usunąć. Sprawdź połączenie i spróbuj ponownie.';
+
+  @override
+  String get cancel => 'Anuluj';
 }

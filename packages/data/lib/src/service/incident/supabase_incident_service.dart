@@ -1,6 +1,10 @@
+import 'dart:developer' as developer;
+
 import 'package:cross_file/cross_file.dart';
+import 'package:data/src/mapper/incident_mappers.dart';
 import 'package:data/src/model/incident/incident_dto.dart';
 import 'package:data/src/model/incident/submit_report_dto.dart';
+import 'package:data/src/model/incident/update_report_dto.dart';
 import 'package:data/src/service/incident/incident_service.dart';
 import 'package:domain/domain.dart';
 import 'package:injectable/injectable.dart';
@@ -72,6 +76,61 @@ class SupabaseIncidentService implements IncidentService {
       params: {'p_incident_id': incidentId},
     );
     return _fromRow(row);
+  }
+
+  @override
+  Future<IncidentDTO> updateReport({required UpdateReportDTO data}) async {
+    final userId =
+        _userId ??
+        (throw const ApiException(
+          kind: ApiErrorKind.unauthorized,
+          message: 'No Supabase session for the edit',
+        ));
+    final newPhoto = data.newPhotoPath;
+    final photoUrl = newPhoto != null
+        ? await _uploadPhoto(path: newPhoto, userId: userId)
+        : data.keepPhotoUrl;
+
+    final row = await _client.rpc<Map<String, dynamic>>(
+      'update_my_report',
+      params: {
+        'p_id': data.id,
+        'p_category': data.category,
+        'p_title': data.title,
+        'p_description': data.description,
+        'p_photo_path': photoUrl,
+      },
+    );
+
+    final previous = data.previousPhotoUrl;
+    if (previous != null && previous != photoUrl) {
+      await _removePhoto(previous);
+    }
+    return _fromRow(row);
+  }
+
+  @override
+  Future<void> deleteReport({
+    required String incidentId,
+    String? photoUrl,
+  }) async {
+    await _client.rpc<void>(
+      'delete_my_report',
+      params: {'p_id': incidentId},
+    );
+    if (photoUrl != null) await _removePhoto(photoUrl);
+  }
+
+  /// Best effort: the report change already succeeded, so a photo left
+  /// behind is only storage, never a failure for the resident.
+  Future<void> _removePhoto(String url) async {
+    final path = url.toReportPhotoObjectPath();
+    if (path == null) return;
+    try {
+      await _client.storage.from(_photoBucket).remove([path]);
+    } on Object catch (error) {
+      developer.log('Photo not removed: $error', name: 'incidents');
+    }
   }
 
   Future<String> _uploadPhoto({

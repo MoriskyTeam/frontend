@@ -65,7 +65,11 @@ class PhotoField extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              LocalImage(path: path),
+              // An edited report keeps its photo online until replaced.
+              if (path.startsWith('http'))
+                Image.network(path, fit: BoxFit.cover)
+              else
+                LocalImage(path: path),
               Positioned(
                 top: RcbSpacing.sm,
                 right: RcbSpacing.sm,

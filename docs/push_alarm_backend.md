@@ -107,7 +107,7 @@ create table public.operator_alerts (
   lat         double precision not null,
   lng         double precision not null,
   radius_m    integer not null default 5000 check (radius_m between 50 and 100000),
-  incident_id text references public.incidents (id),  -- opcjonalnie: otwórz to zgłoszenie
+  incident_id text references public.incidents (id) on delete set null,  -- opcjonalnie: otwórz to zgłoszenie
   created_by  uuid default auth.uid(),
   created_at  timestamptz not null default now()
 );

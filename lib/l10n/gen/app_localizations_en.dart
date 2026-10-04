@@ -403,4 +403,50 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get alarmFullScreenGrantedBody =>
       'A locked phone will wake up for an alarm.';
+
+  @override
+  String get reportEditTitle => 'Edit report';
+
+  @override
+  String get reportSave => 'Save changes';
+
+  @override
+  String get reportSaving => 'Saving…';
+
+  @override
+  String get reportSaved => 'Changes saved.';
+
+  @override
+  String get reportSaveFailed =>
+      'Could not save. Check your connection and try again.';
+
+  @override
+  String get reportWhereLocked =>
+      'The place can\'t be changed: neighbours confirmed this spot.';
+
+  @override
+  String get reportEdit => 'Edit';
+
+  @override
+  String get reportDelete => 'Delete';
+
+  @override
+  String get reportDeleteTitle => 'Delete this report?';
+
+  @override
+  String get reportDeleteBody =>
+      'It disappears from everyone\'s map, along with its photo and confirmations.';
+
+  @override
+  String get reportDeleteConfirm => 'Delete';
+
+  @override
+  String get reportDeleted => 'Report deleted.';
+
+  @override
+  String get reportDeleteFailed =>
+      'Could not delete. Check your connection and try again.';
+
+  @override
+  String get cancel => 'Cancel';
 }

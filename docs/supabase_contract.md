@@ -114,6 +114,87 @@ end $$;
 grant execute on function public.confirm_incident(text) to authenticated;
 ```
 
+## Editing and deleting own reports
+
+A resident may change the category, title, description and photo of a report
+they filed, or delete it for everyone. Location stays fixed (confirmations
+are about that place). There are still no update/delete policies on
+`incidents`; both go through these RPCs, which only touch rows with
+`reporter_id = auth.uid()` and `source = 'resident'`.
+
+```sql
+create or replace function public.update_my_report(
+  p_id          text,
+  p_category    text,
+  p_title       text,
+  p_description text,
+  p_photo_path  text            -- public URL, or null to drop the photo
+) returns public.incidents
+language plpgsql security definer set search_path = public as $$
+declare
+  result public.incidents;
+begin
+  if p_category not in ('power_outage', 'water_outage', 'flooding',
+                        'fallen_tree', 'road', 'smoke', 'traffic_lights',
+                        'other') then
+    raise exception 'category not reportable' using errcode = '22023';
+  end if;
+
+  update incidents
+     set category    = p_category,
+         title       = p_title,
+         description = p_description,
+         photo_path  = p_photo_path,
+         updated_at  = now()
+   where id = p_id
+     and source = 'resident'
+     and reporter_id = auth.uid()
+  returning * into result;
+
+  if result.id is null then
+    raise exception 'not your report' using errcode = '42501';
+  end if;
+  return result;
+end $$;
+
+create or replace function public.delete_my_report(p_id text)
+returns void
+language plpgsql security definer set search_path = public as $$
+begin
+  delete from incidents
+   where id = p_id
+     and source = 'resident'
+     and reporter_id = auth.uid();
+  if not found then
+    raise exception 'not your report' using errcode = '42501';
+  end if;
+end $$;
+
+revoke all on function public.update_my_report from public, anon;
+revoke all on function public.delete_my_report from public, anon;
+grant execute on function public.update_my_report to authenticated;
+grant execute on function public.delete_my_report to authenticated;
+
+-- The app removes a replaced or deleted photo from its own folder.
+create policy "users delete their own photos"
+  on storage.objects for delete to authenticated
+  using (bucket_id = 'report-photos'
+         and (storage.foldername(name))[1] = auth.uid()::text);
+```
+
+`incident_confirmations` goes with the report (`on delete cascade`). If the
+alarm tables from `docs/push_alarm_backend.md` exist, `operator_alerts`
+must not block the delete:
+
+```sql
+alter table public.operator_alerts
+  drop constraint if exists operator_alerts_incident_id_fkey,
+  add constraint operator_alerts_incident_id_fkey
+    foreign key (incident_id) references public.incidents (id) on delete set null;
+```
+
+Realtime `.stream()` drops a deleted row from every open map by primary key.
+
 ## Tables `public.gios_stations` + `public.gios_readings`
 
 The only source for the air-quality layer. The backend fills them from GIOŚ.

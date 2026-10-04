@@ -112,5 +112,19 @@
   "alarmTestTitle": "Alarm testowy",
   "alarmTestBody": "Tak wygląda i brzmi alarm o niebezpieczeństwie. Nic się nie dzieje.",
   "alarmFullScreenGranted": "Alarm na pełnym ekranie włączony",
-  "alarmFullScreenGrantedBody": "Zablokowany telefon wybudzi się przy alarmie."
+  "alarmFullScreenGrantedBody": "Zablokowany telefon wybudzi się przy alarmie.",
+  "reportEditTitle": "Edytuj zgłoszenie",
+  "reportSave": "Zapisz zmiany",
+  "reportSaving": "Zapisywanie…",
+  "reportSaved": "Zapisano zmiany.",
+  "reportSaveFailed": "Nie udało się zapisać. Sprawdź połączenie i spróbuj ponownie.",
+  "reportWhereLocked": "Miejsca nie można zmienić: sąsiedzi potwierdzali to miejsce.",
+  "reportEdit": "Edytuj",
+  "reportDelete": "Usuń",
+  "reportDeleteTitle": "Usunąć to zgłoszenie?",
+  "reportDeleteBody": "Zniknie z mapy u wszystkich, razem ze zdjęciem i potwierdzeniami.",
+  "reportDeleteConfirm": "Usuń",
+  "reportDeleted": "Usunięto zgłoszenie.",
+  "reportDeleteFailed": "Nie udało się usunąć. Sprawdź połączenie i spróbuj ponownie.",
+  "cancel": "Anuluj"
 }

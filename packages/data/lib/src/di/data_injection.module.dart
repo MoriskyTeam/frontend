@@ -45,48 +45,63 @@ import 'package:shared_preferences/shared_preferences.dart' as _i460;
 import 'package:supabase_flutter/supabase_flutter.dart' as _i454;
 
 class DataPackageModule extends _i526.MicroPackageModule {
-// initializes the registration of main-scope dependencies inside of GetIt
+  // initializes the registration of main-scope dependencies inside of GetIt
   @override
   _i687.FutureOr<void> init(_i526.GetItHelper gh) {
     final supabaseModule = _$SupabaseModule();
     final preferencesModule = _$PreferencesModule();
     gh.lazySingleton<_i454.SupabaseClient>(() => supabaseModule.client);
     gh.lazySingleton<_i460.SharedPreferencesAsync>(
-        () => preferencesModule.preferences);
+      () => preferencesModule.preferences,
+    );
     gh.factory<_i217.RadarService>(() => _i251.RainViewerRadarService());
     gh.factory<_i554.LocationService>(() => _i744.GeolocatorLocationService());
     gh.lazySingleton<_i644.PushMessagingService>(
-        () => _i284.FirebasePushMessagingService());
+      () => _i284.FirebasePushMessagingService(),
+    );
     gh.factory<_i939.GeocodingService>(() => _i736.NominatimGeocodingService());
     gh.lazySingleton<_i1009.WeatherService>(
-        () => _i752.SupabaseWeatherService(gh<_i454.SupabaseClient>()));
+      () => _i752.SupabaseWeatherService(gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i219.AirQualityService>(
-        () => _i850.SupabaseAirQualityService(gh<_i454.SupabaseClient>()));
+      () => _i850.SupabaseAirQualityService(gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i624.PushDeviceService>(
-        () => _i383.SupabasePushDeviceService(gh<_i454.SupabaseClient>()));
+      () => _i383.SupabasePushDeviceService(gh<_i454.SupabaseClient>()),
+    );
     gh.factory<_i1054.AuthService>(
-        () => _i1067.SupabaseAuthService(gh<_i454.SupabaseClient>()));
+      () => _i1067.SupabaseAuthService(gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i912.IncidentService>(
-        () => _i899.SupabaseIncidentService(gh<_i454.SupabaseClient>()));
+      () => _i899.SupabaseIncidentService(gh<_i454.SupabaseClient>()),
+    );
     gh.factory<_i494.RadarRepository>(
-        () => _i742.RadarRepositoryImpl(gh<_i217.RadarService>()));
-    gh.factory<_i494.LocationRepository>(() => _i27.LocationRepositoryImpl(
-          gh<_i554.LocationService>(),
-          gh<_i939.GeocodingService>(),
-        ));
-    gh.factory<_i494.AlarmRepository>(() => _i606.AlarmRepositoryImpl(
-          gh<_i644.PushMessagingService>(),
-          gh<_i624.PushDeviceService>(),
-          gh<_i460.SharedPreferencesAsync>(),
-        ));
-    gh.factory<_i494.IncidentRepository>(() => _i635.IncidentRepositoryImpl(
-          gh<_i912.IncidentService>(),
-          gh<_i219.AirQualityService>(),
-          gh<_i1009.WeatherService>(),
-          gh<_i1054.AuthService>(),
-        ));
+      () => _i742.RadarRepositoryImpl(gh<_i217.RadarService>()),
+    );
+    gh.factory<_i494.LocationRepository>(
+      () => _i27.LocationRepositoryImpl(
+        gh<_i554.LocationService>(),
+        gh<_i939.GeocodingService>(),
+      ),
+    );
+    gh.factory<_i494.AlarmRepository>(
+      () => _i606.AlarmRepositoryImpl(
+        gh<_i644.PushMessagingService>(),
+        gh<_i624.PushDeviceService>(),
+        gh<_i460.SharedPreferencesAsync>(),
+      ),
+    );
+    gh.factory<_i494.IncidentRepository>(
+      () => _i635.IncidentRepositoryImpl(
+        gh<_i912.IncidentService>(),
+        gh<_i219.AirQualityService>(),
+        gh<_i1009.WeatherService>(),
+        gh<_i1054.AuthService>(),
+      ),
+    );
     gh.factory<_i494.AuthRepository>(
-        () => _i40.AuthRepositoryImpl(gh<_i1054.AuthService>()));
+      () => _i40.AuthRepositoryImpl(gh<_i1054.AuthService>()),
+    );
   }
 }
 

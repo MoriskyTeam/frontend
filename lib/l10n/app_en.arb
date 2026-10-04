@@ -195,5 +195,19 @@
   "alarmTestTitle": "Test alarm",
   "alarmTestBody": "This is how a danger alarm looks and sounds. Nothing is happening.",
   "alarmFullScreenGranted": "Full-screen alarms allowed",
-  "alarmFullScreenGrantedBody": "A locked phone will wake up for an alarm."
+  "alarmFullScreenGrantedBody": "A locked phone will wake up for an alarm.",
+  "reportEditTitle": "Edit report",
+  "reportSave": "Save changes",
+  "reportSaving": "Saving…",
+  "reportSaved": "Changes saved.",
+  "reportSaveFailed": "Could not save. Check your connection and try again.",
+  "reportWhereLocked": "The place can't be changed: neighbours confirmed this spot.",
+  "reportEdit": "Edit",
+  "reportDelete": "Delete",
+  "reportDeleteTitle": "Delete this report?",
+  "reportDeleteBody": "It disappears from everyone's map, along with its photo and confirmations.",
+  "reportDeleteConfirm": "Delete",
+  "reportDeleted": "Report deleted.",
+  "reportDeleteFailed": "Could not delete. Check your connection and try again.",
+  "cancel": "Cancel"
 }

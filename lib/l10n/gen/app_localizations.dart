@@ -775,6 +775,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'A locked phone will wake up for an alarm.'**
   String get alarmFullScreenGrantedBody;
+
+  /// No description provided for @reportEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit report'**
+  String get reportEditTitle;
+
+  /// No description provided for @reportSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get reportSave;
+
+  /// No description provided for @reportSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving…'**
+  String get reportSaving;
+
+  /// No description provided for @reportSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes saved.'**
+  String get reportSaved;
+
+  /// No description provided for @reportSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save. Check your connection and try again.'**
+  String get reportSaveFailed;
+
+  /// No description provided for @reportWhereLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'The place can\'t be changed: neighbours confirmed this spot.'**
+  String get reportWhereLocked;
+
+  /// No description provided for @reportEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get reportEdit;
+
+  /// No description provided for @reportDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get reportDelete;
+
+  /// No description provided for @reportDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this report?'**
+  String get reportDeleteTitle;
+
+  /// No description provided for @reportDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It disappears from everyone\'s map, along with its photo and confirmations.'**
+  String get reportDeleteBody;
+
+  /// No description provided for @reportDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get reportDeleteConfirm;
+
+  /// No description provided for @reportDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Report deleted.'**
+  String get reportDeleted;
+
+  /// No description provided for @reportDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete. Check your connection and try again.'**
+  String get reportDeleteFailed;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
 }
 
 class _AppLocalizationsDelegate

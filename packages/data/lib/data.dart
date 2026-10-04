@@ -21,6 +21,7 @@ export 'src/model/air_quality/gios_station_dto.dart';
 export 'src/model/geocoding/address_dto.dart';
 export 'src/model/incident/incident_dto.dart';
 export 'src/model/incident/submit_report_dto.dart';
+export 'src/model/incident/update_report_dto.dart';
 export 'src/model/location/location_dto.dart';
 export 'src/model/push/danger_alarm_dto.dart';
 export 'src/model/radar/radar_frame_dto.dart';

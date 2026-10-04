@@ -1,3 +1,4 @@
+import 'package:domain/domain.dart';
 import 'package:dynamic_rcb_alerts/core/push/danger_alarm_navigator.dart';
 import 'package:dynamic_rcb_alerts/features/alarm/alarm_page.dart';
 import 'package:dynamic_rcb_alerts/features/map/map_page.dart';
@@ -18,9 +19,13 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/report',
       name: 'report',
-      pageBuilder: (context, state) => const MaterialPage(
+      // `extra` carries the resident's own report to edit; a plain link
+      // opens a new one.
+      pageBuilder: (context, state) => MaterialPage(
         fullscreenDialog: true,
-        child: ReportPage(),
+        child: ReportPage(
+          editing: state.extra is Incident ? state.extra! as Incident : null,
+        ),
       ),
     ),
     GoRoute(

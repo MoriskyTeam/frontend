@@ -17,3 +17,13 @@ class IncidentArrived extends MapEvent {
 
   final Incident incident;
 }
+
+class ReportDeleted extends MapEvent {
+  const ReportDeleted();
+}
+
+class ReportDeleteFailed extends MapEvent {
+  const ReportDeleteFailed(this.error);
+
+  final ErrorResult error;
+}

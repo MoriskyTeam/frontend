@@ -20,6 +20,7 @@ class MapCubit extends Cubit<MapState>
     this._ensureSignedIn,
     this._getLatestRadarFrame,
     this._registerPushDevice,
+    this._deleteReport,
   ) : super(const MapState());
 
   /// How long an arrival keeps its "just arrived" treatment.
@@ -35,6 +36,7 @@ class MapCubit extends Cubit<MapState>
   final EnsureSignedInUseCase _ensureSignedIn;
   final GetLatestRadarFrameUseCase _getLatestRadarFrame;
   final RegisterPushDeviceUseCase _registerPushDevice;
+  final DeleteReportUseCase _deleteReport;
 
   StreamSubscription<List<Incident>>? _subscription;
   Timer? _clock;
@@ -138,6 +140,40 @@ class MapCubit extends Cubit<MapState>
         emitPresentation(MapErrorOccurred(error));
       },
       (_) {},
+    );
+  }
+
+  /// Deletes the resident's own report for everyone. It leaves the map at
+  /// once and comes back if the server refuses.
+  Future<void> deleteReport(Incident incident) async {
+    final before = state.incidents;
+    emit(
+      state.copyWith(
+        incidents: [
+          for (final other in before)
+            if (other.id != incident.id) other,
+        ],
+        selectedIncidentId: state.selectedIncidentId == incident.id
+            ? null
+            : state.selectedIncidentId,
+      ),
+    );
+    final result = await _deleteReport(incident);
+    result.fold(
+      (error) {
+        // Realtime may have moved on meanwhile; restore only what is gone.
+        final known = {for (final other in state.incidents) other.id};
+        emit(
+          state.copyWith(
+            incidents: [
+              ...state.incidents,
+              if (!known.contains(incident.id)) incident,
+            ],
+          ),
+        );
+        emitPresentation(ReportDeleteFailed(error));
+      },
+      (_) => emitPresentation(const ReportDeleted()),
     );
   }
 

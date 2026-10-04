@@ -14,5 +14,10 @@ sealed class ReportState with _$ReportState {
     @Default(LoadingStatus.initial) LoadingStatus addressStatus,
     @Default(LoadingStatus.initial) LoadingStatus locationStatus,
     @Default(LoadingStatus.initial) LoadingStatus submitStatus,
+
+    /// The resident's own report being edited; null when filing a new one.
+    /// [photoPath] then holds either its photo URL (unchanged) or a newly
+    /// picked local file.
+    @Default(null) Incident? editing,
   }) = _ReportState;
 }

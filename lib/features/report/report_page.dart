@@ -16,19 +16,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 /// Quick report: what, photo, where, optional note. Pops with the created
-/// incident.
+/// incident, or with the updated one when [editing] the resident's own.
 class ReportPage extends StatelessWidget {
-  const ReportPage({super.key});
+  const ReportPage({this.editing, super.key});
+
+  final Incident? editing;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) {
         final cubit = getIt<ReportCubit>();
-        unawaited(cubit.init());
+        if (editing case final incident?) {
+          cubit.initEdit(incident);
+        } else {
+          unawaited(cubit.init());
+        }
         return cubit;
       },
-      child: const _ReportPageCore(),
+      // Snackbars (e.g. "retry") belong to the form and leave with it,
+      // instead of outliving it on the map.
+      child: const ScaffoldMessenger(child: _ReportPageCore()),
     );
   }
 }
@@ -52,12 +60,18 @@ class _ReportPageCore extends StatelessWidget {
               context.go('/?incident=${incident.id}');
             }
           case ReportFailed():
+            // Captured now: by the time "retry" is tapped this context may
+            // be gone, the cubit and strings are not.
+            final cubit = context.read<ReportCubit>();
+            final editing = cubit.state.editing != null;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(l10n.reportFailed),
+                content: Text(
+                  editing ? l10n.reportSaveFailed : l10n.reportFailed,
+                ),
                 action: SnackBarAction(
                   label: l10n.retry,
-                  onPressed: () => _submit(context),
+                  onPressed: () => _send(cubit, l10n),
                 ),
               ),
             );
@@ -82,6 +96,7 @@ class _ReportPageBody extends StatelessWidget {
     final scheme = theme.colorScheme;
     final cubit = context.read<ReportCubit>();
     final sending = state.submitStatus.isLoading;
+    final editing = state.editing != null;
     final canSend =
         state.category != null && state.location != null && !sending;
 
@@ -104,7 +119,7 @@ class _ReportPageBody extends StatelessWidget {
           icon: const Icon(Icons.close_rounded),
           onPressed: () => context.canPop() ? context.pop() : context.go('/'),
         ),
-        title: Text(l10n.reportTitle),
+        title: Text(editing ? l10n.reportEditTitle : l10n.reportTitle),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
           child: Divider(color: scheme.outlineVariant),
@@ -143,7 +158,7 @@ class _ReportPageBody extends StatelessWidget {
                     if (state.location case final location?)
                       LocationPicker(
                         initial: location,
-                        onMoved: cubit.movePin,
+                        onMoved: editing ? null : cubit.movePin,
                       )
                     else
                       Container(
@@ -163,13 +178,15 @@ class _ReportPageBody extends StatelessWidget {
                         style: theme.textTheme.titleMedium,
                       ),
                     Text(
-                      [
-                        if (state.locationIsFallback)
-                          l10n.locationDemo
-                        else
-                          l10n.locationDevice,
-                        l10n.reportWhereHint,
-                      ].join('  ·  '),
+                      editing
+                          ? l10n.reportWhereLocked
+                          : [
+                              if (state.locationIsFallback)
+                                l10n.locationDemo
+                              else
+                                l10n.locationDevice,
+                              l10n.reportWhereHint,
+                            ].join('  ·  '),
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: scheme.onSurfaceVariant,
                       ),
@@ -179,7 +196,8 @@ class _ReportPageBody extends StatelessWidget {
               ),
               section(
                 l10n.reportNote,
-                TextField(
+                TextFormField(
+                  initialValue: state.description,
                   onChanged: cubit.setDescription,
                   maxLength: 140,
                   minLines: 2,
@@ -225,7 +243,12 @@ class _ReportPageBody extends StatelessWidget {
                         ),
                       ),
                     FilledButton(
-                      onPressed: canSend ? () => _submit(context) : null,
+                      onPressed: canSend
+                          ? () => _send(
+                              context.read<ReportCubit>(),
+                              AppLocalizations.of(context),
+                            )
+                          : null,
                       child: sending
                           ? Row(
                               mainAxisSize: MainAxisSize.min,
@@ -238,10 +261,18 @@ class _ReportPageBody extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(width: RcbSpacing.md),
-                                Text(l10n.reportSending.toUpperCase()),
+                                Text(
+                                  (editing
+                                          ? l10n.reportSaving
+                                          : l10n.reportSending)
+                                      .toUpperCase(),
+                                ),
                               ],
                             )
-                          : Text(l10n.reportSubmit.toUpperCase()),
+                          : Text(
+                              (editing ? l10n.reportSave : l10n.reportSubmit)
+                                  .toUpperCase(),
+                            ),
                     ),
                   ],
                 ),
@@ -256,13 +287,10 @@ class _ReportPageBody extends StatelessWidget {
 
 /// Sends the report with its headline: the localised category name, so every
 /// client (and the backend) shows the same title the map shows.
-void _submit(BuildContext context) {
-  final cubit = context.read<ReportCubit>();
+void _send(ReportCubit cubit, AppLocalizations l10n) {
   final category = cubit.state.category;
-  if (category == null) return;
-  unawaited(
-    cubit.submit(title: AppLocalizations.of(context).category(category)),
-  );
+  if (cubit.isClosed || category == null) return;
+  unawaited(cubit.submit(title: l10n.category(category)));
 }
 
 extension on GeoPoint {

@@ -32,6 +32,14 @@ extension GetItInjectableX on _i174.GetIt {
     await _i494.DomainPackageModule().init(gh);
     await _i437.DataPackageModule().init(gh);
     gh.factory<_i367.AlarmEffects>(() => _i367.AlarmEffects());
+    gh.factory<_i71.ReportCubit>(
+      () => _i71.ReportCubit(
+        gh<_i494.GetCurrentLocationUseCase>(),
+        gh<_i494.GetAddressUseCase>(),
+        gh<_i494.SubmitReportUseCase>(),
+        gh<_i494.UpdateReportUseCase>(),
+      ),
+    );
     gh.factory<_i77.AlarmSettingsCubit>(
       () => _i77.AlarmSettingsCubit(
         gh<_i494.GetAlarmsEnabledUseCase>(),
@@ -44,16 +52,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i494.GetLaunchDangerAlarmUseCase>(),
       ),
     );
-    gh.factory<_i71.ReportCubit>(
-      () => _i71.ReportCubit(
-        gh<_i494.GetCurrentLocationUseCase>(),
-        gh<_i494.GetAddressUseCase>(),
-        gh<_i494.SubmitReportUseCase>(),
-      ),
-    );
-    gh.factoryParam<_i975.AlarmCubit, _i494.DangerAlarm, dynamic>(
-      (_alarm, _) => _i975.AlarmCubit(gh<_i367.AlarmEffects>(), _alarm),
-    );
     gh.factory<_i275.MapCubit>(
       () => _i275.MapCubit(
         gh<_i494.WatchIncidentsUseCase>(),
@@ -62,7 +60,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i494.EnsureSignedInUseCase>(),
         gh<_i494.GetLatestRadarFrameUseCase>(),
         gh<_i494.RegisterPushDeviceUseCase>(),
+        gh<_i494.DeleteReportUseCase>(),
       ),
+    );
+    gh.factoryParam<_i975.AlarmCubit, _i494.DangerAlarm, dynamic>(
+      (_alarm, _) => _i975.AlarmCubit(gh<_i367.AlarmEffects>(), _alarm),
     );
     return this;
   }

@@ -26,6 +26,8 @@ class IncidentDetail extends StatelessWidget {
     required this.onClose,
     required this.onConfirm,
     required this.scrollController,
+    this.onEdit,
+    this.onDelete,
     this.header,
     super.key,
   });
@@ -37,6 +39,10 @@ class IncidentDetail extends StatelessWidget {
   final VoidCallback onClose;
   final VoidCallback onConfirm;
   final ScrollController? scrollController;
+
+  /// Offered on the resident's own reports only.
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
   final Widget? header;
 
   bool get _confirmable =>
@@ -44,6 +50,9 @@ class IncidentDetail extends StatelessWidget {
       !incident.reportedByMe &&
       (incident.layer == IncidentLayer.infrastructure ||
           incident.layer == IncidentLayer.neighbours);
+
+  bool get _ownReport =>
+      incident.reportedByMe && incident.source == IncidentSource.resident;
 
   @override
   Widget build(BuildContext context) {
@@ -199,6 +208,34 @@ class IncidentDetail extends StatelessWidget {
                       confirmedByMe ? l10n.statusConfirmed : l10n.confirmAction,
                     ),
                   ),
+                ),
+              ],
+              if (_ownReport && (onEdit != null || onDelete != null)) ...[
+                const SizedBox(height: RcbSpacing.lg),
+                Row(
+                  children: [
+                    if (onEdit != null)
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: onEdit,
+                          icon: const Icon(Icons.edit_outlined),
+                          label: Text(l10n.reportEdit),
+                        ),
+                      ),
+                    if (onEdit != null && onDelete != null)
+                      const SizedBox(width: RcbSpacing.sm),
+                    if (onDelete != null)
+                      Expanded(
+                        child: TextButton.icon(
+                          onPressed: onDelete,
+                          style: TextButton.styleFrom(
+                            foregroundColor: scheme.error,
+                          ),
+                          icon: const Icon(Icons.delete_outline_rounded),
+                          label: Text(l10n.reportDelete),
+                        ),
+                      ),
+                  ],
                 ),
               ],
               const SizedBox(height: RcbSpacing.huge + RcbSpacing.xxl),

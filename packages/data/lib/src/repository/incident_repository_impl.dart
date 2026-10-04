@@ -87,6 +87,32 @@ class IncidentRepositoryImpl extends IncidentRepository {
   }
 
   @override
+  Future<Incident> updateReport({
+    required UpdateReportRequest request,
+  }) async {
+    try {
+      await _auth.ensureSignedIn();
+      final dto = await _service.updateReport(data: request.toData());
+      return dto.toDomain();
+    } on Object catch (e, stack) {
+      throw e.toApiException(stack);
+    }
+  }
+
+  @override
+  Future<void> deleteReport({
+    required String incidentId,
+    String? photoUrl,
+  }) async {
+    try {
+      await _auth.ensureSignedIn();
+      await _service.deleteReport(incidentId: incidentId, photoUrl: photoUrl);
+    } on Object catch (e, stack) {
+      throw e.toApiException(stack);
+    }
+  }
+
+  @override
   Future<Incident> confirmIncident({required String incidentId}) async {
     try {
       await _auth.ensureSignedIn();

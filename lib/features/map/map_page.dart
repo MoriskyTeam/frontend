@@ -96,6 +96,45 @@ class _MapPageCore extends HookWidget {
     );
   }
 
+  Future<void> _editReport(BuildContext context, Incident incident) async {
+    final cubit = context.read<MapCubit>();
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context);
+    final updated = await context.push<Incident>('/report', extra: incident);
+    if (updated == null || !context.mounted) return;
+    cubit.select(updated.id);
+    messenger.showSnackBar(_snackBar(context, Text(l10n.reportSaved)));
+  }
+
+  Future<void> _deleteReport(BuildContext context, Incident incident) async {
+    final l10n = AppLocalizations.of(context);
+    final cubit = context.read<MapCubit>();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.reportDeleteTitle),
+        content: Text(l10n.reportDeleteBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(dialogContext).colorScheme.error,
+              foregroundColor: Theme.of(dialogContext).colorScheme.onError,
+            ),
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(l10n.reportDeleteConfirm),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    unawaited(HapticFeedback.mediumImpact());
+    await cubit.deleteReport(incident);
+  }
+
   Future<void> _openReport(BuildContext context) async {
     unawaited(HapticFeedback.mediumImpact());
     final cubit = context.read<MapCubit>();
@@ -136,6 +175,12 @@ class _MapPageCore extends HookWidget {
           );
       case MapErrorOccurred():
         messenger.showSnackBar(_snackBar(context, Text(l10n.loadFailed)));
+      case ReportDeleted():
+        messenger.showSnackBar(_snackBar(context, Text(l10n.reportDeleted)));
+      case ReportDeleteFailed():
+        messenger.showSnackBar(
+          _snackBar(context, Text(l10n.reportDeleteFailed)),
+        );
     }
   }
 
@@ -215,6 +260,8 @@ class _MapPageCore extends HookWidget {
               confirmedByMe: state.confirmedByMe.contains(selected.id),
               onClose: () => _select(context, null),
               onConfirm: () => cubit.confirm(selected.id),
+              onEdit: () => _editReport(context, selected),
+              onDelete: () => _deleteReport(context, selected),
               scrollController: scrollController,
               header: header,
             )

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc_presentation/bloc_presentation.dart';
 import 'package:domain/domain.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
@@ -13,8 +14,12 @@ part 'report_state.dart';
 @injectable
 class ReportCubit extends Cubit<ReportState>
     with BlocPresentationMixin<ReportState, ReportEvent> {
-  ReportCubit(this._getCurrentLocation, this._getAddress, this._submitReport)
-    : super(const ReportState());
+  ReportCubit(
+    this._getCurrentLocation,
+    this._getAddress,
+    this._submitReport,
+    this._updateReport,
+  ) : super(const ReportState());
 
   /// Wait for the pin to settle before geocoding — also keeps us within
   /// Nominatim's one-request-per-second policy while the map is dragged.
@@ -23,6 +28,7 @@ class ReportCubit extends Cubit<ReportState>
   final GetCurrentLocationUseCase _getCurrentLocation;
   final GetAddressUseCase _getAddress;
   final SubmitReportUseCase _submitReport;
+  final UpdateReportUseCase _updateReport;
 
   Timer? _addressTimer;
 
@@ -43,6 +49,24 @@ class ReportCubit extends Cubit<ReportState>
       },
     );
   }
+
+  /// Opens the resident's own [incident] for editing. The place is fixed,
+  /// so no position lookup.
+  void initEdit(Incident incident) => emit(
+    state.copyWith(
+      editing: incident,
+      category: IncidentCategory.reportable.contains(incident.category)
+          ? incident.category
+          : null,
+      description: incident.description,
+      photoPath: incident.photoPath,
+      location: incident.location,
+      locationIsFallback: false,
+      locationStatus: LoadingStatus.loaded,
+      address: incident.address.isEmpty ? null : incident.address,
+      addressStatus: LoadingStatus.loaded,
+    ),
+  );
 
   void selectCategory(IncidentCategory category) =>
       emit(state.copyWith(category: category));
@@ -92,17 +116,11 @@ class ReportCubit extends Cubit<ReportState>
       return;
     }
     emit(state.copyWith(submitStatus: LoadingStatus.loading));
-    final result = await _submitReport(
-      SubmitReportRequest(
-        category: category,
-        title: title,
-        location: location,
-        address: state.address,
-        description: state.description.trim(),
-        photoPath: state.photoPath,
-      ),
-    );
-    result.fold(
+    final editing = state.editing;
+    final send = editing != null
+        ? _update(editing, category: category, title: title)
+        : _create(category: category, title: title, location: location);
+    (await send).fold(
       (error) {
         emit(state.copyWith(submitStatus: LoadingStatus.error));
         emitPresentation(ReportFailed(error));
@@ -112,6 +130,43 @@ class ReportCubit extends Cubit<ReportState>
         emitPresentation(ReportSubmitted(incident));
       },
     );
+  }
+
+  Future<Either<ErrorResult, Incident>> _create({
+    required IncidentCategory category,
+    required String title,
+    required GeoPoint location,
+  }) => _submitReport(
+    SubmitReportRequest(
+      category: category,
+      title: title,
+      location: location,
+      address: state.address,
+      description: state.description.trim(),
+      photoPath: state.photoPath,
+    ),
+  );
+
+  Future<Either<ErrorResult, Incident>> _update(
+    Incident editing, {
+    required IncidentCategory category,
+    required String title,
+  }) => _updateReport(
+    UpdateReportRequest(
+      incidentId: editing.id,
+      category: category,
+      title: title,
+      description: state.description.trim(),
+      photo: _photoChange(editing),
+      previousPhotoUrl: editing.photoPath,
+    ),
+  );
+
+  ReportPhoto _photoChange(Incident editing) {
+    final path = state.photoPath;
+    if (path == null) return const ReportPhoto.none();
+    if (path == editing.photoPath) return ReportPhoto.keep(url: path);
+    return ReportPhoto.replace(localPath: path);
   }
 
   @override
