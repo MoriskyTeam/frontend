@@ -1,6 +1,7 @@
 import 'package:dynamic_rcb_alerts/core/flavor/flavor_config.dart';
 import 'package:dynamic_rcb_alerts/core/routing/app_router.dart';
 import 'package:dynamic_rcb_alerts/core/theme/rcb_theme.dart';
+import 'package:dynamic_rcb_alerts/features/alarm/widget/alarm_inbox.dart';
 import 'package:dynamic_rcb_alerts/l10n/gen/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,7 +35,7 @@ class RcbAlertsApp extends StatelessWidget {
                 statusBarColor: Colors.transparent,
                 systemNavigationBarColor: Colors.transparent,
               ),
-          child: child!,
+          child: AlarmInbox(child: child!),
         );
       },
     );

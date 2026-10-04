@@ -2,7 +2,7 @@ name: dynamic_rcb_alerts
 description: "Dynamic RCB Alerts."
 publish_to: 'none'
 
-version: 0.1.0+1
+version: 0.1.0+2
 
 environment:
   sdk: ^3.11.3
@@ -59,6 +59,12 @@ dependencies:
   geolocator: ^14.1.1
   image_picker: ^1.2.3
   supabase_flutter: ^2.18.0
+  flutter_local_notifications: ^22.3.1
+  audioplayers: ^6.7.1
+  torch_light: ^1.1.0
+  wakelock_plus: ^1.7.0
+  vibration: ^3.2.1
+  path_provider: ^2.1.6
 
 dev_dependencies:
   flutter_test:
@@ -85,3 +91,6 @@ flutter:
   assets:
     # Barlow / Barlow Condensed (OFL), resolved by google_fonts offline.
     - assets/google_fonts/
+    # Danger alarm siren: looped on the alarm screen, copied to
+    # Library/Sounds on iOS for push notifications.
+    - assets/sounds/

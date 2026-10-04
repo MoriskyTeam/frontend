@@ -19,6 +19,7 @@ class MapCubit extends Cubit<MapState>
     this._confirmIncident,
     this._ensureSignedIn,
     this._getLatestRadarFrame,
+    this._registerPushDevice,
   ) : super(const MapState());
 
   /// How long an arrival keeps its "just arrived" treatment.
@@ -33,6 +34,7 @@ class MapCubit extends Cubit<MapState>
   final ConfirmIncidentUseCase _confirmIncident;
   final EnsureSignedInUseCase _ensureSignedIn;
   final GetLatestRadarFrameUseCase _getLatestRadarFrame;
+  final RegisterPushDeviceUseCase _registerPushDevice;
 
   StreamSubscription<List<Incident>>? _subscription;
   Timer? _clock;
@@ -68,6 +70,14 @@ class MapCubit extends Cubit<MapState>
     result.fold(
       (error) => emitPresentation(MapErrorOccurred(error)),
       (location) => emit(state.copyWith(userLocation: location)),
+    );
+    // Danger alarms are matched to the last real position; a demo
+    // fallback must never be sent as one.
+    final position = state.userLocation;
+    unawaited(
+      _registerPushDevice(
+        position == null || position.isFallback ? null : position.point,
+      ),
     );
   }
 

@@ -181,5 +181,19 @@
         "type": "int"
       }
     }
-  }
+  },
+  "alarmEyebrow": "CityShield alarm",
+  "alarmHeadline": "Danger",
+  "alarmAcknowledge": "I understand",
+  "alarmAcknowledgeHint": "Stops the alarm and opens the map",
+  "alarmChannelName": "Danger alarms",
+  "alarmChannelDescription": "Wakes the phone when a serious danger is reported near you.",
+  "alarmSettingsBody": "When a serious danger is reported near you, the phone wakes up, rings even on silent and flashes. It complements the official RCB Alert, it does not replace it.",
+  "alarmFullScreenTitle": "Allow full-screen alarms",
+  "alarmFullScreenBody": "Needed to wake a locked phone on Android 14 and newer.",
+  "alarmTestAction": "Test the alarm",
+  "alarmTestTitle": "Test alarm",
+  "alarmTestBody": "This is how a danger alarm looks and sounds. Nothing is happening.",
+  "alarmFullScreenGranted": "Full-screen alarms allowed",
+  "alarmFullScreenGrantedBody": "A locked phone will wake up for an alarm."
 }

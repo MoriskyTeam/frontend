@@ -98,5 +98,19 @@
   "weatherPrecipitation": "Opad",
   "weatherCalm": "cisza",
   "weatherPressure": "Ciśnienie {value} hPa",
-  "weatherWindFrom": "Wiatr z kierunku {degrees}°"
+  "weatherWindFrom": "Wiatr z kierunku {degrees}°",
+  "alarmEyebrow": "Alarm CityShield",
+  "alarmHeadline": "Niebezpieczeństwo",
+  "alarmAcknowledge": "Rozumiem",
+  "alarmAcknowledgeHint": "Wyłącza alarm i otwiera mapę",
+  "alarmChannelName": "Alarmy o niebezpieczeństwie",
+  "alarmChannelDescription": "Budzi telefon, gdy w pobliżu pojawi się poważne zagrożenie.",
+  "alarmSettingsBody": "Gdy w pobliżu pojawi się poważne zagrożenie, telefon się wybudzi, zadzwoni nawet w trybie cichym i zacznie migać. To uzupełnienie oficjalnego RCB Alert, nie zamiennik.",
+  "alarmFullScreenTitle": "Zezwól na alarm na pełnym ekranie",
+  "alarmFullScreenBody": "Potrzebne, by wybudzić zablokowany telefon na Androidzie 14 i nowszym.",
+  "alarmTestAction": "Przetestuj alarm",
+  "alarmTestTitle": "Alarm testowy",
+  "alarmTestBody": "Tak wygląda i brzmi alarm o niebezpieczeństwie. Nic się nie dzieje.",
+  "alarmFullScreenGranted": "Alarm na pełnym ekranie włączony",
+  "alarmFullScreenGrantedBody": "Zablokowany telefon wybudzi się przy alarmie."
 }

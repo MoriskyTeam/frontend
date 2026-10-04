@@ -7,10 +7,21 @@
 
 import 'dart:async' as _i687;
 
+import 'package:domain/src/repository/alarm_repository.dart' as _i1048;
 import 'package:domain/src/repository/auth_repository.dart' as _i722;
 import 'package:domain/src/repository/incident_repository.dart' as _i887;
 import 'package:domain/src/repository/location_repository.dart' as _i71;
 import 'package:domain/src/repository/radar_repository.dart' as _i288;
+import 'package:domain/src/usecase/alarm/get_alarms_enabled_use_case.dart'
+    as _i668;
+import 'package:domain/src/usecase/alarm/get_launch_danger_alarm_use_case.dart'
+    as _i479;
+import 'package:domain/src/usecase/alarm/register_push_device_use_case.dart'
+    as _i635;
+import 'package:domain/src/usecase/alarm/set_alarms_enabled_use_case.dart'
+    as _i199;
+import 'package:domain/src/usecase/alarm/watch_danger_alarms_use_case.dart'
+    as _i628;
 import 'package:domain/src/usecase/auth/ensure_signed_in_use_case.dart'
     as _i612;
 import 'package:domain/src/usecase/incident/confirm_incident_use_case.dart'
@@ -27,29 +38,32 @@ import 'package:domain/src/usecase/radar/get_latest_radar_frame_use_case.dart'
 import 'package:injectable/injectable.dart' as _i526;
 
 class DomainPackageModule extends _i526.MicroPackageModule {
-  // initializes the registration of main-scope dependencies inside of GetIt
+// initializes the registration of main-scope dependencies inside of GetIt
   @override
   _i687.FutureOr<void> init(_i526.GetItHelper gh) {
+    gh.factory<_i668.GetAlarmsEnabledUseCase>(
+        () => _i668.GetAlarmsEnabledUseCase(gh<_i1048.AlarmRepository>()));
+    gh.factory<_i479.GetLaunchDangerAlarmUseCase>(
+        () => _i479.GetLaunchDangerAlarmUseCase(gh<_i1048.AlarmRepository>()));
+    gh.factory<_i635.RegisterPushDeviceUseCase>(
+        () => _i635.RegisterPushDeviceUseCase(gh<_i1048.AlarmRepository>()));
+    gh.factory<_i199.SetAlarmsEnabledUseCase>(
+        () => _i199.SetAlarmsEnabledUseCase(gh<_i1048.AlarmRepository>()));
     gh.factory<_i932.GetAddressUseCase>(
-      () => _i932.GetAddressUseCase(gh<_i71.LocationRepository>()),
-    );
+        () => _i932.GetAddressUseCase(gh<_i71.LocationRepository>()));
     gh.factory<_i148.GetCurrentLocationUseCase>(
-      () => _i148.GetCurrentLocationUseCase(gh<_i71.LocationRepository>()),
-    );
+        () => _i148.GetCurrentLocationUseCase(gh<_i71.LocationRepository>()));
+    gh.factory<_i628.WatchDangerAlarmsUseCase>(
+        () => _i628.WatchDangerAlarmsUseCase(gh<_i1048.AlarmRepository>()));
     gh.factory<_i511.GetLatestRadarFrameUseCase>(
-      () => _i511.GetLatestRadarFrameUseCase(gh<_i288.RadarRepository>()),
-    );
+        () => _i511.GetLatestRadarFrameUseCase(gh<_i288.RadarRepository>()));
     gh.factory<_i366.ConfirmIncidentUseCase>(
-      () => _i366.ConfirmIncidentUseCase(gh<_i887.IncidentRepository>()),
-    );
+        () => _i366.ConfirmIncidentUseCase(gh<_i887.IncidentRepository>()));
     gh.factory<_i49.SubmitReportUseCase>(
-      () => _i49.SubmitReportUseCase(gh<_i887.IncidentRepository>()),
-    );
+        () => _i49.SubmitReportUseCase(gh<_i887.IncidentRepository>()));
     gh.factory<_i1038.WatchIncidentsUseCase>(
-      () => _i1038.WatchIncidentsUseCase(gh<_i887.IncidentRepository>()),
-    );
+        () => _i1038.WatchIncidentsUseCase(gh<_i887.IncidentRepository>()));
     gh.factory<_i612.EnsureSignedInUseCase>(
-      () => _i612.EnsureSignedInUseCase(gh<_i722.AuthRepository>()),
-    );
+        () => _i612.EnsureSignedInUseCase(gh<_i722.AuthRepository>()));
   }
 }

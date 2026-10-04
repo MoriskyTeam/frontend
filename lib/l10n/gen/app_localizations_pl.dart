@@ -361,4 +361,51 @@ class AppLocalizationsPl extends AppLocalizations {
   String weatherWindFrom(int degrees) {
     return 'Wiatr z kierunku $degrees°';
   }
+
+  @override
+  String get alarmEyebrow => 'Alarm CityShield';
+
+  @override
+  String get alarmHeadline => 'Niebezpieczeństwo';
+
+  @override
+  String get alarmAcknowledge => 'Rozumiem';
+
+  @override
+  String get alarmAcknowledgeHint => 'Wyłącza alarm i otwiera mapę';
+
+  @override
+  String get alarmChannelName => 'Alarmy o niebezpieczeństwie';
+
+  @override
+  String get alarmChannelDescription =>
+      'Budzi telefon, gdy w pobliżu pojawi się poważne zagrożenie.';
+
+  @override
+  String get alarmSettingsBody =>
+      'Gdy w pobliżu pojawi się poważne zagrożenie, telefon się wybudzi, zadzwoni nawet w trybie cichym i zacznie migać. To uzupełnienie oficjalnego RCB Alert, nie zamiennik.';
+
+  @override
+  String get alarmFullScreenTitle => 'Zezwól na alarm na pełnym ekranie';
+
+  @override
+  String get alarmFullScreenBody =>
+      'Potrzebne, by wybudzić zablokowany telefon na Androidzie 14 i nowszym.';
+
+  @override
+  String get alarmTestAction => 'Przetestuj alarm';
+
+  @override
+  String get alarmTestTitle => 'Alarm testowy';
+
+  @override
+  String get alarmTestBody =>
+      'Tak wygląda i brzmi alarm o niebezpieczeństwie. Nic się nie dzieje.';
+
+  @override
+  String get alarmFullScreenGranted => 'Alarm na pełnym ekranie włączony';
+
+  @override
+  String get alarmFullScreenGrantedBody =>
+      'Zablokowany telefon wybudzi się przy alarmie.';
 }

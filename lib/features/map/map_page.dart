@@ -4,6 +4,7 @@ import 'package:bloc_presentation/bloc_presentation.dart';
 import 'package:domain/domain.dart';
 import 'package:dynamic_rcb_alerts/core/di/injection.dart';
 import 'package:dynamic_rcb_alerts/core/theme/rcb_radii.dart';
+import 'package:dynamic_rcb_alerts/features/alarm/widget/alarm_settings_sheet.dart';
 import 'package:dynamic_rcb_alerts/features/map/bloc/map_cubit.dart';
 import 'package:dynamic_rcb_alerts/features/map/model/incident_geo.dart';
 import 'package:dynamic_rcb_alerts/features/map/model/map_view_data.dart';
@@ -14,6 +15,7 @@ import 'package:dynamic_rcb_alerts/features/map/widget/live_status_bar.dart';
 import 'package:dynamic_rcb_alerts/features/map/widget/nearby_panel.dart';
 import 'package:dynamic_rcb_alerts/l10n/gen/app_localizations.dart';
 import 'package:dynamic_rcb_alerts/shared/livery/incident_labels.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -248,7 +250,17 @@ class _MapPageCore extends HookWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        _LocateButton(
+        // Alarms wake phones; the web map has nothing to wake.
+        if (!kIsWeb) ...[
+          _MapIconButton(
+            icon: Icons.notifications_active_outlined,
+            tooltip: l10n.alarmChannelName,
+            onPressed: () => AlarmSettingsSheet.show(context),
+          ),
+          const SizedBox(height: RcbSpacing.sm),
+        ],
+        _MapIconButton(
+          icon: Icons.my_location_rounded,
           tooltip: l10n.myLocation,
           onPressed: () => _recenter(context, handles),
         ),
@@ -530,9 +542,14 @@ class _FadeIn extends StatelessWidget {
 }
 
 /// Square map control in the chip language: bone card, hairline, soft lift.
-class _LocateButton extends StatelessWidget {
-  const _LocateButton({required this.tooltip, required this.onPressed});
+class _MapIconButton extends StatelessWidget {
+  const _MapIconButton({
+    required this.icon,
+    required this.tooltip,
+    required this.onPressed,
+  });
 
+  final IconData icon;
   final String tooltip;
   final VoidCallback onPressed;
 
@@ -554,7 +571,7 @@ class _LocateButton extends StatelessWidget {
           borderRadius: RcbRadii.buttonBorder,
           child: SizedBox.square(
             dimension: 52,
-            child: Icon(Icons.my_location_rounded, color: scheme.onSurface),
+            child: Icon(icon, color: scheme.onSurface),
           ),
         ),
       ),

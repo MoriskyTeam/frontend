@@ -298,7 +298,8 @@ class _WeatherReadings extends StatelessWidget {
                 Flexible(
                   child: Text(
                     value,
-                    style: theme.textTheme.headlineMedium?.copyWith(
+                    style: theme.textTheme.displaySmall?.copyWith(
+                      fontSize: 30,
                       fontFeatures: RcbTypography.tabular,
                     ),
                     maxLines: 1,

@@ -691,6 +691,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Wind from {degrees}°'**
   String weatherWindFrom(int degrees);
+
+  /// No description provided for @alarmEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'CityShield alarm'**
+  String get alarmEyebrow;
+
+  /// No description provided for @alarmHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Danger'**
+  String get alarmHeadline;
+
+  /// No description provided for @alarmAcknowledge.
+  ///
+  /// In en, this message translates to:
+  /// **'I understand'**
+  String get alarmAcknowledge;
+
+  /// No description provided for @alarmAcknowledgeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Stops the alarm and opens the map'**
+  String get alarmAcknowledgeHint;
+
+  /// No description provided for @alarmChannelName.
+  ///
+  /// In en, this message translates to:
+  /// **'Danger alarms'**
+  String get alarmChannelName;
+
+  /// No description provided for @alarmChannelDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Wakes the phone when a serious danger is reported near you.'**
+  String get alarmChannelDescription;
+
+  /// No description provided for @alarmSettingsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'When a serious danger is reported near you, the phone wakes up, rings even on silent and flashes. It complements the official RCB Alert, it does not replace it.'**
+  String get alarmSettingsBody;
+
+  /// No description provided for @alarmFullScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow full-screen alarms'**
+  String get alarmFullScreenTitle;
+
+  /// No description provided for @alarmFullScreenBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Needed to wake a locked phone on Android 14 and newer.'**
+  String get alarmFullScreenBody;
+
+  /// No description provided for @alarmTestAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Test the alarm'**
+  String get alarmTestAction;
+
+  /// No description provided for @alarmTestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Test alarm'**
+  String get alarmTestTitle;
+
+  /// No description provided for @alarmTestBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This is how a danger alarm looks and sounds. Nothing is happening.'**
+  String get alarmTestBody;
+
+  /// No description provided for @alarmFullScreenGranted.
+  ///
+  /// In en, this message translates to:
+  /// **'Full-screen alarms allowed'**
+  String get alarmFullScreenGranted;
+
+  /// No description provided for @alarmFullScreenGrantedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A locked phone will wake up for an alarm.'**
+  String get alarmFullScreenGrantedBody;
 }
 
 class _AppLocalizationsDelegate

@@ -356,4 +356,51 @@ class AppLocalizationsEn extends AppLocalizations {
   String weatherWindFrom(int degrees) {
     return 'Wind from $degrees°';
   }
+
+  @override
+  String get alarmEyebrow => 'CityShield alarm';
+
+  @override
+  String get alarmHeadline => 'Danger';
+
+  @override
+  String get alarmAcknowledge => 'I understand';
+
+  @override
+  String get alarmAcknowledgeHint => 'Stops the alarm and opens the map';
+
+  @override
+  String get alarmChannelName => 'Danger alarms';
+
+  @override
+  String get alarmChannelDescription =>
+      'Wakes the phone when a serious danger is reported near you.';
+
+  @override
+  String get alarmSettingsBody =>
+      'When a serious danger is reported near you, the phone wakes up, rings even on silent and flashes. It complements the official RCB Alert, it does not replace it.';
+
+  @override
+  String get alarmFullScreenTitle => 'Allow full-screen alarms';
+
+  @override
+  String get alarmFullScreenBody =>
+      'Needed to wake a locked phone on Android 14 and newer.';
+
+  @override
+  String get alarmTestAction => 'Test the alarm';
+
+  @override
+  String get alarmTestTitle => 'Test alarm';
+
+  @override
+  String get alarmTestBody =>
+      'This is how a danger alarm looks and sounds. Nothing is happening.';
+
+  @override
+  String get alarmFullScreenGranted => 'Full-screen alarms allowed';
+
+  @override
+  String get alarmFullScreenGrantedBody =>
+      'A locked phone will wake up for an alarm.';
 }
